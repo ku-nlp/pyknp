@@ -10,6 +10,7 @@ class Morpheme:
     def __init__(self, spec, id=""):
         self.spec = spec
         self.id = id
+        self.doukei = []
         parts = self.spec.split()
         try:
             self.midasi = parts[0]
@@ -56,23 +57,19 @@ class Morpheme:
             if rep:
                 reps.append(rep)
         return reps
-    def make_repname():
+    def make_repname(self):
         new_m = self.change_katuyou2('基本形');
         if new_m:
             return "%s/%s" % (new_m.genkei, new_m.yomi)
         return "%s/%s" % (self.genkei, self.yomi)
-    def kanou_dousi():
+    def kanou_dousi(self):
         groups = re.match(r"可能動詞:([^\"\s]+)/)", self.imis)
         if groups:
             return groups[1]
         return ""
-    def push_doukei(doukei):
-        this.doukei.append(doukei)
-    def doukei():
-        return self.doukei
-    def id():
-        return self.id
-    def spec():
+    def push_doukei(self, doukei):
+        self.doukei.append(doukei)
+    def spec(self):
         spec = ""
         if self.midasi: spec = "%s%s " % self.midasi
         if self.yomi: spec = "%s%s " % self.yomi

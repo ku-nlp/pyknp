@@ -10,4 +10,4 @@ mlist.push_mrph(Morpheme("解析 かいせき 解析 名詞 6 サ変名詞 2 * 0
 assert(len(mlist.mrph) == 2)
 assert(mlist.mrph[0].midasi == '構文')
 assert(mlist.mrph[-1].midasi == '解析')
-assert(''.join(x.midasi for x in mlist.mrph_list()) == '構文解析')
+assert(''.join([x.midasi for x in mlist.mrph_list()]) == '構文解析')
