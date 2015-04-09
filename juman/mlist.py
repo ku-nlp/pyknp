@@ -23,7 +23,7 @@ class MList:
         spec = ""
         for mrph in self.mrph:
             spec = "%s%s" % (spec, mrph.spec())
-            for doukei in mrph.doukei():
+            for doukei in mrph.doukei:
                 spec = "%s@ %s" % (spec, doukei.spec())
         return spec
 

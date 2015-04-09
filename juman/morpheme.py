@@ -5,10 +5,21 @@ import unittest
 
 class Morpheme:
     def __init__(self, spec, id=""):
-        self.spec = spec
         self.id = id
         self.doukei = []
-        parts = self.spec.split()
+        parts = spec.split()
+        self.midasi = ''
+        self.yomi = ''
+        self.genkei = ''
+        self.hinsi = ''
+        self.hinsi_id = 0 
+        self.bunrui = ''
+        self.bunrui_id = 0
+        self.katuyou1 = ''
+        self.katuyou1_id = 0
+        self.katuyou2 = ''
+        self.katuyou2_id = 0
+        self.imis = ''
         try:
             self.midasi = parts[0]
             self.yomi = parts[1]
@@ -41,8 +52,8 @@ class Morpheme:
             rep = this.make_repname()
         if rep:
             ret.append(rep)
-        if self.repname and not (flag and self.spec == "<音訓解消>"):
-            ret.append(self.get_doukei_reps())
+        #if self.repname and not (flag and self.spec() == "<音訓解消>"):
+            #ret.append(self.get_doukei_reps())
         # TODO(john): remove duplicates
         return '?'.join(ret);
     def get_doukei_reps(self):
@@ -67,20 +78,11 @@ class Morpheme:
     def push_doukei(self, doukei):
         self.doukei.append(doukei)
     def spec(self):
-        spec = ""
-        if self.midasi: spec = "%s%s " % self.midasi
-        if self.yomi: spec = "%s%s " % self.yomi
-        if self.genkei: spec = "%s%s " % self.genkei
-        if self.hinsi: spec = "%s%s " % self.hinsi
-        if self.hinsi_id: spec = "%s%d " % self.hinsi_id
-        if self.bunrui: spec = "%s%s " % self.bunrui
-        if self.bunrui_id: spec = "%s%d " % self.bunrui_id
-        if self.katuyou1: spec = "%s%s " % self.katuyou1
-        if self.katuyou1_id: spec = "%s%d " % self.katuyou1_id
-        if self.katuyou2: spec = "%s%s " % self.katuyou2
-        if self.katuyou2_id: spec = "%s%d " % self.katuyou2_id
-        if self.imis: spec = "%s%s " % self.imis
-        return spec.strip()
+        spec = "%s %s %s %s %s %s %s %s %s %s %s %s" % \
+                (self.midasi, self.yomi, self.genkei, self.hinsi, self.hinsi_id,
+                self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id,
+                self.katuyou2, self.katuyou2_id, self.imis)
+        return "%s\n" % spec.strip()
 
 class MorphemeTest(unittest.TestCase):
     def test_simple(self):
@@ -97,12 +99,12 @@ class MorphemeTest(unittest.TestCase):
         self.assertEqual(mrph.katuyou1_id, 25)
         self.assertEqual(mrph.katuyou2, 'デアル列基本連用形')
         self.assertEqual(mrph.katuyou2_id, 18)
-        self.assertEqual(mrph.spec, spec)
+        self.assertEqual(mrph.spec(), spec)
     def test_nil(self):
         spec = "であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18 NIL\n"
         mrph = Morpheme(spec)
         self.assertEqual(mrph.imis, "NIL")
-        self.assertEqual(mrph.spec, spec)
+        self.assertEqual(mrph.spec(), spec)
     def test_at(self):
         spec = "@ @ @ 未定義語 15 その他 1 * 0 * 0"
         mrph = Morpheme(spec)

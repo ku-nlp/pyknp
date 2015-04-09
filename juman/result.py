@@ -15,7 +15,7 @@ def Result(result, pattern=r'^EOS$'):
         result_list = result
     mrphs = MList()
     for line in result_list:
-        if re.match(pattern, line):
+        if re.search(pattern, line):
             break
         elif line.startswith("@ @ @"):
             mrphs.push_mrph(Morpheme(line, len(mrphs.mrph)))
