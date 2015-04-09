@@ -1,10 +1,7 @@
 #-*- encoding: utf-8 -*-
 
-# 形態素の各種情報を保持するオブジェクト．
-# Usage:
-#   m = Juman.Morpheme("解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0")
-
 import sys
+import unittest
 
 class Morpheme:
     def __init__(self, spec, id=""):
@@ -84,3 +81,32 @@ class Morpheme:
         if self.katuyou2_id: spec = "%s%d " % self.katuyou2_id
         if self.imis: spec = "%s%s " % self.imis
         return spec.strip()
+
+class MorphemeTest(unittest.TestCase):
+    def test_simple(self):
+        spec = "であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18\n"
+        mrph = Morpheme(spec)
+        self.assertEqual(mrph.midasi, 'であり')
+        self.assertEqual(mrph.yomi, 'であり')
+        self.assertEqual(mrph.genkei, 'だ')
+        self.assertEqual(mrph.hinsi, '判定詞')
+        self.assertEqual(mrph.hinsi_id, 4)
+        self.assertEqual(mrph.bunrui, '*')
+        self.assertEqual(mrph.bunrui_id, 0)
+        self.assertEqual(mrph.katuyou1, '判定詞')
+        self.assertEqual(mrph.katuyou1_id, 25)
+        self.assertEqual(mrph.katuyou2, 'デアル列基本連用形')
+        self.assertEqual(mrph.katuyou2_id, 18)
+        self.assertEqual(mrph.spec, spec)
+    def test_nil(self):
+        spec = "であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18 NIL\n"
+        mrph = Morpheme(spec)
+        self.assertEqual(mrph.imis, "NIL")
+        self.assertEqual(mrph.spec, spec)
+    def test_at(self):
+        spec = "@ @ @ 未定義語 15 その他 1 * 0 * 0"
+        mrph = Morpheme(spec)
+        self.assertEqual(mrph.midasi, '@')
+
+if __name__ == '__main__':
+    unittest.main()
