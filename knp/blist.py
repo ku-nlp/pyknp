@@ -14,6 +14,7 @@ class BList:
         self.comment = ''
         self.pattern = pattern
         self.parse(result_list)
+        self.set_parent_child()
     def id(self):
         match = re.match(r'# S-ID:(.*?)[ $]', self.comment)
         return int(match.group(1))
@@ -48,8 +49,16 @@ class BList:
             else:
                 mrph = Morpheme(string, len(self._bnst[-1].mrph_list))
                 self._bnst[-1].push_mrph(mrph)
+    def set_parent_child(self):
+        for bnst in self._bnst:
+            if bnst.parent_id == -1:
+                bnst.parent = None
+            else:
+                bnst.parent = self._bnst[bnst.parent_id]
+                self._bnst[bnst.parent_id].child.append(bnst)
     def push_bnst(self, bnst):
         self._bnst.append(bnst)
+        self._bnst[bnst.parent].child.append(bnst.id)
     def tag_list(self):
         result = []
         for bnst in self._bnst:

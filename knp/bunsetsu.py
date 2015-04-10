@@ -14,6 +14,8 @@ class Bunsetsu:
         self.mrph_list = MList()
         self.tag_list = TList()
         self.parent_id = -1
+        self.parent = None
+        self.child = []
         self.dpndtype = ''
         self.fstring = ''
         self.id = id
