@@ -6,6 +6,7 @@ from tag import Tag
 from tlist import TList
 import os
 import re
+import sys
 import unittest
 
 class Bunsetsu:
@@ -29,10 +30,10 @@ class Bunsetsu:
             quit(1)
     def push_mrph(self, mrph):
         if len(self.tag_list) > 0:
-            self.tag_list.tag[-1].push_mrph(mrph)
+            self.tag_list[-1].push_mrph(mrph)
         self.mrph_list.push_mrph(mrph)
     def push_tag(self, tag):
-        if len(self.mrph_list) > 0:
+        if len(self.tag_list) == 0 and len(self.mrph_list) > 0:
             sys.stderr.write("Unsafe addition of tags!\n")
             quit(1)
         self.tag_list.push_tag(tag);
