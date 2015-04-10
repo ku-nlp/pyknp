@@ -5,27 +5,27 @@ from morpheme import Morpheme
 
 class MList:
     def __init__(self, mrphs=[]):
-        self.mrph = []
+        self._mrph = []
         for mrph in mrphs:
-            self.push_mrph(mrph)
-        self.MLIST_READONLY = False
-    def mrph_list(self):
-        return self.mrph
+            self._mrph.append(mrph)
+        self._MLIST_READONLY = False
     def push_mrph(self, mrph):
-        if self.MLIST_READONLY:
+        if self._MLIST_READONLY:
             return
-        self.mrph.append(mrph)
+        self._mrph.append(mrph)
     def set_readonly(self):
-        self.MLIST_READONLY = True
-    def set_mlist_readonly(self):
-        self.set_readonly()
+        self._MLIST_READONLY = True
     def spec(self):
         spec = ""
-        for mrph in self.mrph:
+        for mrph in self._mrph:
             spec = "%s%s" % (spec, mrph.spec())
             for doukei in mrph.doukei:
                 spec = "%s@ %s" % (spec, doukei.spec())
         return spec
+    def __getitem__(self, index):
+        return self._mrph[index]
+    def __len__(self):
+        return len(self._mrph)
 
 class MListTest(unittest.TestCase):
     def setUp(self):
@@ -33,11 +33,11 @@ class MListTest(unittest.TestCase):
         self.mlist.push_mrph(Morpheme("構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0\n"))
         self.mlist.push_mrph(Morpheme("解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0\n"))
     def test_mrph(self):
-        self.assertEqual(len(self.mlist.mrph), 2)
-        self.assertEqual(self.mlist.mrph[0].midasi, '構文')
-        self.assertEqual(self.mlist.mrph[-1].midasi, '解析')
+        self.assertEqual(len(self.mlist), 2)
+        self.assertEqual(self.mlist[0].midasi, '構文')
+        self.assertEqual(self.mlist[-1].midasi, '解析')
     def test_mrph_list(self):
-        self.assertEqual(''.join([x.midasi for x in self.mlist.mrph_list()]), '構文解析')
+        self.assertEqual(''.join([x.midasi for x in self.mlist]), '構文解析')
 
 if __name__ == '__main__':
     unittest.main()

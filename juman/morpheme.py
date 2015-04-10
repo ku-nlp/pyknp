@@ -1,5 +1,6 @@
 #-*- encoding: utf-8 -*-
 
+import shlex
 import sys
 import unittest
 
@@ -7,7 +8,7 @@ class Morpheme:
     def __init__(self, spec, id=""):
         self.id = id
         self.doukei = []
-        parts = spec.split()
+        parts = shlex.split(spec)
         self.midasi = ''
         self.yomi = ''
         self.genkei = ''
@@ -20,6 +21,7 @@ class Morpheme:
         self.katuyou2 = ''
         self.katuyou2_id = 0
         self.imis = ''
+        self.fstring = ''
         try:
             self.midasi = parts[0]
             self.yomi = parts[1]
@@ -33,6 +35,7 @@ class Morpheme:
             self.katuyou2 = parts[9]
             self.katuyou2_id = int(parts[10])
             self.imis = parts[11]
+            self.fstring = parts[12]
         except:
             pass
     def push_imis(self, imis):
@@ -41,47 +44,18 @@ class Morpheme:
         else:
             self.imis = '%s%s"' % (self.imis[:-1], ' '.join(' ', imis))
     def repname(self):
-        groups = re.match(r"代表表記:([^\"\s]+)", self.imis)
-        if groups:
-            return groups.group(1)
+        match = re.match(r"代表表記:([^\"\s]+)", self.imis)
+        if match:
+            return match.group(1)
         return ""
-    def repnames(self, flag):
-        ret = []
-        rep = self.repname
-        if not rep:
-            rep = this.make_repname()
-        if rep:
-            ret.append(rep)
-        #if self.repname and not (flag and self.spec() == "<音訓解消>"):
-            #ret.append(self.get_doukei_reps())
-        # TODO(john): remove duplicates
-        return '?'.join(ret);
-    def get_doukei_reps(self):
-        reps = []
-        for doukei in self.doukei():
-            rep = doukei.repname()
-            if not rep:
-                rep = doukei.make_repname()
-            if rep:
-                reps.append(rep)
-        return reps
-    def make_repname(self):
-        new_m = self.change_katuyou2('基本形');
-        if new_m:
-            return "%s/%s" % (new_m.genkei, new_m.yomi)
-        return "%s/%s" % (self.genkei, self.yomi)
-    def kanou_dousi(self):
-        groups = re.match(r"可能動詞:([^\"\s]+)/)", self.imis)
-        if groups:
-            return groups[1]
-        return ""
-    def push_doukei(self, doukei):
-        self.doukei.append(doukei)
     def spec(self):
-        spec = "%s %s %s %s %s %s %s %s %s %s %s %s" % \
+        imis = self.imis
+        if ' ' in imis:
+            imis = '"%s"' % imis
+        spec = "%s %s %s %s %s %s %s %s %s %s %s %s %s" % \
                 (self.midasi, self.yomi, self.genkei, self.hinsi, self.hinsi_id,
                 self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id,
-                self.katuyou2, self.katuyou2_id, self.imis)
+                self.katuyou2, self.katuyou2_id, imis, self.fstring)
         return "%s\n" % spec.strip()
 
 class MorphemeTest(unittest.TestCase):
@@ -109,6 +83,28 @@ class MorphemeTest(unittest.TestCase):
         spec = "@ @ @ 未定義語 15 その他 1 * 0 * 0"
         mrph = Morpheme(spec)
         self.assertEqual(mrph.midasi, '@')
+    def test_knp(self):
+        spec = "構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 NIL <漢字><かな漢字><自立><←複合><名詞相当語>\n"
+        mrph = Morpheme(spec)
+        self.assertEqual(mrph.midasi, '構文')
+        self.assertEqual(mrph.yomi, 'こうぶん')
+        self.assertEqual(mrph.genkei, '構文')
+        self.assertEqual(mrph.hinsi, '名詞')
+        self.assertEqual(mrph.hinsi_id, 6)
+        self.assertEqual(mrph.bunrui, '普通名詞')
+        self.assertEqual(mrph.bunrui_id, 1)
+        self.assertEqual(mrph.katuyou1, '*')
+        self.assertEqual(mrph.katuyou1_id, 0)
+        self.assertEqual(mrph.katuyou2, '*')
+        self.assertEqual(mrph.katuyou2_id, 0)
+        self.assertEqual(mrph.imis, 'NIL')
+        self.assertEqual(mrph.fstring, '<漢字><かな漢字><自立><←複合><名詞相当語>')
+        self.assertEqual(mrph.feature, 5)
+        self.assertEqual(mrph.spec(), spec)
+        self.assertEqual(mrph.push_feature('TEST') == 6)
+        #self.assertEqual(mrph.fstring =~ /<TEST>/)
+        self.assertEqual(mrph.fstring, '<TEST>')
+        self.assertEqual(mrph.feature, 0)
 
 if __name__ == '__main__':
     unittest.main()
