@@ -3,9 +3,9 @@ pyknp: Python Module for KNP/JUMAN
 Version 0.1
 ================================================================================
 
-Written by John Richardson
-Kurohashi-Kawahara Lab, Kyoto University
-john@nlp.ist.i.kyoto-u.ac.jp
+- Written by John Richardson
+- Kurohashi-Kawahara Lab, Kyoto University
+- john@nlp.ist.i.kyoto-u.ac.jp
 
 --------------------------------------------------------------------------------
 INSTALLATION
@@ -49,6 +49,7 @@ Tags contain the following:
 EXAMPLE
 --------------------------------------------------------------------------------
 
+```
 #-*- encoding: utf-8 -*-
 
 from pyknp import Juman
@@ -63,3 +64,4 @@ print ','.join(mrph.midasi for mrph in result.mrph_list())
 juman = Juman(server='localhost', port=12345)
 result = juman.analysis("これはペンです。")
 print ','.join(mrph.genkei for mrph in result)
+```
