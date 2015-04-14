@@ -7,15 +7,15 @@ import unittest
 
 VERSION = '0.4.9'
 
-class KNP:
+class KNP(object):
     def __init__(self, command='knp -tab', server='', port=31000, timeout=60,
-            option='-tab', rcfile='~/.knprc', pattern=r'EOS'):
+                 option='-tab', rcfile='~/.knprc', pattern=r'EOS'):
         self.command = command
         self.server = server
         self.port = port
         self.timeout = timeout
         self.option = option
-        self.rcfile = rcfile 
+        self.rcfile = rcfile
         self.pattern = pattern
         self.socket = None
         self.subprocess = None
@@ -25,7 +25,8 @@ class KNP:
             self.subprocess = Subprocess(self.command)
         self.juman = Juman()
         #if self.rcfile != '' and self.server != '':
-        #    sys.stderr.write("Warning: rcfile option may not work with Juman server.\n")
+        #    sys.stderr.write(
+        #           "Warning: rcfile option may not work with Juman server.\n")
     def knp(self, sentence):
         self.parse(sentence)
     def parse(self, sentence):
@@ -49,16 +50,16 @@ class KNPTest(unittest.TestCase):
     def test_dpnd(self):
         result = self.knp.parse("赤い花が咲いた。")
         self.assertEqual(len(result), 3)
-        self.assertEqual(result[0].parent.id, 1) 
+        self.assertEqual(result[0].parent.bnst_id, 1)
         self.assertEqual(len(result[1].child), 1)
-        self.assertEqual(result[1].child[0].id, 0)
-        self.assertEqual(result[1].parent.id, 2)
+        self.assertEqual(result[1].child[0].bnst_id, 0)
+        self.assertEqual(result[1].parent.bnst_id, 2)
         self.assertEqual(result[2].parent, None)
     def test_mrph(self):
         result = self.knp.parse("赤い花が咲いた。")
-        self.assertEqual(''.join([m.midasi for m in result[0].mrph_list]), '赤い')
-        self.assertEqual(''.join([m.midasi for m in result[1].mrph_list]), '花が')
-        self.assertEqual(''.join([m.midasi for m in result[2].mrph_list]), '咲いた。')
+        self.assertEqual(''.join([mrph.midasi for mrph in result[0].mrph_list]), '赤い')
+        self.assertEqual(''.join([mrph.midasi for mrph in result[1].mrph_list]), '花が')
+        self.assertEqual(''.join([mrph.midasi for mrph in result[2].mrph_list]), '咲いた。')
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,19 +1,19 @@
 #-*- encoding: utf-8 -*-
 
+import re
 import shlex
-import sys
 import unittest
 
-class Morpheme:
-    def __init__(self, spec, id=""):
-        self.id = id
+class Morpheme(object):
+    def __init__(self, spec, mrph_id=""):
+        self.mrph_id = mrph_id
         self.doukei = []
         parts = shlex.split(spec)
         self.midasi = ''
         self.yomi = ''
         self.genkei = ''
         self.hinsi = ''
-        self.hinsi_id = 0 
+        self.hinsi_id = 0
         self.bunrui = ''
         self.bunrui_id = 0
         self.katuyou1 = ''
@@ -36,7 +36,7 @@ class Morpheme:
             self.katuyou2_id = int(parts[10])
             self.imis = parts[11]
             self.fstring = parts[12]
-        except:
+        except IndexError:
             pass
     def push_imis(self, imis):
         if self.imis == 'NIL':
@@ -54,8 +54,8 @@ class Morpheme:
             imis = '"%s"' % imis
         spec = "%s %s %s %s %s %s %s %s %s %s %s %s %s" % \
                 (self.midasi, self.yomi, self.genkei, self.hinsi, self.hinsi_id,
-                self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id,
-                self.katuyou2, self.katuyou2_id, imis, self.fstring)
+                 self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id,
+                 self.katuyou2, self.katuyou2_id, imis, self.fstring)
         return "%s\n" % spec.strip()
 
 class MorphemeTest(unittest.TestCase):

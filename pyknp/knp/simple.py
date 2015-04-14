@@ -2,7 +2,7 @@
 
 from pyknp import KNP
 
-knp = KNP()
+my_knp = KNP()
 
 def knp(input_str):
-    return knp.parse(input_str)
+    return my_knp.parse(input_str)

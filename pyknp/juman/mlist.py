@@ -3,18 +3,18 @@
 from pyknp import Morpheme
 import unittest
 
-class MList:
+class MList(object):
     def __init__(self, mrphs=[]):
         self._mrph = []
         for mrph in mrphs:
             self._mrph.append(mrph)
-        self._MLIST_READONLY = False
+        self._readonly = False
     def push_mrph(self, mrph):
-        if self._MLIST_READONLY:
+        if self._readonly:
             return
         self._mrph.append(mrph)
     def set_readonly(self):
-        self._MLIST_READONLY = True
+        self._readonly = True
     def spec(self):
         spec = ""
         for mrph in self._mrph:

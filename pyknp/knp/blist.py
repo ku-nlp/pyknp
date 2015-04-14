@@ -7,36 +7,36 @@ import re
 import sys
 import unittest
 
-class BList:
+class BList(object):
     def __init__(self, result_list=[], pattern='EOS'):
         self._bnst = []
-        self._BLIST_READONLY = False
+        self._readonly = False
         self.comment = ''
         self.pattern = pattern
         self.parse(result_list)
         self.set_parent_child()
-    def id(self):
+    def bnst_id(self):
         match = re.match(r'# S-ID:(.*?)[ $]', self.comment)
         return int(match.group(1))
-    def set_id(self, new_id):
-        self.comment = re.sub(r'# S-ID:(.*?)([ $].*)', r'# S-ID:%s\2' % new_id, self.comment)
-        return self.id()
+    def set_bnst_id(self, new_id):
+        self.comment = re.sub(r'# S-ID:(.*?)([ $].*)', r'# S-ID:%s\2' % new_id,
+                              self.comment)
+        return self.bnst_id()
     def parse(self, result_list):
-        mrph_parent_id = 0
-        mrph_dpndtype = 0
         for string in result_list:
             if string.startswith('#'):
                 self.comment = "%s%s" % (self.comment, string)
             elif re.match(self.pattern, string):
                 break
             elif string.startswith(';;'):
-                sys.stderr.write("Error: %s%s\n" % (self.error, string))
+                sys.stderr.write("Error: %s%s\n" % string)
                 quit(1)
             elif string.startswith('*'):
                 bnst = Bunsetsu(string, len(self._bnst))
                 self._bnst.append(bnst)
             elif string.startswith('+'):
-                self._bnst[-1].push_tag(Tag(string, len(self._bnst[-1].tag_list)))
+                self._bnst[-1].push_tag(
+                        Tag(string, len(self._bnst[-1].tag_list)))
             elif re.match(r'^- (-?\d+)(.+)$', string):
                 # TODO(john): what is this?
                 pass
@@ -58,7 +58,7 @@ class BList:
                 self._bnst[bnst.parent_id].child.append(bnst)
     def push_bnst(self, bnst):
         self._bnst.append(bnst)
-        self._bnst[bnst.parent].child.append(bnst.id)
+        self._bnst[bnst.parent].child.append(bnst.bnst_id)
     def tag_list(self):
         result = []
         for bnst in self._bnst:
@@ -74,8 +74,8 @@ class BList:
     def set_readonly(self):
         for bnst in self._bnst:
             bnst.set_readonly()
-        self._BLIST_READONLY = True
-    def spec(this):
+        self._readonly = True
+    def spec(self):
         return "%s%s" % (self.comment, ''.join(b.spec for b in self._bnst))
     def __getitem__(self, index):
         return self._bnst[index]
@@ -105,10 +105,11 @@ class BListTest(unittest.TestCase):
         self.assertEqual(len(blist), 3)
         self.assertEqual(len(blist.tag_list()), 4)
         self.assertEqual(len(blist.mrph_list()), 7)
-        self.assertEqual(''.join([m.midasi for m in blist.mrph_list()]), '構文解析の実例を示す。')
-        self.assertEqual(blist.id(), 123)
-        self.assertEqual(blist.set_id(234), 234)
-        self.assertEqual(blist.id(), 234);
+        self.assertEqual(''.join([mrph.midasi for mrph in blist.mrph_list()]),
+                         '構文解析の実例を示す。')
+        self.assertEqual(blist.bnst_id(), 123)
+        self.assertEqual(blist.set_bnst_id(234), 234)
+        self.assertEqual(blist.bnst_id(), 234)
 
 if __name__ == '__main__':
     unittest.main()

@@ -4,13 +4,12 @@ from pyknp import Morpheme
 from pyknp import MList
 from pyknp import Tag
 from pyknp import TList
-import os
 import re
 import sys
 import unittest
 
-class Bunsetsu:
-    def __init__(self, spec, id=0):
+class Bunsetsu(object):
+    def __init__(self, spec, bnst_id=0):
         self.mrph_list = MList()
         self.tag_list = TList()
         self.parent_id = -1
@@ -18,7 +17,7 @@ class Bunsetsu:
         self.child = []
         self.dpndtype = ''
         self.fstring = ''
-        self.id = id
+        self.bnst_id = bnst_id
         spec = spec.strip()
         if spec == '*':
             pass
@@ -38,45 +37,57 @@ class Bunsetsu:
         if len(self.tag_list) == 0 and len(self.mrph_list) > 0:
             sys.stderr.write("Unsafe addition of tags!\n")
             quit(1)
-        self.tag_list.push_tag(tag);
+        self.tag_list.push_tag(tag)
     def spec(self):
-        return "* %d%s %s\n%s" % (self.parent_id, self.dpndtype, self.fstring, self.tag_list.spec())
+        return "* %d%s %s\n%s" % (self.parent_id, self.dpndtype,
+                                  self.fstring, self.tag_list.spec())
 
 class BunsetsuTest(unittest.TestCase):
     def setUp(self):
-        self.bunsetsu_str = "* -1D <BGH:解析/かいせき><文頭><文末><サ変><体言><用言:判><体言止><レベル:C>"
-        self.tag1_str = "+ 1D <BGH:構文/こうぶん><文節内><係:文節内><文頭><体言><名詞項候補><先行詞候補><正規化代表表記:構文/こうぶん>"
-        self.mrph1_str = "構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 \"代表表記:構文/こうぶん カテゴリ:抽象物\" <代表表記:構文/こうぶん>"
-        self.tag2_str = "+ -1D <BGH:解析/かいせき><文末><体言><用言:判><体言止><レベル:C>"
-        self.mrph2_str = "解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 \"代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;科学・技術\" <代表表記:解析/かいせき>"
-        self.spec = "%s\n%s\n%s\n%s\n%s\n" % (self.bunsetsu_str, self.tag1_str, self.mrph1_str, self.tag2_str, self.mrph2_str)
+        self.bunsetsu_str = "* -1D <BGH:解析/かいせき><文頭><文末>" \
+                "<サ変><体言><用言:判><体言止><レベル:C>"
+        self.tag1_str = "+ 1D <BGH:構文/こうぶん><文節内><係:文節内>" \
+                "<文頭><体言><名詞項候補><先行詞候補>" \
+                "<正規化代表表記:構文/こうぶん>"
+        self.mrph1_str = "構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 \"" \
+                "代表表記:構文/こうぶん カテゴリ:抽象物\" " \
+                "<代表表記:構文/こうぶん>"
+        self.tag2_str = "+ -1D <BGH:解析/かいせき><文末><体言>" \
+                "<用言:判><体言止><レベル:C>"
+        self.mrph2_str = "解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 \"" \
+                "代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;" \
+                "科学・技術\" <代表表記:解析/かいせき>"
+        self.spec = "%s\n%s\n%s\n%s\n%s\n" % (self.bunsetsu_str, self.tag1_str,
+                                              self.mrph1_str, self.tag2_str,
+                                              self.mrph2_str)
     def test_simple(self):
-        b = Bunsetsu(self.bunsetsu_str, 3)
-        self.assertEqual(b.id, 3)
-        self.assertEqual(b.parent_id, -1)
-        self.assertEqual(b.dpndtype, "D")
-        self.assertEqual(len(b.mrph_list), 0)
-        self.assertEqual(len(b.tag_list), 0)
+        bnst = Bunsetsu(self.bunsetsu_str, 3)
+        self.assertEqual(bnst.bnst_id, 3)
+        self.assertEqual(bnst.parent_id, -1)
+        self.assertEqual(bnst.dpndtype, "D")
+        self.assertEqual(len(bnst.mrph_list), 0)
+        self.assertEqual(len(bnst.tag_list), 0)
     def test_mrph(self):
-        b = Bunsetsu(self.bunsetsu_str)
-        m1 = Morpheme(self.mrph1_str)
-        b.push_mrph(m1)
-        self.assertEqual(len(b.mrph_list), 1)
-        m2 = Morpheme(self.mrph2_str)
-        b.push_mrph(m2)
-        self.assertEqual(len(b.mrph_list), 2)
-        self.assertEqual(''.join(x.midasi for x in b.mrph_list), '構文解析')
+        bnst = Bunsetsu(self.bunsetsu_str)
+        mrph1 = Morpheme(self.mrph1_str)
+        bnst.push_mrph(mrph1)
+        self.assertEqual(len(bnst.mrph_list), 1)
+        mrph2 = Morpheme(self.mrph2_str)
+        bnst.push_mrph(mrph2)
+        self.assertEqual(len(bnst.mrph_list), 2)
+        self.assertEqual(''.join(mrph.midasi for mrph in bnst.mrph_list),
+                         '構文解析')
     def test_spec(self):
-        b = Bunsetsu(self.bunsetsu_str)
-        t1 = Tag(self.tag1_str)
-        m1 = Morpheme(self.mrph1_str)
-        t1.push_mrph(m1)
-        b.push_tag(t1)
-        t2 = Tag(self.tag2_str)
-        m2 = Morpheme(self.mrph2_str)
-        t2.push_mrph(m2)
-        b.push_tag(t2)
-        self.assertEqual(b.spec(), self.spec)
+        bnst = Bunsetsu(self.bunsetsu_str)
+        tag1 = Tag(self.tag1_str)
+        mrph1 = Morpheme(self.mrph1_str)
+        tag1.push_mrph(mrph1)
+        bnst.push_tag(tag1)
+        tag2 = Tag(self.tag2_str)
+        mrph2 = Morpheme(self.mrph2_str)
+        tag2.push_mrph(mrph2)
+        bnst.push_tag(tag2)
+        self.assertEqual(bnst.spec(), self.spec)
 
 if __name__ == '__main__':
     unittest.main()

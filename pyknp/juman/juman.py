@@ -6,12 +6,11 @@ import os
 import re
 import socket
 import subprocess
-import sys
 import unittest
 
 VERSION = '0.5.7'
 
-class Socket:
+class Socket(object):
     def __init__(self, hostname, port):
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -34,25 +33,26 @@ class Socket:
             recv = "%s%s" % (recv, data)
         return recv
 
-class Subprocess:
+class Subprocess(object):
     def __init__(self, command):
         subproc_args = {'stdin': subprocess.PIPE, 'stdout': subprocess.PIPE,
-                'stderr': subprocess.STDOUT, 'cwd': '.', 'close_fds' : True}
+                        'stderr': subprocess.STDOUT, 'cwd': '.', 'close_fds' : True}
         try:
             env = os.environ.copy()
-            self.p = subprocess.Popen('bash -c "%s"' % command, env=env, shell=True, **subproc_args)
+            self.process = subprocess.Popen('bash -c "%s"' % command, env=env,
+                                      shell=True, **subproc_args)
         except OSError:
-            raise 
-        (self.stdouterr, self.stdin) = (self.p.stdout, self.p.stdin)
+            raise
+        (self.stdouterr, self.stdin) = (self.process.stdout, self.process.stdin)
     def __del__(self):
         self.p.stdin.close()
         try:
-            self.p.kill()
-            self.p.wait()
+            self.process.kill()
+            self.process.wait()
         except OSError:
             pass
     def query(self, sentence, pattern):
-        self.p.stdin.write("%s\n" % sentence)
+        self.process.stdin.write("%s\n" % sentence)
         result = []
         while True:
             line = self.stdouterr.readline()[:-1]
@@ -61,15 +61,16 @@ class Subprocess:
             result.append(line)
         return result
 
-class Juman:
+class Juman(object):
     def __init__(self, command='juman', server='', port=32000, timeout=30,
-            option='-e2 -B', rcfile='~/.jumanrc', ignorepattern='', pattern=r'EOS'):
+                 option='-e2 -B', rcfile='~/.jumanrc', ignorepattern='',
+                 pattern=r'EOS'):
         self.command = command
         self.server = server
         self.port = port
         self.timeout = timeout
         self.option = option
-        self.rcfile = rcfile 
+        self.rcfile = rcfile
         self.ignorepattern = ignorepattern
         self.pattern = pattern
         self.socket = None
@@ -94,23 +95,23 @@ class Juman:
 
 class JumanTest(unittest.TestCase):
     def setUp(self):
-        #self.juman = Juman(server='localhost') 
-        self.juman = Juman() 
+        #self.juman = Juman(server='localhost')
+        self.juman = Juman()
     def test_normal(self):
         test_str = "この文を解析してください。"
         result = self.juman.analysis(test_str)
-        self.assertEqual(len(result.mrph), 7)
-        self.assertEqual(''.join(x.midasi for x in result.mrph), test_str)
+        self.assertEqual(len(result), 7)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
         self.assertGreaterEqual(len(result.spec().split("\n")), 7)
     #def test_space(self):
         #result = self.juman.analysis("「 」を含む文")
         #self.assertEqual(result.mrph[1].midasi, ' ')
     def test_backslash(self):
         result = self.juman.analysis("「\」を含む文")
-        self.assertEqual(result.mrph[1].midasi, '\\')
+        self.assertEqual(result[1].midasi, '\\')
     def test_at(self):
         result = self.juman.analysis("「@」を含む文")
-        self.assertEqual(result.mrph[1].midasi, '@')
+        self.assertEqual(result[1].midasi, '@')
 
 if __name__ == '__main__':
     unittest.main()
