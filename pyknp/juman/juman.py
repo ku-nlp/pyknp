@@ -31,7 +31,7 @@ class Socket(object):
         while not re.search(pattern, recv):
             data = self.sock.recv(1024)
             recv = "%s%s" % (recv, data)
-        return recv
+        return recv.strip().split('\n')
 
 class Subprocess(object):
     def __init__(self, command):
