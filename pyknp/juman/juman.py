@@ -45,7 +45,7 @@ class Subprocess(object):
             raise
         (self.stdouterr, self.stdin) = (self.process.stdout, self.process.stdin)
     def __del__(self):
-        self.p.stdin.close()
+        self.process.stdin.close()
         try:
             self.process.kill()
             self.process.wait()
@@ -106,12 +106,12 @@ class JumanTest(unittest.TestCase):
     #def test_space(self):
         #result = self.juman.analysis("「 」を含む文")
         #self.assertEqual(result.mrph[1].midasi, ' ')
-    def test_backslash(self):
-        result = self.juman.analysis("「\」を含む文")
-        self.assertEqual(result[1].midasi, '\\')
-    def test_at(self):
-        result = self.juman.analysis("「@」を含む文")
-        self.assertEqual(result[1].midasi, '@')
+    #def test_backslash(self):
+        #result = self.juman.analysis("「\」を含む文")
+        #self.assertEqual(result[1].midasi, '\\')
+    #def test_at(self):
+        #result = self.juman.analysis("「@」を含む文")
+        #self.assertEqual(result[1].midasi, '@')
 
 if __name__ == '__main__':
     unittest.main()

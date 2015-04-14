@@ -99,12 +99,7 @@ class MorphemeTest(unittest.TestCase):
         self.assertEqual(mrph.katuyou2_id, 0)
         self.assertEqual(mrph.imis, 'NIL')
         self.assertEqual(mrph.fstring, '<漢字><かな漢字><自立><←複合><名詞相当語>')
-        self.assertEqual(mrph.feature, 5)
         self.assertEqual(mrph.spec(), spec)
-        self.assertEqual(mrph.push_feature('TEST') == 6)
-        #self.assertEqual(mrph.fstring =~ /<TEST>/)
-        self.assertEqual(mrph.fstring, '<TEST>')
-        self.assertEqual(mrph.feature, 0)
 
 if __name__ == '__main__':
     unittest.main()
