@@ -1,7 +1,7 @@
 #-*- encoding: utf-8 -*-
 
+from pyknp import Morpheme
 import unittest
-from morpheme import Morpheme
 
 class MList:
     def __init__(self, mrphs=[]):

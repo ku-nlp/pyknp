@@ -1,6 +1,6 @@
 #-*- encoding: utf-8 -*-
 
-from knp import KNP
+from pyknp import KNP
 
 knp = KNP()
 

@@ -1,8 +1,7 @@
 #-*- encoding: utf-8 -*-
 
-from mlist import MList
-from morpheme import Morpheme
-
+from pyknp import MList
+from pyknp import Morpheme
 import re
 import unittest
 
@@ -18,11 +17,11 @@ def Result(result, pattern=r'^EOS$'):
         if re.search(pattern, line):
             break
         elif line.startswith("@ @ @"):
-            mrphs.push_mrph(Morpheme(line, len(mrphs.mrph)))
+            mrphs.push_mrph(Morpheme(line, len(mrphs)))
         elif line.startswith("@"):
-            mrphs.mrph[-1].push_doukei(Morpheme(line, len(mrphs.mrph)))
+            mrphs.mrph[-1].push_doukei(Morpheme(line, len(mrphs)))
         else:
-            mrphs.push_mrph(Morpheme(line, len(mrphs.mrph)))
+            mrphs.push_mrph(Morpheme(line, len(mrphs)))
     mrphs.set_readonly()
     return mrphs
 

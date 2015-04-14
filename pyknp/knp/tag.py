@@ -1,7 +1,7 @@
 #-*- encoding: utf-8 -*-
 
-from mlist import MList
-from morpheme import Morpheme
+from pyknp import MList
+from pyknp import Morpheme
 import re
 import sys
 import unittest

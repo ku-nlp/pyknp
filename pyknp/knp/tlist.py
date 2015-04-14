@@ -1,8 +1,8 @@
 #-*- encoding: utf-8 -*-
 
-from mlist import MList
-from morpheme import Morpheme
-from tag import Tag
+from pyknp import MList
+from pyknp import Morpheme
+from pyknp import Tag
 import sys
 import unittest
 

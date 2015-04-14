@@ -1,8 +1,8 @@
 #-*- encoding: utf-8 -*-
 
-from bunsetsu import Bunsetsu
-from morpheme import Morpheme
-from tag import Tag
+from pyknp import Bunsetsu
+from pyknp import Morpheme
+from pyknp import Tag
 import re
 import sys
 import unittest

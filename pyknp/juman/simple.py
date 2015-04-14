@@ -1,6 +1,6 @@
 #-*- encoding: utf-8 -*-
 
-from juman import Juman
+from pyknp import Juman
 import unittest
 
 JUMAN = Juman()

@@ -1,8 +1,8 @@
 #-*- encoding: utf-8 -*-
 
-from juman import Juman
-from juman import Socket, Subprocess  # TODO(john): move to separate file
-from blist import BList
+from pyknp import Juman
+from pyknp import Socket, Subprocess  # TODO(john): move to separate file
+from pyknp import BList
 import unittest
 
 VERSION = '0.4.9'

@@ -1,9 +1,9 @@
 #-*- encoding: utf-8 -*-
 
-from morpheme import Morpheme
-from mlist import MList
-from tag import Tag
-from tlist import TList
+from pyknp import Morpheme
+from pyknp import MList
+from pyknp import Tag
+from pyknp import TList
 import os
 import re
 import sys

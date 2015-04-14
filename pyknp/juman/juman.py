@@ -1,6 +1,6 @@
 #-*- encoding: utf-8 -*-
 
-from result import Result
+from pyknp import Result
 import os
 import re
 import socket
