@@ -27,7 +27,7 @@ binaries juman/knp found in the PATH environment variable. Specifying
 server=HOSTNAME and port=NUMBER in the constructor will switch to server mode,
 where JUMAN/KNP is queried as a server run using the -S option.
 
-The methods knp.analysis('sentence') and juman.parse('sentence') return a list
+The methods juman.analysis('sentence') and knp.parse('sentence') return a list
 of morphemes (MList) and bunsetsu (BList) respectively, containing Morpheme and
 Bunsetsu objects.
 
