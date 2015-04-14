@@ -1,6 +1,7 @@
 #-*- encoding: utf-8 -*-
 
-from pyknp import Result
+from pyknp import MList
+from pyknp import Morpheme
 import os
 import re
 import socket
@@ -84,7 +85,10 @@ class Juman:
             return self.socket.query(input_str, pattern=self.pattern)
         return self.subprocess.query(input_str, pattern=self.pattern)
     def juman(self, input_str):
-        return Result(result=self.juman_lines(input_str), pattern=self.pattern)
+        result = MList()
+        for line in self.juman_lines(input_str):
+            result.push_mrph(Morpheme(line))
+        return result
     def analysis(self, input_str):
         return self.juman(input_str)
 

@@ -1,6 +1,5 @@
 from juman.morpheme import Morpheme
 from juman.mlist import MList
-from juman.result import Result
 from juman.juman import Juman, Socket, Subprocess
 from knp.tag import Tag
 from knp.tlist import TList

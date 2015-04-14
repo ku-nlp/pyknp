@@ -22,6 +22,6 @@ setup(
     author_email = __email__,
     description = 'Python module for JUMAN/KNP.',
     license = __license__,
-    url = 'https://bitbucket.org/ku_nlp/knp',
+    url = 'https://bitbucket.org/ku_nlp/pyknp',
     packages = find_packages(),
 )
