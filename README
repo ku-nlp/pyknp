@@ -45,6 +45,10 @@ Tags contain the following:
     mrph_list (list of Morphemes), parent_id, dpndtype, fstring (feature
     string), tag_id (= id in Perl module)
 
+Note that the pyknp module expects all input/output to be in Unicode, not any
+encoding such as UTF-8. Queries are sent to JUMAN/KNP after converting
+internally to UTF-8.
+
 --------------------------------------------------------------------------------
 EXAMPLE
 --------------------------------------------------------------------------------
@@ -57,11 +61,11 @@ from pyknp import KNP
 
 # Use KNP in subprocess mode
 knp = KNP()
-result = knp.parse("赤い花が咲いた。")
+result = knp.parse(u"赤い花が咲いた。")
 print ','.join(mrph.midasi for mrph in result.mrph_list())
 
 # Use JUMAN in server mode
 juman = Juman(server='localhost', port=12345)
-result = juman.analysis("これはペンです。")
+result = juman.analysis(u"これはペンです。")
 print ','.join(mrph.genkei for mrph in result)
 ~~~~
