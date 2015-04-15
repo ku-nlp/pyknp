@@ -10,7 +10,7 @@ def juman(input_str):
 
 class SimpleTest(unittest.TestCase):
     def test(self):
-        test_str = "この文を解析してください。"
+        test_str = u"この文を解析してください。"
         result = juman(test_str)
         self.assertEqual(len(result), 7)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)

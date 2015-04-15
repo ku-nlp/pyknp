@@ -32,14 +32,14 @@ class MList(object):
 class MListTest(unittest.TestCase):
     def setUp(self):
         self.mlist = MList()
-        self.mlist.push_mrph(Morpheme("構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0\n"))
-        self.mlist.push_mrph(Morpheme("解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0\n"))
+        self.mlist.push_mrph(Morpheme(u"構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0\n"))
+        self.mlist.push_mrph(Morpheme(u"解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0\n"))
     def test_mrph(self):
         self.assertEqual(len(self.mlist), 2)
-        self.assertEqual(self.mlist[0].midasi, '構文')
-        self.assertEqual(self.mlist[-1].midasi, '解析')
+        self.assertEqual(self.mlist[0].midasi, u'構文')
+        self.assertEqual(self.mlist[-1].midasi, u'解析')
     def test_mrph_list(self):
-        self.assertEqual(''.join([x.midasi for x in self.mlist]), '構文解析')
+        self.assertEqual(''.join([x.midasi for x in self.mlist]), u'構文解析')
 
 if __name__ == '__main__':
     unittest.main()

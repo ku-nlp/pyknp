@@ -8,7 +8,8 @@ class Morpheme(object):
     def __init__(self, spec, mrph_id=""):
         self.mrph_id = mrph_id
         self.doukei = []
-        parts = shlex.split(spec)
+        # shlex doesn't support unicode
+        parts = map(lambda s: s.decode('utf-8'), shlex.split(spec.encode('utf-8')))
         self.midasi = ''
         self.yomi = ''
         self.genkei = ''
@@ -60,45 +61,45 @@ class Morpheme(object):
 
 class MorphemeTest(unittest.TestCase):
     def test_simple(self):
-        spec = "であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18\n"
+        spec = u"であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18\n"
         mrph = Morpheme(spec)
-        self.assertEqual(mrph.midasi, 'であり')
-        self.assertEqual(mrph.yomi, 'であり')
-        self.assertEqual(mrph.genkei, 'だ')
-        self.assertEqual(mrph.hinsi, '判定詞')
+        self.assertEqual(mrph.midasi, u'であり')
+        self.assertEqual(mrph.yomi, u'であり')
+        self.assertEqual(mrph.genkei, u'だ')
+        self.assertEqual(mrph.hinsi, u'判定詞')
         self.assertEqual(mrph.hinsi_id, 4)
-        self.assertEqual(mrph.bunrui, '*')
+        self.assertEqual(mrph.bunrui, u'*')
         self.assertEqual(mrph.bunrui_id, 0)
-        self.assertEqual(mrph.katuyou1, '判定詞')
+        self.assertEqual(mrph.katuyou1, u'判定詞')
         self.assertEqual(mrph.katuyou1_id, 25)
-        self.assertEqual(mrph.katuyou2, 'デアル列基本連用形')
+        self.assertEqual(mrph.katuyou2, u'デアル列基本連用形')
         self.assertEqual(mrph.katuyou2_id, 18)
         self.assertEqual(mrph.spec(), spec)
     def test_nil(self):
-        spec = "であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18 NIL\n"
+        spec = u"であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18 NIL\n"
         mrph = Morpheme(spec)
         self.assertEqual(mrph.imis, "NIL")
         self.assertEqual(mrph.spec(), spec)
     def test_at(self):
-        spec = "@ @ @ 未定義語 15 その他 1 * 0 * 0"
+        spec = u"@ @ @ 未定義語 15 その他 1 * 0 * 0"
         mrph = Morpheme(spec)
-        self.assertEqual(mrph.midasi, '@')
+        self.assertEqual(mrph.midasi, u'@')
     def test_knp(self):
-        spec = "構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 NIL <漢字><かな漢字><自立><←複合><名詞相当語>\n"
+        spec = u"構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 NIL <漢字><かな漢字><自立><←複合><名詞相当語>\n"
         mrph = Morpheme(spec)
-        self.assertEqual(mrph.midasi, '構文')
-        self.assertEqual(mrph.yomi, 'こうぶん')
-        self.assertEqual(mrph.genkei, '構文')
-        self.assertEqual(mrph.hinsi, '名詞')
+        self.assertEqual(mrph.midasi, u'構文')
+        self.assertEqual(mrph.yomi, u'こうぶん')
+        self.assertEqual(mrph.genkei, u'構文')
+        self.assertEqual(mrph.hinsi, u'名詞')
         self.assertEqual(mrph.hinsi_id, 6)
-        self.assertEqual(mrph.bunrui, '普通名詞')
+        self.assertEqual(mrph.bunrui, u'普通名詞')
         self.assertEqual(mrph.bunrui_id, 1)
-        self.assertEqual(mrph.katuyou1, '*')
+        self.assertEqual(mrph.katuyou1, u'*')
         self.assertEqual(mrph.katuyou1_id, 0)
-        self.assertEqual(mrph.katuyou2, '*')
+        self.assertEqual(mrph.katuyou2, u'*')
         self.assertEqual(mrph.katuyou2_id, 0)
-        self.assertEqual(mrph.imis, 'NIL')
-        self.assertEqual(mrph.fstring, '<漢字><かな漢字><自立><←複合><名詞相当語>')
+        self.assertEqual(mrph.imis, u'NIL')
+        self.assertEqual(mrph.fstring, u'<漢字><かな漢字><自立><←複合><名詞相当語>')
         self.assertEqual(mrph.spec(), spec)
 
 if __name__ == '__main__':

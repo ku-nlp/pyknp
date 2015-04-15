@@ -25,13 +25,14 @@ class Socket(object):
         if self.sock:
             self.sock.close()
     def query(self, sentence, pattern):
-        self.sock.sendall("%s\n" % sentence.strip())
+        assert(isinstance(sentence, unicode))
+        self.sock.sendall("%s\n" % sentence.encode('utf-8').strip())
         data = self.sock.recv(1024)
         recv = data
         while not re.search(pattern, recv):
             data = self.sock.recv(1024)
             recv = "%s%s" % (recv, data)
-        return recv.strip().split('\n')
+        return recv.strip().decode('utf-8').split('\n')
 
 class Subprocess(object):
     def __init__(self, command):
@@ -52,13 +53,14 @@ class Subprocess(object):
         except OSError:
             pass
     def query(self, sentence, pattern):
-        self.process.stdin.write("%s\n" % sentence)
+        assert(isinstance(sentence, unicode))
+        self.process.stdin.write("%s\n" % sentence.encode('utf-8'))
         result = []
         while True:
             line = self.stdouterr.readline()[:-1]
             if re.search(pattern, line):
                 break
-            result.append(line)
+            result.append(line.decode('utf-8'))
         return result
 
 class Juman(object):
@@ -86,6 +88,7 @@ class Juman(object):
             return self.socket.query(input_str, pattern=self.pattern)
         return self.subprocess.query(input_str, pattern=self.pattern)
     def juman(self, input_str):
+        assert(isinstance(input_str, unicode))
         result = MList()
         for line in self.juman_lines(input_str):
             result.push_mrph(Morpheme(line))
@@ -98,7 +101,7 @@ class JumanTest(unittest.TestCase):
         #self.juman = Juman(server='localhost')
         self.juman = Juman()
     def test_normal(self):
-        test_str = "この文を解析してください。"
+        test_str = u"この文を解析してください。"
         result = self.juman.analysis(test_str)
         self.assertEqual(len(result), 7)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)

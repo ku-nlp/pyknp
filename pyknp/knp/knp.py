@@ -30,6 +30,7 @@ class KNP(object):
     def knp(self, sentence):
         self.parse(sentence)
     def parse(self, sentence):
+        assert(isinstance(sentence, unicode))
         juman_lines = self.juman.juman_lines(sentence)
         juman_str = "%s\n%s\n" % ('\n'.join(juman_lines), self.pattern)
         if self.socket:
@@ -48,7 +49,7 @@ class KNPTest(unittest.TestCase):
         #result = self.knp.parse("「\」を含む文")
         #self.assertEqual(result.mrph[1].midasi, '\\')
     def test_dpnd(self):
-        result = self.knp.parse("赤い花が咲いた。")
+        result = self.knp.parse(u"赤い花が咲いた。")
         self.assertEqual(len(result), 3)
         self.assertEqual(result[0].parent.bnst_id, 1)
         self.assertEqual(len(result[1].child), 1)
@@ -56,10 +57,10 @@ class KNPTest(unittest.TestCase):
         self.assertEqual(result[1].parent.bnst_id, 2)
         self.assertEqual(result[2].parent, None)
     def test_mrph(self):
-        result = self.knp.parse("赤い花が咲いた。")
-        self.assertEqual(''.join([mrph.midasi for mrph in result[0].mrph_list]), '赤い')
-        self.assertEqual(''.join([mrph.midasi for mrph in result[1].mrph_list]), '花が')
-        self.assertEqual(''.join([mrph.midasi for mrph in result[2].mrph_list]), '咲いた。')
+        result = self.knp.parse(u"赤い花が咲いた。")
+        self.assertEqual(''.join([mrph.midasi for mrph in result[0].mrph_list]), u'赤い')
+        self.assertEqual(''.join([mrph.midasi for mrph in result[1].mrph_list]), u'花が')
+        self.assertEqual(''.join([mrph.midasi for mrph in result[2].mrph_list]), u'咲いた。')
 
 if __name__ == '__main__':
     unittest.main()

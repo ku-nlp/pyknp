@@ -44,20 +44,20 @@ class Bunsetsu(object):
 
 class BunsetsuTest(unittest.TestCase):
     def setUp(self):
-        self.bunsetsu_str = "* -1D <BGH:解析/かいせき><文頭><文末>" \
-                "<サ変><体言><用言:判><体言止><レベル:C>"
-        self.tag1_str = "+ 1D <BGH:構文/こうぶん><文節内><係:文節内>" \
-                "<文頭><体言><名詞項候補><先行詞候補>" \
-                "<正規化代表表記:構文/こうぶん>"
-        self.mrph1_str = "構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 \"" \
-                "代表表記:構文/こうぶん カテゴリ:抽象物\" " \
-                "<代表表記:構文/こうぶん>"
-        self.tag2_str = "+ -1D <BGH:解析/かいせき><文末><体言>" \
-                "<用言:判><体言止><レベル:C>"
-        self.mrph2_str = "解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 \"" \
-                "代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;" \
-                "科学・技術\" <代表表記:解析/かいせき>"
-        self.spec = "%s\n%s\n%s\n%s\n%s\n" % (self.bunsetsu_str, self.tag1_str,
+        self.bunsetsu_str = u"* -1D <BGH:解析/かいせき><文頭><文末>" \
+                u"<サ変><体言><用言:判><体言止><レベル:C>"
+        self.tag1_str = u"+ 1D <BGH:構文/こうぶん><文節内><係:文節内>" \
+                u"<文頭><体言><名詞項候補><先行詞候補>" \
+                u"<正規化代表表記:構文/こうぶん>"
+        self.mrph1_str = u"構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 \"" \
+                u"代表表記:構文/こうぶん カテゴリ:抽象物\" " \
+                u"<代表表記:構文/こうぶん>"
+        self.tag2_str = u"+ -1D <BGH:解析/かいせき><文末><体言>" \
+                u"<用言:判><体言止><レベル:C>"
+        self.mrph2_str = u"解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 \"" \
+                u"代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;" \
+                u"科学・技術\" <代表表記:解析/かいせき>"
+        self.spec = u"%s\n%s\n%s\n%s\n%s\n" % (self.bunsetsu_str, self.tag1_str,
                                               self.mrph1_str, self.tag2_str,
                                               self.mrph2_str)
     def test_simple(self):
@@ -76,7 +76,7 @@ class BunsetsuTest(unittest.TestCase):
         bnst.push_mrph(mrph2)
         self.assertEqual(len(bnst.mrph_list), 2)
         self.assertEqual(''.join(mrph.midasi for mrph in bnst.mrph_list),
-                         '構文解析')
+                         u'構文解析')
     def test_spec(self):
         bnst = Bunsetsu(self.bunsetsu_str)
         tag1 = Tag(self.tag1_str)
