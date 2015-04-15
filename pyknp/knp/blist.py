@@ -71,6 +71,8 @@ class BList(object):
             for mrph in bnst.mrph_list:
                 result.append(mrph)
         return result
+    def bnst_list(self):
+        return self._bnst
     def set_readonly(self):
         for bnst in self._bnst:
             bnst.set_readonly()
