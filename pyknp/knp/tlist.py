@@ -30,6 +30,8 @@ class TList(object):
     def draw_tree_leaves(self):
         # TODO
         pass
+    def tag_list(self):
+        return self._tag
     def __getitem__(self, index):
         return self._tag[index]
     def __len__(self):

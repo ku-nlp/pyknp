@@ -22,6 +22,8 @@ class MList(object):
             for doukei in mrph.doukei:
                 spec = "%s@ %s" % (spec, doukei.spec())
         return spec
+    def mrph_list(self):
+        return self._mrph
     def __getitem__(self, index):
         return self._mrph[index]
     def __len__(self):
