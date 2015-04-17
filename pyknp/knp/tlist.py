@@ -28,7 +28,7 @@ class TList(object):
         if len(self._tag) > 0:
             self._tag[-1].synnodes[-1].synnode.append(synnode)
         else:
-            sys.stderr.write("Cannot push synnodes: no tags.")
+            sys.stderr.write("Cannot push synnode: no tags.")
             quit(1)
             
     def spec(self):
