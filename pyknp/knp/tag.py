@@ -13,6 +13,7 @@ class Tag(object):
         self.dpndtype = ''
         self.fstring = ''
         self.tag_id = tag_id
+        self.synnodes = []
         spec = spec.strip()
         if spec == '+':
             pass

@@ -18,6 +18,19 @@ class TList(object):
         else:
             sys.stderr.write("Cannot push mrph: no tags.")
             quit(1)
+    def push_synnodes(self, synnodes):
+        if len(self._tag) > 0:
+            self._tag[-1].synnodes.append(synnodes)
+        else:
+            sys.stderr.write("Cannot push synnodes: no tags.")
+            quit(1)
+    def push_synnode(self, synnode):
+        if len(self._tag) > 0:
+            self._tag[-1].synnodes[-1].synnode.append(synnode)
+        else:
+            sys.stderr.write("Cannot push synnodes: no tags.")
+            quit(1)
+            
     def spec(self):
         return ''.join([tag.spec() for tag in self._tag])
     def set_readonly(self):
