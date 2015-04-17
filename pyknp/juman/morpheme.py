@@ -49,6 +49,8 @@ class Morpheme(object):
         if match:
             return match.group(1)
         return ""
+    def push_doukei(self, mrph):
+        self.doukei.append(mrph)
     def spec(self):
         imis = self.imis
         if ' ' in imis:

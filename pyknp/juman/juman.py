@@ -91,7 +91,10 @@ class Juman(object):
         assert(isinstance(input_str, unicode))
         result = MList()
         for line in self.juman_lines(input_str):
-            result.push_mrph(Morpheme(line))
+            if line.startswith('@ '):
+                result[-1].push_doukei(Morpheme(line[2:]))
+            else:
+                result.push_mrph(Morpheme(line))
         return result
     def analysis(self, input_str):
         return self.juman(input_str)
