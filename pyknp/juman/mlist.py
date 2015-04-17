@@ -4,11 +4,17 @@ from pyknp import Morpheme
 import unittest
 
 class MList(object):
-    def __init__(self, mrphs=[]):
+    def __init__(self, spec=""):
         self._mrph = []
-        for mrph in mrphs:
-            self._mrph.append(mrph)
         self._readonly = False
+        if spec != "":
+            for line in spec.split("\n"):
+                if line.strip() == "":
+                    continue
+                if line.startswith('@ '):
+                    self._mrph[-1].push_doukei(Morpheme(line[2:]))
+                else:
+                    self.push_mrph(Morpheme(line))
     def push_mrph(self, mrph):
         if self._readonly:
             return

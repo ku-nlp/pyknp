@@ -32,7 +32,7 @@ class Socket(object):
         while not re.search(pattern, recv):
             data = self.sock.recv(1024)
             recv = "%s%s" % (recv, data)
-        return recv.strip().decode('utf-8').split('\n')
+        return recv.strip().decode('utf-8')
 
 class Subprocess(object):
     def __init__(self, command):
@@ -55,12 +55,12 @@ class Subprocess(object):
     def query(self, sentence, pattern):
         assert(isinstance(sentence, unicode))
         self.process.stdin.write("%s\n" % sentence.encode('utf-8'))
-        result = []
+        result = ""
         while True:
             line = self.stdouterr.readline()[:-1]
             if re.search(pattern, line):
                 break
-            result.append(line.decode('utf-8'))
+            result = "%s%s\n" % (result, line.decode('utf-8'))
         return result
 
 class Juman(object):
@@ -89,12 +89,7 @@ class Juman(object):
         return self.subprocess.query(input_str, pattern=self.pattern)
     def juman(self, input_str):
         assert(isinstance(input_str, unicode))
-        result = MList()
-        for line in self.juman_lines(input_str):
-            if line.startswith('@ '):
-                result[-1].push_doukei(Morpheme(line[2:]))
-            else:
-                result.push_mrph(Morpheme(line))
+        result = MList(self.juman_lines(input_str))
         return result
     def analysis(self, input_str):
         return self.juman(input_str)

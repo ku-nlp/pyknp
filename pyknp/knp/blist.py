@@ -8,12 +8,12 @@ import sys
 import unittest
 
 class BList(object):
-    def __init__(self, result_list=[], pattern='EOS'):
+    def __init__(self, spec='', pattern='EOS'):
         self._bnst = []
         self._readonly = False
         self.comment = ''
         self.pattern = pattern
-        self.parse(result_list)
+        self.parse(spec)
         self.set_parent_child()
     def bnst_id(self):
         match = re.match(r'# S-ID:(.*?)[ $]', self.comment)
@@ -22,14 +22,16 @@ class BList(object):
         self.comment = re.sub(r'# S-ID:(.*?)([ $].*)', r'# S-ID:%s\2' % new_id,
                               self.comment)
         return self.bnst_id()
-    def parse(self, result_list):
-        for string in result_list:
+    def parse(self, spec):
+        for string in spec.split('\n'):
+            if string.strip() == "":
+                continue
             if string.startswith('#'):
                 self.comment = "%s%s" % (self.comment, string)
             elif re.match(self.pattern, string):
                 break
             elif string.startswith(';;'):
-                sys.stderr.write("Error: %s%s\n" % string)
+                sys.stderr.write("Error: %s\n" % string)
                 quit(1)
             elif string.startswith('*'):
                 bnst = Bunsetsu(string, len(self._bnst))
@@ -103,7 +105,7 @@ class BListTest(unittest.TestCase):
                 u"。 。 。 特殊 1 句点 1 * 0 * 0 NIL <英記号><記号><文末><付属>\n" \
                 u"EOS"
     def test(self):
-        blist = BList(self.result.split('\n'))
+        blist = BList(self.result)
         self.assertEqual(len(blist), 3)
         self.assertEqual(len(blist.tag_list()), 4)
         self.assertEqual(len(blist.mrph_list()), 7)
