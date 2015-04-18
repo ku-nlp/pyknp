@@ -74,5 +74,7 @@ data = ""
 with open("result.juman") as file_in:
     for line in file_in:
         data += line.decode('utf-8')
-        result = juman.result(data)
-        print ','.join(mrph.genkei for mrph in result)
+        if line.strip() == "EOS":
+            result = juman.result(data)
+            print ",".join(mrph.genkei for mrph in result)
+            data = ""
