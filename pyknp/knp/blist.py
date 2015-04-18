@@ -3,6 +3,7 @@
 from pyknp import Bunsetsu
 from pyknp import Morpheme
 from pyknp import Tag
+from pyknp import SynNodes, SynNode
 import re
 import sys
 import unittest
@@ -43,11 +44,11 @@ class BList(object):
                 # TODO(john): what is this?
                 pass
             elif string.startswith('!!'):
-                # TODO(shibata): SynNodes
-                pass
+                synnodes = SynNodes(string)
+                self._bnst[-1].tag_list.push_synnodes(synnodes)
             elif string.startswith('!'):
-                # TODO(shibata): SynNodes
-                pass
+                synnode = SynNode(string)
+                self._bnst[-1].tag_list.push_synnode(synnode)
             else:
                 mrph = Morpheme(string, len(self._bnst[-1].mrph_list))
                 self._bnst[-1].push_mrph(mrph)
