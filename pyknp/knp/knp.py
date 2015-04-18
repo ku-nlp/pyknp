@@ -32,7 +32,7 @@ class KNP(object):
     def parse(self, sentence):
         assert(isinstance(sentence, unicode))
         juman_lines = self.juman.juman_lines(sentence)
-        juman_str = "%s%s\n" % (juman_lines, self.pattern)
+        juman_str = "%s%s" % (juman_lines, self.pattern)
         if self.socket:
             knp_lines = self.socket.query(juman_str, pattern=self.pattern)
         else:
