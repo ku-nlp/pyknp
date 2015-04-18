@@ -38,6 +38,8 @@ class KNP(object):
         else:
             knp_lines = self.subprocess.query(juman_str, pattern=self.pattern)
         return BList(knp_lines, self.pattern)
+    def result(self, input_str):
+        return BList(input_str, self.pattern)
 
 class KNPTest(unittest.TestCase):
     def setUp(self):

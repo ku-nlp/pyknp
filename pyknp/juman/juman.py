@@ -93,6 +93,8 @@ class Juman(object):
         return result
     def analysis(self, input_str):
         return self.juman(input_str)
+    def result(self, input_str):
+        return MList(input_str)
 
 class JumanTest(unittest.TestCase):
     def setUp(self):
