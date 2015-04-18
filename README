@@ -29,7 +29,8 @@ where JUMAN/KNP is queried as a server run using the -S option.
 
 The methods juman.analysis('sentence') and knp.parse('sentence') return a list
 of morphemes (MList) and bunsetsu (BList) respectively, containing Morpheme and
-Bunsetsu objects.
+Bunsetsu objects. To read already parsed data from a file, use
+juman.result('data') or knp.result('data').
 
 Morphemes contain the following:
     mrph_id (= id in Perl module), midasi, yomi, genkei, hinsi, hinsi_id,
@@ -53,7 +54,6 @@ internally to UTF-8.
 EXAMPLE
 --------------------------------------------------------------------------------
 
-~~~~
 #-*- encoding: utf-8 -*-
 
 from pyknp import Juman
@@ -68,4 +68,11 @@ print ','.join(mrph.midasi for mrph in result.mrph_list())
 juman = Juman(server='localhost', port=12345)
 result = juman.analysis(u"これはペンです。")
 print ','.join(mrph.genkei for mrph in result)
-~~~~
+
+# Read from file
+data = ""
+with open("result.juman") as file_in:
+    for line in file_in:
+        data += line.decode('utf-8')
+        result = juman.result(data)
+        print ','.join(mrph.genkei for mrph in result)
