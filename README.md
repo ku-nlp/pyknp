@@ -1,21 +1,14 @@
-================================================================================
-pyknp: Python Module for KNP/JUMAN
-Version 0.1
-================================================================================
+# pyknp: Python Module for KNP/JUMAN Version 0.1
 
 - Written by John Richardson
 - Kurohashi-Kawahara Lab, Kyoto University
 - john@nlp.ist.i.kyoto-u.ac.jp
 
---------------------------------------------------------------------------------
-INSTALLATION
---------------------------------------------------------------------------------
+## INSTALLATION
 
 python setup.py install [--prefix=path]
 
---------------------------------------------------------------------------------
-USAGE
---------------------------------------------------------------------------------
+## USAGE
 
 The usage of pyknp is designed to be as similar as possible to the official
 Perl module. Please check the code and the Perl module documentation for further
@@ -50,9 +43,7 @@ Note that the pyknp module expects all input/output to be in Unicode, not any
 encoding such as UTF-8. Queries are sent to JUMAN/KNP after converting
 internally to UTF-8.
 
---------------------------------------------------------------------------------
-EXAMPLE
---------------------------------------------------------------------------------
+## EXAMPLE
 
 #-*- encoding: utf-8 -*-
 
