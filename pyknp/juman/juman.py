@@ -64,6 +64,9 @@ class Subprocess(object):
         return result
 
 class Juman(object):
+    """
+    形態素解析器 JUMAN を Perl から利用するためのモジュールである．
+    """
     def __init__(self, command='juman', server='', port=32000, timeout=30,
                  option='-e2 -B', rcfile='~/.jumanrc', ignorepattern='',
                  pattern=r'EOS'):
@@ -93,6 +96,9 @@ class Juman(object):
         result = MList(self.juman_lines(input_str))
         return result
     def analysis(self, input_str):
+        """
+        指定された文字列 input_str を形態素解析し，その結果を MList オブジェクトとして返す．
+        """ 
         return self.juman(input_str)
     def result(self, input_str):
         return MList(input_str)

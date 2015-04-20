@@ -9,6 +9,9 @@ import sys
 import unittest
 
 class BList(object):
+    """
+    文節列を保持するオブジェクト．
+    """
     def __init__(self, spec='', pattern='EOS'):
         self._bnst = []
         self._readonly = False
@@ -39,7 +42,7 @@ class BList(object):
                 self._bnst.append(bnst)
             elif string.startswith('+'):
                 self._bnst[-1].push_tag(
-                        Tag(string, len(self._bnst[-1].tag_list)))
+                        Tag(string, len(self.tag_list())))
             elif re.match(r'^- (-?\d+)(.+)$', string):
                 # TODO(john): what is this?
                 pass
@@ -50,7 +53,7 @@ class BList(object):
                 synnode = SynNode(string)
                 self._bnst[-1].tag_list.push_synnode(synnode)
             else:
-                mrph = Morpheme(string, len(self._bnst[-1].mrph_list))
+                mrph = Morpheme(string, len(self.mrph_list()))
                 self._bnst[-1].push_mrph(mrph)
     def set_parent_child(self):
         for bnst in self._bnst:

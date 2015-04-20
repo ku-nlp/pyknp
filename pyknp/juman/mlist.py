@@ -4,6 +4,9 @@ from pyknp import Morpheme
 import unittest
 
 class MList(object):
+    """
+    形態素列を保持するオブジェクト．
+    """
     def __init__(self, spec=""):
         self._mrph = []
         self._readonly = False
@@ -25,6 +28,9 @@ class MList(object):
     def set_readonly(self):
         self._readonly = True
     def spec(self):
+        """
+        形態素列の全文字列を返す．Juman による出力と同じ形式の結果が得られる．
+        """
         spec = ""
         for mrph in self._mrph:
             spec = "%s%s" % (spec, mrph.spec())
@@ -32,6 +38,9 @@ class MList(object):
                 spec = "%s@ %s" % (spec, doukei.spec())
         return spec
     def mrph_list(self):
+        """
+        全ての形態素のリストを返す．
+        """
         return self._mrph
     def __getitem__(self, index):
         return self._mrph[index]
