@@ -45,27 +45,27 @@ internally to UTF-8.
 
 ## EXAMPLE
 
-#-*- encoding: utf-8 -*-
-
-from pyknp import Juman
-from pyknp import KNP
-
-# Use KNP in subprocess mode
-knp = KNP()
-result = knp.parse(u"赤い花が咲いた。")
-print ','.join(mrph.midasi for mrph in result.mrph_list())
-
-# Use JUMAN in server mode
-juman = Juman(server='localhost', port=12345)
-result = juman.analysis(u"これはペンです。")
-print ','.join(mrph.genkei for mrph in result)
-
-# Read from file
-data = ""
-with open("result.juman") as file_in:
-    for line in file_in:
-        data += line.decode('utf-8')
-        if line.strip() == "EOS":
-            result = juman.result(data)
-            print ",".join(mrph.genkei for mrph in result)
-            data = ""
+    #-*- encoding: utf-8 -*-
+    
+    from pyknp import Juman
+    from pyknp import KNP
+    
+    # Use KNP in subprocess mode
+    knp = KNP()
+    result = knp.parse(u"赤い花が咲いた。")
+    print ','.join(mrph.midasi for mrph in result.mrph_list())
+    
+    # Use JUMAN in server mode
+    juman = Juman(server='localhost', port=12345)
+    result = juman.analysis(u"これはペンです。")
+    print ','.join(mrph.genkei for mrph in result)
+    
+    # Read from file
+    data = ""
+    with open("result.juman") as file_in:
+        for line in file_in:
+            data += line.decode('utf-8')
+            if line.strip() == "EOS":
+                result = juman.result(data)
+                print ",".join(mrph.genkei for mrph in result)
+                data = ""
