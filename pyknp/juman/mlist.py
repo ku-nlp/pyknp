@@ -7,11 +7,14 @@ class MList(object):
     def __init__(self, spec=""):
         self._mrph = []
         self._readonly = False
+        self.comment = ""
         if spec != "":
             for line in spec.split("\n"):
                 if line.strip() == "":
                     continue
-                if line.startswith('@ '):
+                elif line.startswith('#'):
+                    self.comment += line
+                elif line.startswith('@'):
                     self._mrph[-1].push_doukei(Morpheme(line[2:]))
                 else:
                     self.push_mrph(Morpheme(line))

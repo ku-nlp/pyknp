@@ -45,7 +45,7 @@ class Morpheme(object):
         else:
             self.imis = '%s%s"' % (self.imis[:-1], ' '.join(' ', imis))
     def repname(self):
-        match = re.match(r"代表表記:([^\"\s]+)", self.imis)
+        match = re.match(ur"代表表記:([^\"\s]+)", self.imis)
         if match:
             return match.group(1)
         return ""
