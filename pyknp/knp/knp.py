@@ -19,10 +19,6 @@ class KNP(object):
         self.pattern = pattern
         self.socket = None
         self.subprocess = None
-        if self.server != '':
-            self.socket = Socket(self.server, self.port)
-        else:
-            self.subprocess = Subprocess(self.command)
         self.juman = Juman()
         #if self.rcfile != '' and self.server != '':
         #    sys.stderr.write(
@@ -33,6 +29,11 @@ class KNP(object):
         assert(isinstance(sentence, unicode))
         juman_lines = self.juman.juman_lines(sentence)
         juman_str = "%s%s" % (juman_lines, self.pattern)
+        if not self.socket and not self.subprocess:
+            if self.server != '':
+                self.socket = Socket(self.server, self.port)
+            else:
+                self.subprocess = Subprocess(self.command)
         if self.socket:
             knp_lines = self.socket.query(juman_str, pattern=self.pattern)
         else:

@@ -77,13 +77,14 @@ class Juman(object):
         self.pattern = pattern
         self.socket = None
         self.subprocess = None
-        if self.server != '':
-            self.socket = Socket(self.server, self.port)
-        else:
-            self.subprocess = Subprocess(self.command)
         #if self.rcfile != '' and self.server != '':
         #    sys.stderr.write("Warning: rcfile option may not work with Juman server.\n")
     def juman_lines(self, input_str):
+        if not self.socket and not self.subprocess:
+            if self.server != '':
+                self.socket = Socket(self.server, self.port)
+            else:
+                self.subprocess = Subprocess(self.command)
         if self.socket:
             return self.socket.query(input_str, pattern=self.pattern)
         return self.subprocess.query(input_str, pattern=self.pattern)
