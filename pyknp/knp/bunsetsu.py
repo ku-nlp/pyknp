@@ -9,6 +9,9 @@ import sys
 import unittest
 
 class Bunsetsu(object):
+    """
+    KNP による係り受け解析の単位である文節の各種情報を保持するオブジェクト．
+    """
     def __init__(self, spec, bnst_id=0):
         self.mrph_list = MList()
         self.tag_list = TList()

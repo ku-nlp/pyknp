@@ -5,6 +5,9 @@ import shlex
 import unittest
 
 class Morpheme(object):
+    """
+    形態素の各種情報を保持するオブジェクト．
+    """
     def __init__(self, spec, mrph_id=""):
         self.mrph_id = mrph_id
         self.doukei = []
@@ -45,6 +48,9 @@ class Morpheme(object):
         else:
             self.imis = '%s%s"' % (self.imis[:-1], ' '.join(' ', imis))
     def repname(self):
+        """
+        形態素の代表表記を返す．
+        """
         match = re.match(ur"代表表記:([^\"\s]+)", self.imis)
         if match:
             return match.group(1)

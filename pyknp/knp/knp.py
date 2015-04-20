@@ -8,6 +8,9 @@ import unittest
 VERSION = '0.4.9'
 
 class KNP(object):
+    """
+    KNP を用いて構文解析を行うモジュールである．
+    """
     def __init__(self, command='knp -tab', server='', port=31000, timeout=60,
                  option='-tab', rcfile='~/.knprc', pattern=r'EOS'):
         self.command = command
@@ -30,6 +33,9 @@ class KNP(object):
     def knp(self, sentence):
         self.parse(sentence)
     def parse(self, sentence):
+        """
+        文字列 sentence を対象として構文解析を行い，構文解析結果オブジェクトを返す．
+        """
         assert(isinstance(sentence, unicode))
         juman_lines = self.juman.juman_lines(sentence)
         juman_str = "%s%s" % (juman_lines, self.pattern)

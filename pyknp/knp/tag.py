@@ -7,6 +7,9 @@ import sys
 import unittest
 
 class Tag(object):
+    """
+    格解析の単位となるタグ(基本句)の各種情報を保持するオブジェクト．
+    """
     def __init__(self, spec, tag_id=0):
         self.mrph_list = MList()
         self.parent_id = -1

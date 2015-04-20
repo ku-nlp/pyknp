@@ -9,6 +9,9 @@ import sys
 import unittest
 
 class BList(object):
+    """
+    文節列を保持するオブジェクト．
+    """
     def __init__(self, spec='', pattern='EOS'):
         self._bnst = []
         self._readonly = False
