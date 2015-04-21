@@ -42,19 +42,16 @@ class Morpheme(object):
             self.fstring = parts[12]
         except IndexError:
             pass
+        # Extract 代表表記
+        self.repname = ''
+        match = re.search(ur"代表表記:([^\"\s]+)", self.imis)
+        if match:
+            self.repname = match.group(1)
     def push_imis(self, imis):
         if self.imis == 'NIL':
             self.imis = '"%s"' % ' '.join(imis)
         else:
             self.imis = '%s%s"' % (self.imis[:-1], ' '.join(' ', imis))
-    def repname(self):
-        """
-        形態素の代表表記を返す．
-        """
-        match = re.search(ur"代表表記:([^\"\s]+)", self.imis)
-        if match:
-            return match.group(1)
-        return ""
     def push_doukei(self, mrph):
         self.doukei.append(mrph)
     def spec(self):
