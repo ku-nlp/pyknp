@@ -51,7 +51,7 @@ class Morpheme(object):
         """
         形態素の代表表記を返す．
         """
-        match = re.match(ur"代表表記:([^\"\s]+)", self.imis)
+        match = re.search(ur"代表表記:([^\"\s]+)", self.imis)
         if match:
             return match.group(1)
         return ""
