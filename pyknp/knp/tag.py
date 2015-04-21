@@ -11,7 +11,7 @@ class Tag(object):
     格解析の単位となるタグ(基本句)の各種情報を保持するオブジェクト．
     """
     def __init__(self, spec, tag_id=0):
-        self.mrph_list = MList()
+        self._mrph_list = MList()
         self.parent_id = -1
         self.dpndtype = ''
         self.fstring = ''
@@ -29,10 +29,12 @@ class Tag(object):
             sys.stderr.write("Illegal tag spec: %s\n" % spec)
             quit(1)
     def push_mrph(self, mrph):
-        self.mrph_list.push_mrph(mrph)
+        self._mrph_list.push_mrph(mrph)
     def spec(self):
         return "+ %d%s %s\n%s" % (self.parent_id, self.dpndtype, self.fstring,
-                                  self.mrph_list.spec())
+                                  self._mrph_list.spec())
+    def mrph_list(self):
+        return self._mrph_list
 
 class TagTest(unittest.TestCase):
     def test(self):
@@ -42,17 +44,17 @@ class TagTest(unittest.TestCase):
         self.assertEqual(tag.tag_id, 2)
         self.assertEqual(tag.dpndtype, 'D')
         self.assertEqual(tag.parent_id, 1)
-        self.assertEqual(len(tag.mrph_list), 0)
+        self.assertEqual(len(tag.mrph_list()), 0)
         mrph1 = Morpheme(u"構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 \"" \
                 u"代表表記:構文/こうぶん カテゴリ:抽象物\" <代表表記:構文/こうぶん>")
         mrph2 = Morpheme(u"解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 \"" \
                 u"代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育" \
                 u"・学習;科学・技術\" <代表表記:解析/かいせき>")
         tag.push_mrph(mrph1)
-        self.assertEqual(len(tag.mrph_list), 1)
+        self.assertEqual(len(tag.mrph_list()), 1)
         tag.push_mrph(mrph2)
-        self.assertEqual(len(tag.mrph_list), 2)
-        self.assertEqual(''.join([mrph.midasi for mrph in tag.mrph_list]),
+        self.assertEqual(len(tag.mrph_list()), 2)
+        self.assertEqual(''.join([mrph.midasi for mrph in tag.mrph_list()]),
                          u'構文解析')
 
 if __name__ == '__main__':

@@ -13,8 +13,8 @@ class Bunsetsu(object):
     KNP による係り受け解析の単位である文節の各種情報を保持するオブジェクト．
     """
     def __init__(self, spec, bnst_id=0):
-        self.mrph_list = MList()
-        self.tag_list = TList()
+        self._mrph_list = MList()
+        self._tag_list = TList()
         self.parent_id = -1
         self.parent = None
         self.child = []
@@ -33,17 +33,21 @@ class Bunsetsu(object):
             sys.stderr.write("Illegal bunsetsu spec: %s\n" % spec)
             quit(1)
     def push_mrph(self, mrph):
-        if len(self.tag_list) > 0:
-            self.tag_list[-1].push_mrph(mrph)
-        self.mrph_list.push_mrph(mrph)
+        if len(self._tag_list) > 0:
+            self._tag_list[-1].push_mrph(mrph)
+        self._mrph_list.push_mrph(mrph)
     def push_tag(self, tag):
-        if len(self.tag_list) == 0 and len(self.mrph_list) > 0:
+        if len(self._tag_list) == 0 and len(self._mrph_list) > 0:
             sys.stderr.write("Unsafe addition of tags!\n")
             quit(1)
-        self.tag_list.push_tag(tag)
+        self._tag_list.push_tag(tag)
     def spec(self):
         return "* %d%s %s\n%s" % (self.parent_id, self.dpndtype,
-                                  self.fstring, self.tag_list.spec())
+                                  self.fstring, self._tag_list.spec())
+    def mrph_list(self):
+        return self._mrph_list
+    def tag_list(self):
+        return self._tag_list
 
 class BunsetsuTest(unittest.TestCase):
     def setUp(self):
@@ -68,17 +72,17 @@ class BunsetsuTest(unittest.TestCase):
         self.assertEqual(bnst.bnst_id, 3)
         self.assertEqual(bnst.parent_id, -1)
         self.assertEqual(bnst.dpndtype, "D")
-        self.assertEqual(len(bnst.mrph_list), 0)
-        self.assertEqual(len(bnst.tag_list), 0)
+        self.assertEqual(len(bnst.mrph_list()), 0)
+        self.assertEqual(len(bnst.tag_list()), 0)
     def test_mrph(self):
         bnst = Bunsetsu(self.bunsetsu_str)
         mrph1 = Morpheme(self.mrph1_str)
         bnst.push_mrph(mrph1)
-        self.assertEqual(len(bnst.mrph_list), 1)
+        self.assertEqual(len(bnst.mrph_list()), 1)
         mrph2 = Morpheme(self.mrph2_str)
         bnst.push_mrph(mrph2)
-        self.assertEqual(len(bnst.mrph_list), 2)
-        self.assertEqual(''.join(mrph.midasi for mrph in bnst.mrph_list),
+        self.assertEqual(len(bnst.mrph_list()), 2)
+        self.assertEqual(''.join(mrph.midasi for mrph in bnst.mrph_list()),
                          u'構文解析')
     def test_spec(self):
         bnst = Bunsetsu(self.bunsetsu_str)

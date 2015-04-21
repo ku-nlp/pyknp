@@ -67,9 +67,9 @@ class KNPTest(unittest.TestCase):
         self.assertEqual(result[2].parent, None)
     def test_mrph(self):
         result = self.knp.parse(u"赤い花が咲いた。")
-        self.assertEqual(''.join([mrph.midasi for mrph in result[0].mrph_list]), u'赤い')
-        self.assertEqual(''.join([mrph.midasi for mrph in result[1].mrph_list]), u'花が')
-        self.assertEqual(''.join([mrph.midasi for mrph in result[2].mrph_list]), u'咲いた。')
+        self.assertEqual(''.join([mrph.midasi for mrph in result[0].mrph_list()]), u'赤い')
+        self.assertEqual(''.join([mrph.midasi for mrph in result[1].mrph_list()]), u'花が')
+        self.assertEqual(''.join([mrph.midasi for mrph in result[2].mrph_list()]), u'咲いた。')
 
 if __name__ == '__main__':
     unittest.main()

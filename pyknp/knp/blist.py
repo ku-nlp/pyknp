@@ -48,10 +48,10 @@ class BList(object):
                 pass
             elif string.startswith('!!'):
                 synnodes = SynNodes(string)
-                self._bnst[-1].tag_list.push_synnodes(synnodes)
+                self._bnst[-1].tag_list().push_synnodes(synnodes)
             elif string.startswith('!'):
                 synnode = SynNode(string)
-                self._bnst[-1].tag_list.push_synnode(synnode)
+                self._bnst[-1].tag_list().push_synnode(synnode)
             else:
                 mrph = Morpheme(string, len(self.mrph_list()))
                 self._bnst[-1].push_mrph(mrph)
@@ -68,13 +68,13 @@ class BList(object):
     def tag_list(self):
         result = []
         for bnst in self._bnst:
-            for tag in bnst.tag_list:
+            for tag in bnst.tag_list():
                 result.append(tag)
         return result
     def mrph_list(self):
         result = []
         for bnst in self._bnst:
-            for mrph in bnst.mrph_list:
+            for mrph in bnst.mrph_list():
                 result.append(mrph)
         return result
     def bnst_list(self):

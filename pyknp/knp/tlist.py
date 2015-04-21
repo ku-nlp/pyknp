@@ -67,16 +67,16 @@ class TListTest(unittest.TestCase):
         tag1.push_mrph(mrph1)
         tlist.push_tag(tag1)
         self.assertEqual(len(tlist), 1)
-        self.assertEqual(len(tlist[0].mrph_list), 1)
+        self.assertEqual(len(tlist[0].mrph_list()), 1)
         # Add tag without morpheme
         tlist.push_tag(tag2)
         self.assertEqual(len(tlist), 2)
-        self.assertEqual(len(tlist[1].mrph_list), 0)
+        self.assertEqual(len(tlist[1].mrph_list()), 0)
         # Add morpheme to second tag
         tlist.push_mrph(mrph2)
         self.assertEqual(len(tlist), 2)
-        self.assertEqual(len(tlist[0].mrph_list), 1)
-        self.assertEqual(len(tlist[1].mrph_list), 1)
+        self.assertEqual(len(tlist[0].mrph_list()), 1)
+        self.assertEqual(len(tlist[1].mrph_list()), 1)
 
 if __name__ == '__main__':
     unittest.main()
