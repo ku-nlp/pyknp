@@ -47,6 +47,11 @@ class Morpheme(object):
         match = re.search(ur"代表表記:([^\"\s]+)", self.imis)
         if match:
             self.repname = match.group(1)
+        # Extract 正規化代表表記
+        self.repnames = ''
+        match = re.search(ur"<正規化代表表記:([^\"\s]+?)>", self.fstring)
+        if match:
+            self.repnames = match.group(1)
     def push_imis(self, imis):
         if self.imis == 'NIL':
             self.imis = '"%s"' % ' '.join(imis)

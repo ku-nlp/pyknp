@@ -28,6 +28,11 @@ class Tag(object):
         else:
             sys.stderr.write("Illegal tag spec: %s\n" % spec)
             quit(1)
+        # Extract 正規化代表表記
+        self.repname = ''
+        match = re.search(ur"<正規化代表表記:([^\"\s]+?)>", self.fstring)
+        if match:
+            self.repname = match.group(1)
     def push_mrph(self, mrph):
         self._mrph_list.push_mrph(mrph)
     def spec(self):

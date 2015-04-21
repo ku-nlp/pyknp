@@ -32,6 +32,11 @@ class Bunsetsu(object):
         else:
             sys.stderr.write("Illegal bunsetsu spec: %s\n" % spec)
             quit(1)
+        # Extract 正規化代表表記
+        self.repname = ''
+        match = re.search(ur"<正規化代表表記:([^\"\s]+?)>", self.fstring)
+        if match:
+            self.repname = match.group(1)
     def push_mrph(self, mrph):
         if len(self._tag_list) > 0:
             self._tag_list[-1].push_mrph(mrph)
