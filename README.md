@@ -72,7 +72,7 @@ internally to UTF-8.
             data += line.decode('utf-8')
             if line.strip() == "EOS":
                 result = juman.result(data)
-                print ",".join(mrph.genkei for mrph in result)
+                print ",".join(mrph.genkei for mrph in result.mrph_list())
                 data = ""
 
 ### KNP
@@ -111,5 +111,5 @@ internally to UTF-8.
             data += line.decode('utf-8')
             if line.strip() == "EOS":
                 result = knp.result(data)
-                print ",".join(mrph.genkei for mrph in result)
+                print ",".join(mrph.genkei for mrph in result.mrph_list())
                 data = ""
