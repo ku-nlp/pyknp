@@ -52,6 +52,8 @@ class BList(object):
             elif string.startswith('!'):
                 synnode = SynNode(string)
                 self._bnst[-1].tag_list().push_synnode(synnode)
+            elif string.startswith('EOS'):
+                pass
             else:
                 mrph = Morpheme(string, len(self.mrph_list()))
                 self._bnst[-1].push_mrph(mrph)

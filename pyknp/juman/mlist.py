@@ -19,6 +19,8 @@ class MList(object):
                     self.comment += line
                 elif line.startswith('@'):
                     self._mrph[-1].push_doukei(Morpheme(line[2:]))
+                elif line.startswith('EOS'):
+                    pass
                 else:
                     self.push_mrph(Morpheme(line))
     def push_mrph(self, mrph):
