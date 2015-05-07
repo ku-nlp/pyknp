@@ -3,6 +3,7 @@
 from pyknp import MList
 from pyknp import Morpheme
 import os
+import sys
 import re
 import socket
 import subprocess
@@ -80,6 +81,9 @@ class Juman(object):
         self.pattern = pattern
         self.socket = None
         self.subprocess = None
+        if self.rcfile and not os.path.isfile(self.rcfile):
+            sys.stderr.write("Can't read rcfile (%s)!" % self.rcfile)
+            quit(1)
         #if self.rcfile != '' and self.server != '':
         #    sys.stderr.write("Warning: rcfile option may not work with Juman server.\n")
     def juman_lines(self, input_str):
@@ -87,7 +91,7 @@ class Juman(object):
             if self.server != '':
                 self.socket = Socket(self.server, self.port)
             else:
-                self.subprocess = Subprocess("%s %s" % (self.command, self.option))
+                self.subprocess = Subprocess("%s %s -r %s" % (self.command, self.option, self.rcfile))
         if self.socket:
             return self.socket.query(input_str, pattern=self.pattern)
         return self.subprocess.query(input_str, pattern=self.pattern)

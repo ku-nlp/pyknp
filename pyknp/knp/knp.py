@@ -3,6 +3,8 @@
 from pyknp import Juman
 from pyknp import Socket, Subprocess  # TODO(john): move to separate file
 from pyknp import BList
+import os
+import sys
 import unittest
 
 VERSION = '0.4.9'
@@ -12,7 +14,8 @@ class KNP(object):
     KNP を用いて構文解析を行うモジュールである．
     """
     def __init__(self, command='knp', server='', port=31000, timeout=60,
-                 option='-tab', rcfile='~/.knprc', pattern=r'EOS'):
+                 option='-tab', rcfile='~/.knprc', pattern=r'EOS',
+                 jumancommand='juman', jumanrcfile='~/.jumanrc'):
         self.command = command
         self.server = server
         self.port = port
@@ -22,7 +25,11 @@ class KNP(object):
         self.pattern = pattern
         self.socket = None
         self.subprocess = None
-        self.juman = Juman()
+        if self.rcfile and not os.path.isfile(self.rcfile):
+            sys.stderr.write("Can't read rcfile (%s)!" % self.rcfile)
+            quit(1)
+
+        self.juman = Juman(command=jumancommand, rcfile=jumanrcfile)
         #if self.rcfile != '' and self.server != '':
         #    sys.stderr.write(
         #           "Warning: rcfile option may not work with Juman server.\n")
@@ -39,7 +46,7 @@ class KNP(object):
             if self.server != '':
                 self.socket = Socket(self.server, self.port)
             else:
-                self.subprocess = Subprocess("%s %s" % (self.command, self.option))
+                self.subprocess = Subprocess("%s %s -r %s" % (self.command, self.option, self.rcfile))
         if self.socket:
             knp_lines = self.socket.query(juman_str, pattern=self.pattern)
         else:
