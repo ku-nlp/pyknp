@@ -87,7 +87,7 @@ class Juman(object):
             if self.server != '':
                 self.socket = Socket(self.server, self.port)
             else:
-                self.subprocess = Subprocess(self.command)
+                self.subprocess = Subprocess("%s %s" % (self.command, self.option))
         if self.socket:
             return self.socket.query(input_str, pattern=self.pattern)
         return self.subprocess.query(input_str, pattern=self.pattern)

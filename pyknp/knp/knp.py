@@ -11,7 +11,7 @@ class KNP(object):
     """
     KNP を用いて構文解析を行うモジュールである．
     """
-    def __init__(self, command='knp -tab', server='', port=31000, timeout=60,
+    def __init__(self, command='knp', server='', port=31000, timeout=60,
                  option='-tab', rcfile='~/.knprc', pattern=r'EOS'):
         self.command = command
         self.server = server
@@ -39,7 +39,7 @@ class KNP(object):
             if self.server != '':
                 self.socket = Socket(self.server, self.port)
             else:
-                self.subprocess = Subprocess(self.command)
+                self.subprocess = Subprocess("%s %s" % (self.command, self.option))
         if self.socket:
             knp_lines = self.socket.query(juman_str, pattern=self.pattern)
         else:
