@@ -26,9 +26,8 @@ class KNP(object):
         self.socket = None
         self.subprocess = None
         if self.rcfile and not os.path.isfile(self.rcfile):
-            sys.stderr.write("Can't read rcfile (%s)!" % self.rcfile)
+            sys.stderr.write("Can't read rcfile (%s)!\n" % self.rcfile)
             quit(1)
-
         self.juman = Juman(command=jumancommand, rcfile=jumanrcfile)
         #if self.rcfile != '' and self.server != '':
         #    sys.stderr.write(
