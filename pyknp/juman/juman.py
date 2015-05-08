@@ -67,7 +67,7 @@ class Juman(object):
     形態素解析器 JUMAN を Perl から利用するためのモジュールである．
     """
     def __init__(self, command='juman', server='', port=32000, timeout=30,
-                 option='-e2 -B', rcfile='~/.jumanrc', ignorepattern='',
+                 option='-e2 -B', rcfile='', ignorepattern='',
                  pattern=r'EOS'):
         self.command = command
         self.server = server
@@ -79,15 +79,19 @@ class Juman(object):
         self.pattern = pattern
         self.socket = None
         self.subprocess = None
-        if self.rcfile and not os.path.isfile(self.rcfile):
+        if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
             sys.stderr.write("Can't read rcfile (%s)!\n" % self.rcfile)
             quit(1)
+                
     def juman_lines(self, input_str):
         if not self.socket and not self.subprocess:
             if self.server != '':
                 self.socket = Socket(self.server, self.port)
             else:
-                self.subprocess = Subprocess("%s %s -r %s" % (self.command, self.option, self.rcfile))
+                command = "%s %s" % (self.command, self.option)
+                if self.rcfile:
+                    command += " -r %s" % self.rcfile
+                self.subprocess = Subprocess(command)
         if self.socket:
             return self.socket.query(input_str, pattern=self.pattern)
         return self.subprocess.query(input_str, pattern=self.pattern)

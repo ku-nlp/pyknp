@@ -12,8 +12,8 @@ class KNP(object):
     KNP を用いて構文解析を行うモジュールである．
     """
     def __init__(self, command='knp', server='', port=31000, timeout=60,
-                 option='-tab', rcfile='~/.knprc', pattern=r'EOS',
-                 jumancommand='juman', jumanrcfile='~/.jumanrc'):
+                 option='-tab', rcfile='', pattern=r'EOS',
+                 jumancommand='juman', jumanrcfile=''):
         self.command = command
         self.server = server
         self.port = port
@@ -23,9 +23,10 @@ class KNP(object):
         self.pattern = pattern
         self.socket = None
         self.subprocess = None
-        if self.rcfile and not os.path.isfile(self.rcfile):
+        if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
             sys.stderr.write("Can't read rcfile (%s)!\n" % self.rcfile)
             quit(1)
+        
         self.juman = Juman(command=jumancommand, rcfile=jumanrcfile)
     def knp(self, sentence):
         self.parse(sentence)
@@ -40,7 +41,11 @@ class KNP(object):
             if self.server != '':
                 self.socket = Socket(self.server, self.port)
             else:
-                self.subprocess = Subprocess("%s %s -r %s" % (self.command, self.option, self.rcfile))
+                command = "%s %s" % (self.command, self.option)
+                if self.rcfile:
+                    command += " -r %s" % self.rcfile
+                self.subprocess = Subprocess(command)
+                
         if self.socket:
             knp_lines = self.socket.query(juman_str, pattern=self.pattern)
         else:
