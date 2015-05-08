@@ -9,8 +9,6 @@ import socket
 import subprocess
 import unittest
 
-VERSION = '0.5.7'
-
 class Socket(object):
     def __init__(self, hostname, port):
         try:
@@ -84,8 +82,6 @@ class Juman(object):
         if self.rcfile and not os.path.isfile(self.rcfile):
             sys.stderr.write("Can't read rcfile (%s)!\n" % self.rcfile)
             quit(1)
-        #if self.rcfile != '' and self.server != '':
-        #    sys.stderr.write("Warning: rcfile option may not work with Juman server.\n")
     def juman_lines(self, input_str):
         if not self.socket and not self.subprocess:
             if self.server != '':
@@ -109,7 +105,6 @@ class Juman(object):
 
 class JumanTest(unittest.TestCase):
     def setUp(self):
-        #self.juman = Juman(server='localhost')
         self.juman = Juman()
     def test_normal(self):
         test_str = u"この文を解析してください。"
@@ -117,15 +112,6 @@ class JumanTest(unittest.TestCase):
         self.assertEqual(len(result), 7)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
         self.assertGreaterEqual(len(result.spec().split("\n")), 7)
-    #def test_space(self):
-        #result = self.juman.analysis("「 」を含む文")
-        #self.assertEqual(result.mrph[1].midasi, ' ')
-    #def test_backslash(self):
-        #result = self.juman.analysis("「\」を含む文")
-        #self.assertEqual(result[1].midasi, '\\')
-    #def test_at(self):
-        #result = self.juman.analysis("「@」を含む文")
-        #self.assertEqual(result[1].midasi, '@')
 
 if __name__ == '__main__':
     unittest.main()

@@ -7,8 +7,6 @@ import os
 import sys
 import unittest
 
-VERSION = '0.4.9'
-
 class KNP(object):
     """
     KNP を用いて構文解析を行うモジュールである．
@@ -29,9 +27,6 @@ class KNP(object):
             sys.stderr.write("Can't read rcfile (%s)!\n" % self.rcfile)
             quit(1)
         self.juman = Juman(command=jumancommand, rcfile=jumanrcfile)
-        #if self.rcfile != '' and self.server != '':
-        #    sys.stderr.write(
-        #           "Warning: rcfile option may not work with Juman server.\n")
     def knp(self, sentence):
         self.parse(sentence)
     def parse(self, sentence):
@@ -57,12 +52,6 @@ class KNP(object):
 class KNPTest(unittest.TestCase):
     def setUp(self):
         self.knp = KNP()
-    #def test_space(self):
-        #result = self.knp.parse("「 」を含む文")
-        #self.assertEqual(result.mrph_list()[1].midasi, '\ ')
-    #def test_backslash(self):
-        #result = self.knp.parse("「\」を含む文")
-        #self.assertEqual(result.mrph[1].midasi, '\\')
     def test_dpnd(self):
         result = self.knp.parse(u"赤い花が咲いた。")
         self.assertEqual(len(result), 3)
