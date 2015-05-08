@@ -64,7 +64,7 @@ class Subprocess(object):
 
 class Juman(object):
     """
-    形態素解析器 JUMAN を Perl から利用するためのモジュールである．
+    形態素解析器 JUMAN を Python から利用するためのモジュールである．
     """
     def __init__(self, command='juman', server='', port=32000, timeout=30,
                  option='-e2 -B', rcfile='', ignorepattern='',
