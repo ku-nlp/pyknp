@@ -54,6 +54,7 @@ internally to UTF-8.
     sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
     
     # Use Juman in subprocess mode
+    juman = Juman()
     result = juman.analysis(u"これはペンです。")
     print ','.join(mrph.midasi for mrph in result)
     
