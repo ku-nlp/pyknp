@@ -19,13 +19,13 @@ class BList(object):
         self.pattern = pattern
         self.parse(spec)
         self.set_parent_child()
-    def bnst_id(self):
+    def sid(self):
         match = re.match(r'# S-ID:(.*?)[ $]', self.comment)
         return int(match.group(1))
-    def set_bnst_id(self, new_id):
+    def set_sid(self, new_id):
         self.comment = re.sub(r'# S-ID:(.*?)([ $].*)', r'# S-ID:%s\2' % new_id,
                               self.comment)
-        return self.bnst_id()
+        return self.sid()
     def parse(self, spec):
         for string in spec.split('\n'):
             if string.strip() == "":
@@ -117,9 +117,9 @@ class BListTest(unittest.TestCase):
         self.assertEqual(len(blist.mrph_list()), 7)
         self.assertEqual(''.join([mrph.midasi for mrph in blist.mrph_list()]),
                          u'構文解析の実例を示す。')
-        self.assertEqual(blist.bnst_id(), 123)
-        self.assertEqual(blist.set_bnst_id(234), 234)
-        self.assertEqual(blist.bnst_id(), 234)
+        self.assertEqual(blist.sid(), 123)
+        self.assertEqual(blist.set_sid(234), 234)
+        self.assertEqual(blist.sid(), 234)
 
 if __name__ == '__main__':
     unittest.main()
