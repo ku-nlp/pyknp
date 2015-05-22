@@ -17,7 +17,7 @@ class Bunsetsu(object):
         self._tag_list = TList()
         self.parent_id = -1
         self.parent = None
-        self.child = []
+        self.children = []
         self.dpndtype = ''
         self.fstring = ''
         self.bnst_id = bnst_id

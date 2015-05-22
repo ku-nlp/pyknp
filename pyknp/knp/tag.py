@@ -13,6 +13,8 @@ class Tag(object):
     def __init__(self, spec, tag_id=0):
         self._mrph_list = MList()
         self.parent_id = -1
+        self.parent = None
+        self.children = []
         self.dpndtype = ''
         self.fstring = ''
         self.tag_id = tag_id

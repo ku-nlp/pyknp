@@ -57,7 +57,13 @@ class BList(object):
                 bnst.parent = None
             else:
                 bnst.parent = self._bnst[bnst.parent_id]
-                self._bnst[bnst.parent_id].child.append(bnst)
+                self._bnst[bnst.parent_id].children.append(bnst)
+            for tag in bnst._tag_list:
+                if tag.parent_id == -1:
+                    tag.parent = None
+                else:
+                    tag.parent = self.tag_list()[tag.parent_id]
+                    self.tag_list()[tag.parent_id].children.append(tag)
     def push_bnst(self, bnst):
         self._bnst.append(bnst)
         self._bnst[bnst.parent].child.append(bnst.bnst_id)
@@ -112,6 +118,15 @@ class BListTest(unittest.TestCase):
         self.assertEqual(''.join([mrph.midasi for mrph in blist.mrph_list()]),
                          u'構文解析の実例を示す。')
         self.assertEqual(blist.sid, '123')
+        # Check parent/children relations
+        self.assertEqual(blist[1].parent, blist[2])
+        self.assertEqual(blist[1].parent_id, 2)
+        self.assertEqual(blist[2].parent, None)
+        self.assertEqual(blist[2].parent_id, -1)
+        self.assertEqual(blist[1].children, [blist[0]])
+        self.assertEqual(blist[0].children, [])
+        self.assertEqual(blist.tag_list()[1].parent, blist.tag_list()[2])
+        self.assertEqual(blist.tag_list()[2].children, [blist.tag_list()[1]])
 
 if __name__ == '__main__':
     unittest.main()
