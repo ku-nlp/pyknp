@@ -15,23 +15,20 @@ class BList(object):
     def __init__(self, spec='', pattern='EOS'):
         self._bnst = []
         self._readonly = False
-        self.comment = ''
         self.pattern = pattern
+        self.comment = ''
+        self.sid = ''
         self.parse(spec)
         self.set_parent_child()
-    def sid(self):
-        match = re.match(r'# S-ID:(.*?)[ $]', self.comment)
-        return int(match.group(1))
-    def set_sid(self, new_id):
-        self.comment = re.sub(r'# S-ID:(.*?)([ $].*)', r'# S-ID:%s\2' % new_id,
-                              self.comment)
-        return self.sid()
     def parse(self, spec):
         for string in spec.split('\n'):
             if string.strip() == "":
                 continue
             if string.startswith('#'):
-                self.comment = "%s%s" % (self.comment, string)
+                self.comment = string
+                match = re.match(r'# S-ID:(.*?)[ $]', self.comment)
+                if match:
+                    self.sid = match.group(1)
             elif re.match(self.pattern, string):
                 break
             elif string.startswith(';;'):
@@ -43,9 +40,6 @@ class BList(object):
             elif string.startswith('+'):
                 self._bnst[-1].push_tag(
                         Tag(string, len(self.tag_list())))
-            elif re.match(r'^- (-?\d+)(.+)$', string):
-                # TODO(john): what is this?
-                pass
             elif string.startswith('!!'):
                 synnodes = SynNodes(string)
                 self._bnst[-1].tag_list().push_synnodes(synnodes)
@@ -117,9 +111,7 @@ class BListTest(unittest.TestCase):
         self.assertEqual(len(blist.mrph_list()), 7)
         self.assertEqual(''.join([mrph.midasi for mrph in blist.mrph_list()]),
                          u'構文解析の実例を示す。')
-        self.assertEqual(blist.sid(), 123)
-        self.assertEqual(blist.set_sid(234), 234)
-        self.assertEqual(blist.sid(), 234)
+        self.assertEqual(blist.sid, '123')
 
 if __name__ == '__main__':
     unittest.main()
