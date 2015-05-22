@@ -32,12 +32,12 @@ Morphemes contain the following:
 
 Bunsetsu contain the following:
     mrph_list (list of Morphemes), tag_list (list of Tags), parent_id (ID of
-    parent bunsetsu), parent (parent bunsetsu), child (child bunsetsu),
+    parent bunsetsu), parent (parent bunsetsu), children (child bunsetsu),
     dpndtype, fstring (feature string), bnst_id (= id in Perl module) 
 
 Tags contain the following:
-    mrph_list (list of Morphemes), parent_id, dpndtype, fstring (feature
-    string), tag_id (= id in Perl module)
+    mrph_list (list of Morphemes), parent_id, parent, children,
+    dpndtype, fstring (feature string), tag_id (= id in Perl module)
 
 Note that the pyknp module expects all input/output to be in Unicode, not any
 encoding such as UTF-8. Queries are sent to JUMAN/KNP after converting
