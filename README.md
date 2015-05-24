@@ -32,7 +32,7 @@ Morphemes contain the following:
 
 Bunsetsu contain the following:
     mrph_list (list of Morphemes), tag_list (list of Tags), parent_id (ID of
-    parent bunsetsu), parent (parent bunsetsu), children (child bunsetsu),
+    parent bunsetsu), parent (parent bunsetsu), children (child bunsetsu, = child in Perl module),
     dpndtype, fstring (feature string), bnst_id (= id in Perl module) 
 
 Tags contain the following:
