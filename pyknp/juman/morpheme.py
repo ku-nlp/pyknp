@@ -1,8 +1,28 @@
 #-*- encoding: utf-8 -*-
 
 import re
-import shlex
 import unittest
+
+def parse_spec(spec):
+    parts = []
+    part = ''
+    inside_quotes = False
+    for char in spec:
+        if char == u'"':
+            if not inside_quotes:
+                inside_quotes = True
+            else:
+                inside_quotes = False
+        if char == u' ' and not inside_quotes:
+            if part.startswith(u'"') and part.endswith(u'"'):
+                parts.append(part[1:-1])
+            else:
+                parts.append(part)
+            part = ''
+        else:
+            part += char
+    parts.append(part)
+    return parts
 
 class Morpheme(object):
     """
@@ -11,8 +31,7 @@ class Morpheme(object):
     def __init__(self, spec, mrph_id=""):
         self.mrph_id = mrph_id
         self.doukei = []
-        # shlex doesn't support unicode
-        parts = map(lambda s: s.decode('utf-8'), shlex.split(spec.encode('utf-8')))
+        parts = parse_spec(spec.strip())
         self.midasi = ''
         self.yomi = ''
         self.genkei = ''
@@ -66,7 +85,6 @@ class Morpheme(object):
                 repnames.append(doukei.repname)
         # 重複を削除
         return "?".join(sorted(set(repnames), key=repnames.index))
-    
     def spec(self):
         imis = self.imis
         if ' ' in imis:
