@@ -88,7 +88,7 @@ class BList(DrawTree):
             bnst.set_readonly()
         self._readonly = True
     def spec(self):
-        return "%s%s" % (self.comment, ''.join(b.spec() for b in self._bnst))
+        return "%s\n%s" % (self.comment, ''.join(b.spec() for b in self._bnst))
     def __getitem__(self, index):
         return self._bnst[index]
     def __len__(self):
