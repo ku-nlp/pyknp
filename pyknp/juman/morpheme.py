@@ -31,7 +31,7 @@ class Morpheme(object):
     def __init__(self, spec, mrph_id=""):
         self.mrph_id = mrph_id
         self.doukei = []
-        parts = parse_spec(spec.strip())
+        parts = parse_spec(spec.strip("\n"))
         self.midasi = ''
         self.yomi = ''
         self.genkei = ''
@@ -93,7 +93,7 @@ class Morpheme(object):
                 (self.midasi, self.yomi, self.genkei, self.hinsi, self.hinsi_id,
                  self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id,
                  self.katuyou2, self.katuyou2_id, imis, self.fstring)
-        return "%s\n" % spec.strip()
+        return "%s\n" % spec.strip("\n")
 
 class MorphemeTest(unittest.TestCase):
     def test_simple(self):
