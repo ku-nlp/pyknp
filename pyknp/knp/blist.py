@@ -3,12 +3,14 @@
 from pyknp import Bunsetsu
 from pyknp import Morpheme
 from pyknp import Tag
+from pyknp import TList
 from pyknp import SynNodes, SynNode
+from pyknp import DrawTree
 import re
 import sys
 import unittest
 
-class BList(object):
+class BList(DrawTree):
     """
     文節列を保持するオブジェクト．
     """
@@ -92,6 +94,21 @@ class BList(object):
     def __len__(self):
         return len(self._bnst)
 
+    def draw_bnst_tree(self):
+        """ 文節列の依存関係を木構造として表現して出力する． """
+        self.draw_tree()
+
+    def draw_tag_tree(self):
+        """ タグ列の依存関係を木構造として表現して出力する． """
+        tlist = TList()
+        for tag in self.tag_list():
+            tlist.push_tag(tag)
+        tlist.draw_tree()
+        
+    def draw_tree_leaves(self):
+        """ draw_tree メソッドとの通信用のメソッド． """
+        return self.bnst_list()
+    
 class BListTest(unittest.TestCase):
     def setUp(self):
         self.result = u"# S-ID:123 KNP:4.2-ffabecc DATE:2015/04/10 SCORE:-18.02647\n" \

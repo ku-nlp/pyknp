@@ -2,10 +2,11 @@
 
 from pyknp import Morpheme
 from pyknp import Tag
+from pyknp import DrawTree
 import sys
 import unittest
 
-class TList(object):
+class TList(DrawTree):
     def __init__(self):
         self._tag = []
         self._readonly = False
@@ -38,11 +39,13 @@ class TList(object):
             tag.set_readonly()
         self._readonly = True
     def draw_tag_tree(self):
-        # TODO
-        pass
+        """ タグ列の依存関係を木構造として表現して出力する． """
+        self.draw_tree()
+        
     def draw_tree_leaves(self):
-        # TODO
-        pass
+        """ draw_tree メソッドとの通信用のメソッド． """
+        return self.tag_list()
+        
     def tag_list(self):
         return self._tag
     def __getitem__(self, index):
