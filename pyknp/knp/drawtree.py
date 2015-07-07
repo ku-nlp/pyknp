@@ -91,7 +91,7 @@ class DrawTree(object):
         for i in xrange(limit + 1):
             diff = max_length - self._str_real_length(line[i])
             buf += " " * diff
-            buf += line[i] + "\n"
+            buf += line[i] + leaves[i].pstring() + "\n"
 
         return buf
     

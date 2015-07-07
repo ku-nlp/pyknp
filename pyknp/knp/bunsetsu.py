@@ -20,6 +20,7 @@ class Bunsetsu(object):
         self.children = []
         self.dpndtype = ''
         self.fstring = ''
+        self._pstring = ''
         self.bnst_id = bnst_id
         spec = spec.strip()
         if spec == '*':
@@ -53,7 +54,12 @@ class Bunsetsu(object):
         return self._mrph_list
     def tag_list(self):
         return self._tag_list
-
+    def pstring(self, string=None):
+        if string:
+            self._pstring = string
+        else:
+            return self._pstring
+            
 class BunsetsuTest(unittest.TestCase):
     def setUp(self):
         self.bunsetsu_str = u"* -1D <BGH:解析/かいせき><文頭><文末>" \

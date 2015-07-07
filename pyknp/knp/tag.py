@@ -17,6 +17,7 @@ class Tag(object):
         self.children = []
         self.dpndtype = ''
         self.fstring = ''
+        self._pstring = ''
         self.tag_id = tag_id
         self.synnodes = []
         spec = spec.strip()
@@ -42,6 +43,11 @@ class Tag(object):
                                   self._mrph_list.spec())
     def mrph_list(self):
         return self._mrph_list
+    def pstring(self, string=None):
+        if string:
+            self._pstring = string
+        else:
+            return self._pstring
 
 class TagTest(unittest.TestCase):
     def test(self):
