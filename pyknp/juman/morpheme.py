@@ -87,8 +87,9 @@ class Morpheme(object):
         return "?".join(sorted(set(repnames), key=repnames.index))
     def spec(self):
         imis = self.imis
-        if ' ' in imis:
+        if imis != "NIL":
             imis = '"%s"' % imis
+            
         spec = "%s %s %s %s %s %s %s %s %s %s %s %s %s" % \
                 (self.midasi, self.yomi, self.genkei, self.hinsi, self.hinsi_id,
                  self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id,
