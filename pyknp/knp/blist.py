@@ -96,16 +96,16 @@ class BList(DrawTree):
     def __len__(self):
         return len(self._bnst)
 
-    def draw_bnst_tree(self):
+    def draw_bnst_tree(self, fh=None):
         """ 文節列の依存関係を木構造として表現して出力する． """
-        self.draw_tree()
+        self.draw_tree(fh=fh)
 
-    def draw_tag_tree(self):
+    def draw_tag_tree(self, fh=None):
         """ タグ列の依存関係を木構造として表現して出力する． """
         tlist = TList()
         for tag in self.tag_list():
             tlist.push_tag(tag)
-        tlist.draw_tree()
+        tlist.draw_tree(fh=fh)
         
     def draw_tree_leaves(self):
         """ draw_tree メソッドとの通信用のメソッド． """
