@@ -67,7 +67,7 @@ class Juman(object):
     """
     形態素解析器 JUMAN を Python から利用するためのモジュールである．
     """
-    def __init__(self, command='juman', server='', port=32000, timeout=30,
+    def __init__(self, command='juman', server=None, port=32000, timeout=30,
                  option='-e2 -B', rcfile='', ignorepattern='',
                  pattern=r'EOS'):
         self.command = command
@@ -86,7 +86,7 @@ class Juman(object):
                 
     def juman_lines(self, input_str):
         if not self.socket and not self.subprocess:
-            if self.server != '':
+            if self.server is not None:
                 self.socket = Socket(self.server, self.port, "RUN -e2\n")
             else:
                 command = "%s %s" % (self.command, self.option)
