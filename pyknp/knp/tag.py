@@ -2,6 +2,7 @@
 
 from pyknp import MList
 from pyknp import Morpheme
+from pyknp import Features
 import re
 import sys
 import unittest
@@ -17,6 +18,7 @@ class Tag(object):
         self.children = []
         self.dpndtype = ''
         self.fstring = ''
+        self.features = None
         self._pstring = ''
         self.tag_id = tag_id
         self.synnodes = []
@@ -33,9 +35,10 @@ class Tag(object):
             quit(1)
         # Extract 正規化代表表記
         self.repname = ''
-        match = re.search(ur"<正規化代表表記:([^\"\s]+?)>", self.fstring)
-        if match:
-            self.repname = match.group(1)
+        self.features = Features(self.fstring)
+        rep = self.features.get(u"正規化代表表記")
+        if rep is not None:
+            self.repname = rep
     def push_mrph(self, mrph):
         self._mrph_list.push_mrph(mrph)
     def spec(self):
