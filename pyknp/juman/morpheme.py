@@ -29,6 +29,7 @@ class Morpheme(object):
     形態素の各種情報を保持するオブジェクト．
     """
     def __init__(self, spec, mrph_id=""):
+        assert isinstance(spec, unicode)
         self.mrph_id = mrph_id
         self.doukei = []
         parts = parse_spec(spec.strip("\n"))
@@ -87,14 +88,14 @@ class Morpheme(object):
         return "?".join(sorted(set(repnames), key=repnames.index))
     def spec(self):
         imis = self.imis
-        if imis != "NIL":
+        if imis != "NIL" and len(imis) != 0:
             imis = '"%s"' % imis
             
         spec = "%s %s %s %s %s %s %s %s %s %s %s %s %s" % \
                 (self.midasi, self.yomi, self.genkei, self.hinsi, self.hinsi_id,
                  self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id,
                  self.katuyou2, self.katuyou2_id, imis, self.fstring)
-        return "%s\n" % spec.strip("\n")
+        return "%s\n" % spec.rstrip()
 
 class MorphemeTest(unittest.TestCase):
     def test_simple(self):
