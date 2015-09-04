@@ -39,7 +39,7 @@ class KNP(object):
         juman_str = "%s%s" % (juman_lines, self.pattern)
         if not self.socket and not self.subprocess:
             if self.server != '':
-                self.socket = Socket(self.server, self.port)
+                self.socket = Socket(self.server, self.port, "RUN -tab -normal\n")
             else:
                 command = "%s %s" % (self.command, self.option)
                 if self.rcfile:

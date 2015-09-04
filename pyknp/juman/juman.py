@@ -10,13 +10,14 @@ import subprocess
 import unittest
 
 class Socket(object):
-    def __init__(self, hostname, port):
+    def __init__(self, hostname, port, option=None):
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((hostname, port))
         except:
             raise
-        self.sock.send("RUN -e2\n")
+        if option is not None:
+            self.sock.send(option)
         data = ""
         while "OK" not in data:
             data = self.sock.recv(1024)
@@ -86,7 +87,7 @@ class Juman(object):
     def juman_lines(self, input_str):
         if not self.socket and not self.subprocess:
             if self.server != '':
-                self.socket = Socket(self.server, self.port)
+                self.socket = Socket(self.server, self.port, "RUN -e2\n")
             else:
                 command = "%s %s" % (self.command, self.option)
                 if self.rcfile:
