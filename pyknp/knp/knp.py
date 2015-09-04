@@ -61,8 +61,8 @@ class KNPTest(unittest.TestCase):
         result = self.knp.parse(u"赤い花が咲いた。")
         self.assertEqual(len(result), 3)
         self.assertEqual(result[0].parent.bnst_id, 1)
-        self.assertEqual(len(result[1].child), 1)
-        self.assertEqual(result[1].child[0].bnst_id, 0)
+        self.assertEqual(len(result[1].children), 1)
+        self.assertEqual(result[1].children[0].bnst_id, 0)
         self.assertEqual(result[1].parent.bnst_id, 2)
         self.assertEqual(result[2].parent, None)
     def test_mrph(self):
