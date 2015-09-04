@@ -1,8 +1,10 @@
 # pyknp: Python Module for KNP/JUMAN Version 0.1
 
-- Written by John Richardson
 - Kurohashi-Kawahara Lab, Kyoto University
-- john@nlp.ist.i.kyoto-u.ac.jp
+- Written by 
+    - [John Richardson](john@nlp.ist.i.kyoto-u.ac.jp)
+    - [Tomohide Shibata](shibata@i.kyoto-u.ac.jp)
+    - [Yuta Hayashibe](yuta-h@i.kyoto-u.ac.jp)
 
 ## INSTALLATION
 
