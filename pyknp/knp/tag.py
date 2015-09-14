@@ -52,6 +52,9 @@ class Tag(object):
         else:
             return self._pstring
 
+    def get_surface(self):
+        return ''.join([mrph.midasi for mrph in self.mrph_list()])
+
 class TagTest(unittest.TestCase):
     def test(self):
         tag_str = u"+ 1D <BGH:構文/こうぶん><文節内><係:文節内><文頭><体言>" \
@@ -70,8 +73,7 @@ class TagTest(unittest.TestCase):
         self.assertEqual(len(tag.mrph_list()), 1)
         tag.push_mrph(mrph2)
         self.assertEqual(len(tag.mrph_list()), 2)
-        self.assertEqual(''.join([mrph.midasi for mrph in tag.mrph_list()]),
-                         u'構文解析')
+        self.assertEqual(tag.get_surface(), u'構文解析')
 
 if __name__ == '__main__':
     unittest.main()
