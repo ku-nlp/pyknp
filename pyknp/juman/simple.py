@@ -5,10 +5,13 @@ import unittest
 
 JUMAN = Juman()
 
+
 def juman(input_str):
     return JUMAN.analysis(input_str)
 
+
 class SimpleTest(unittest.TestCase):
+
     def test(self):
         test_str = u"この文を解析してください。"
         result = juman(test_str)

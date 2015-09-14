@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-__author__ = 'John Richardson' 
+__author__ = 'John Richardson'
 __email__ = 'john@nlp.ist.i.kyoto-u.ac.jp'
 __version__ = '0.1'
 __copyright__ = ''
@@ -14,14 +14,14 @@ with open(version_file) as fh:
     pyknp_version = fh.read().strip()
 
 setup(
-    name = 'pyknp',
-    version = pyknp_version,
-    maintainer = __author__,
-    maintainer_email = __email__,
-    author = __author__,
-    author_email = __email__,
-    description = 'Python module for JUMAN/KNP.',
-    license = __license__,
-    url = 'https://bitbucket.org/ku_nlp/pyknp',
-    packages = find_packages(),
+    name='pyknp',
+    version=pyknp_version,
+    maintainer=__author__,
+    maintainer_email=__email__,
+    author=__author__,
+    author_email=__email__,
+    description='Python module for JUMAN/KNP.',
+    license=__license__,
+    url='https://bitbucket.org/ku_nlp/pyknp',
+    packages=find_packages(),
 )

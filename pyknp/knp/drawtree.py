@@ -3,28 +3,30 @@
 import re
 
 POS_MARK = {
-      u'特殊': '*',
-      u'動詞': 'v',
-      u'形容詞': 'j',
-      u'判定詞': 'c',
-      u'助動詞': 'x',
-      u'名詞': 'n',
-      u'固有名詞': 'N',
-      u'人名': 'J',
-      u'地名': 'C',
-      u'組織名': 'A',
-      u'指示詞': 'd',
-      u'副詞': 'a',
-      u'助詞': 'p',
-      u'接続詞': 'c',
-      u'連体詞': 'm',
-      u'感動詞': '!',
-      u'接頭辞': 'p',
-      u'接尾辞': 's',
-      u'未定義語': '?'
-      }
-    
+    u'特殊': '*',
+    u'動詞': 'v',
+    u'形容詞': 'j',
+    u'判定詞': 'c',
+    u'助動詞': 'x',
+    u'名詞': 'n',
+    u'固有名詞': 'N',
+    u'人名': 'J',
+    u'地名': 'C',
+    u'組織名': 'A',
+    u'指示詞': 'd',
+    u'副詞': 'a',
+    u'助詞': 'p',
+    u'接続詞': 'c',
+    u'連体詞': 'm',
+    u'感動詞': '!',
+    u'接頭辞': 'p',
+    u'接尾辞': 's',
+    u'未定義語': '?'
+}
+
+
 class DrawTree(object):
+
     def draw_tree(self, fh=None):
         """ 構文木を指定された fh に出力する．指定を省略した場合は，標準出力に出力される． """
 
@@ -38,10 +40,10 @@ class DrawTree(object):
         """ 構文木を文字列で返す． """
         leaves = self.draw_tree_leaves()
         limit = len(leaves)
-        item = [ [0 for j in range(limit)] for i in range(limit)]
+        item = [[0 for j in range(limit)] for i in range(limit)]
         active_column = [0] * limit
         limit -= 1
-        
+
         for i in xrange(limit):
             para_row = 1 if leaves[i].dpndtype == "P" else 0
             for j in xrange(i + 1, limit + 1):
@@ -81,12 +83,12 @@ class DrawTree(object):
                     else:
                         item[i][j] = u"　"
 
-        line = [ self.leaf_string(leaf) for leaf in self.draw_tree_leaves() ]
+        line = [self.leaf_string(leaf) for leaf in self.draw_tree_leaves()]
         for i in xrange(limit):
             for j in xrange(i + 1, limit + 1):
                 line[i] += item[i][j]
 
-        max_length = max([ self._str_real_length(l) for l in line ])
+        max_length = max([self._str_real_length(l) for l in line])
         buf = ""
         for i in xrange(limit + 1):
             diff = max_length - self._str_real_length(line[i])
@@ -94,7 +96,7 @@ class DrawTree(object):
             buf += line[i] + leaves[i].pstring() + "\n"
 
         return buf
-    
+
     def leaf_string(self, leaf):
         string = ""
         for mrph in leaf.mrph_list():
@@ -115,5 +117,5 @@ class DrawTree(object):
                 length += 1
             else:
                 length += 2
-                
+
         return length

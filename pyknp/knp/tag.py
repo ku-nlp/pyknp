@@ -7,10 +7,12 @@ import re
 import sys
 import unittest
 
+
 class Tag(object):
     """
     格解析の単位となるタグ(基本句)の各種情報を保持するオブジェクト．
     """
+
     def __init__(self, spec, tag_id=0):
         self._mrph_list = MList()
         self.parent_id = -1
@@ -39,13 +41,17 @@ class Tag(object):
         rep = self.features.get(u"正規化代表表記")
         if rep is not None:
             self.repname = rep
+
     def push_mrph(self, mrph):
         self._mrph_list.push_mrph(mrph)
+
     def spec(self):
         return "+ %d%s %s\n%s" % (self.parent_id, self.dpndtype, self.fstring,
                                   self._mrph_list.spec())
+
     def mrph_list(self):
         return self._mrph_list
+
     def pstring(self, string=None):
         if string:
             self._pstring = string
@@ -55,20 +61,22 @@ class Tag(object):
     def get_surface(self):
         return ''.join([mrph.midasi for mrph in self.mrph_list()])
 
+
 class TagTest(unittest.TestCase):
+
     def test(self):
         tag_str = u"+ 1D <BGH:構文/こうぶん><文節内><係:文節内><文頭><体言>" \
-                u"<名詞項候補><先行詞候補><正規化代表表記:構文/こうぶん>"
+            u"<名詞項候補><先行詞候補><正規化代表表記:構文/こうぶん>"
         tag = Tag(tag_str, 2)
         self.assertEqual(tag.tag_id, 2)
         self.assertEqual(tag.dpndtype, 'D')
         self.assertEqual(tag.parent_id, 1)
         self.assertEqual(len(tag.mrph_list()), 0)
-        mrph1 = Morpheme(u"構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 \"" \
-                u"代表表記:構文/こうぶん カテゴリ:抽象物\" <代表表記:構文/こうぶん>")
-        mrph2 = Morpheme(u"解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 \"" \
-                u"代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育" \
-                u"・学習;科学・技術\" <代表表記:解析/かいせき>")
+        mrph1 = Morpheme(u"構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 \""
+                         u"代表表記:構文/こうぶん カテゴリ:抽象物\" <代表表記:構文/こうぶん>")
+        mrph2 = Morpheme(u"解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 \""
+                         u"代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育"
+                         u"・学習;科学・技術\" <代表表記:解析/かいせき>")
         tag.push_mrph(mrph1)
         self.assertEqual(len(tag.mrph_list()), 1)
         tag.push_mrph(mrph2)

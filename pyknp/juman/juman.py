@@ -9,7 +9,9 @@ import socket
 import subprocess
 import unittest
 
+
 class Socket(object):
+
     def __init__(self, hostname, port, option=None):
         try:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -21,9 +23,11 @@ class Socket(object):
         data = ""
         while "OK" not in data:
             data = self.sock.recv(1024)
+
     def __del__(self):
         if self.sock:
             self.sock.close()
+
     def query(self, sentence, pattern):
         assert(isinstance(sentence, unicode))
         self.sock.sendall("%s\n" % sentence.encode('utf-8').strip())
@@ -34,17 +38,20 @@ class Socket(object):
             recv = "%s%s" % (recv, data)
         return recv.strip().decode('utf-8')
 
+
 class Subprocess(object):
+
     def __init__(self, command):
         subproc_args = {'stdin': subprocess.PIPE, 'stdout': subprocess.PIPE,
-                        'stderr': subprocess.STDOUT, 'cwd': '.', 'close_fds' : True}
+                        'stderr': subprocess.STDOUT, 'cwd': '.', 'close_fds': True}
         try:
             env = os.environ.copy()
             self.process = subprocess.Popen('bash -c "%s"' % command, env=env,
-                                      shell=True, **subproc_args)
+                                            shell=True, **subproc_args)
         except OSError:
             raise
         (self.stdouterr, self.stdin) = (self.process.stdout, self.process.stdin)
+
     def __del__(self):
         self.process.stdin.close()
         try:
@@ -52,6 +59,7 @@ class Subprocess(object):
             self.process.wait()
         except OSError:
             pass
+
     def query(self, sentence, pattern):
         assert(isinstance(sentence, unicode))
         self.process.stdin.write("%s\n" % sentence.encode('utf-8'))
@@ -63,10 +71,12 @@ class Subprocess(object):
             result = "%s%s\n" % (result, line.decode('utf-8'))
         return result
 
+
 class Juman(object):
     """
     形態素解析器 JUMAN を Python から利用するためのモジュールである．
     """
+
     def __init__(self, command='juman', server=None, port=32000, timeout=30,
                  option='-e2 -B', rcfile='', ignorepattern='',
                  pattern=r'EOS'):
@@ -83,7 +93,7 @@ class Juman(object):
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
             sys.stderr.write("Can't read rcfile (%s)!\n" % self.rcfile)
             quit(1)
-                
+
     def juman_lines(self, input_str):
         if not self.socket and not self.subprocess:
             if self.server is not None:
@@ -96,21 +106,27 @@ class Juman(object):
         if self.socket:
             return self.socket.query(input_str, pattern=self.pattern)
         return self.subprocess.query(input_str, pattern=self.pattern)
+
     def juman(self, input_str):
         assert(isinstance(input_str, unicode))
         result = MList(self.juman_lines(input_str))
         return result
+
     def analysis(self, input_str):
         """
         指定された文字列 input_str を形態素解析し，その結果を MList オブジェクトとして返す．
-        """ 
+        """
         return self.juman(input_str)
+
     def result(self, input_str):
         return MList(input_str)
 
+
 class JumanTest(unittest.TestCase):
+
     def setUp(self):
         self.juman = Juman()
+
     def test_normal(self):
         test_str = u"この文を解析してください。"
         result = self.juman.analysis(test_str)

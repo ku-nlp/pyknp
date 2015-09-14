@@ -3,6 +3,7 @@
 import re
 import unittest
 
+
 def parse_spec(spec):
     parts = []
     part = ''
@@ -24,10 +25,12 @@ def parse_spec(spec):
     parts.append(part)
     return parts
 
+
 class Morpheme(object):
     """
     形態素の各種情報を保持するオブジェクト．
     """
+
     def __init__(self, spec, mrph_id=""):
         assert isinstance(spec, unicode)
         self.mrph_id = mrph_id
@@ -67,13 +70,16 @@ class Morpheme(object):
         match = re.search(ur"代表表記:([^\"\s]+)", self.imis)
         if match:
             self.repname = match.group(1)
+
     def push_imis(self, imis):
         if self.imis == 'NIL':
             self.imis = '"%s"' % ' '.join(imis)
         else:
             self.imis = '%s%s"' % (self.imis[:-1], ' '.join(' ', imis))
+
     def push_doukei(self, mrph):
         self.doukei.append(mrph)
+
     def repnames(self):
         """
         形態素の代表表記（曖昧性がある場合は「?」で連結）を返す．
@@ -86,18 +92,21 @@ class Morpheme(object):
                 repnames.append(doukei.repname)
         # 重複を削除
         return "?".join(sorted(set(repnames), key=repnames.index))
+
     def spec(self):
         imis = self.imis
         if imis != "NIL" and len(imis) != 0:
             imis = '"%s"' % imis
-            
+
         spec = "%s %s %s %s %s %s %s %s %s %s %s %s %s" % \
-                (self.midasi, self.yomi, self.genkei, self.hinsi, self.hinsi_id,
-                 self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id,
-                 self.katuyou2, self.katuyou2_id, imis, self.fstring)
+            (self.midasi, self.yomi, self.genkei, self.hinsi, self.hinsi_id,
+             self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id,
+             self.katuyou2, self.katuyou2_id, imis, self.fstring)
         return "%s\n" % spec.rstrip()
 
+
 class MorphemeTest(unittest.TestCase):
+
     def test_simple(self):
         spec = u"であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18\n"
         mrph = Morpheme(spec)
@@ -113,15 +122,18 @@ class MorphemeTest(unittest.TestCase):
         self.assertEqual(mrph.katuyou2, u'デアル列基本連用形')
         self.assertEqual(mrph.katuyou2_id, 18)
         self.assertEqual(mrph.spec(), spec)
+
     def test_nil(self):
         spec = u"であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18 NIL\n"
         mrph = Morpheme(spec)
         self.assertEqual(mrph.imis, "NIL")
         self.assertEqual(mrph.spec(), spec)
+
     def test_at(self):
         spec = u"@ @ @ 未定義語 15 その他 1 * 0 * 0"
         mrph = Morpheme(spec)
         self.assertEqual(mrph.midasi, u'@')
+
     def test_knp(self):
         spec = u"構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 NIL <漢字><かな漢字><自立><←複合><名詞相当語>\n"
         mrph = Morpheme(spec)

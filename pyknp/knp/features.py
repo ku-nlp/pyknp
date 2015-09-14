@@ -6,30 +6,33 @@ import unittest
 
 def parsePAS(val):
     c0 = val.find(u':')
-    c1 = val.find(u':', c0+1)
-    cfid = val[:c0] + u":" + val[c0+1:c1]
-    pas = {u"cfid":cfid, u"arguments":{}}
+    c1 = val.find(u':', c0 + 1)
+    cfid = val[:c0] + u":" + val[c0 + 1:c1]
+    pas = {u"cfid": cfid, u"arguments": {}}
 
-    if val.count(u":") < 2: #For copula
+    if val.count(u":") < 2:  # For copula
         return
-    
-    for k in val[c1+1 : ].split(u';'):
+
+    for k in val[c1 + 1:].split(u';'):
         items = k.split(u"/")
-        if items[1] != u"U" and  items[1] != u"-":
+        if items[1] != u"U" and items[1] != u"-":
             mycase = items[0]
             mycasetype = items[1]
             myarg = items[2]
             myarg_no = int(items[3])
             myarg_sent_id = int(items[5])
 
-            pas[u"arguments"][mycase] = {u"no":myarg_no, u"type":mycasetype, u"arg":myarg, u"sid":myarg_sent_id}
+            pas[u"arguments"][mycase] = {
+                u"no": myarg_no, u"type": mycasetype, u"arg": myarg, u"sid": myarg_sent_id}
     return pas
 
 
 import re
 REL_PAT = "rel type=\"([^\s]+?)\"(?: mode=\"([^>]+?)\")? target=\"([^\s]+?)\"(?: sid=\"(.+?)\" id=\"(.+?)\")?/"
-WRITER_READER_LIST = [ u"著者", u"読者" ]
-WRITER_READER_CONV_LIST = { u"一人称": u"著者", u"二人称": u"読者" }
+WRITER_READER_LIST = [u"著者", u"読者"]
+WRITER_READER_CONV_LIST = {u"一人称": u"著者", u"二人称": u"読者"}
+
+
 def parseRel(fstring, consider_writer_reader=False):
     for match in re.findall(r"%s" % REL_PAT, fstring):
         atype, mode, target, sid, id = match
@@ -44,9 +47,9 @@ def parseRel(fstring, consider_writer_reader=False):
                     target = WRITER_READER_CONV_LIST[target]
 
                 if target not in WRITER_READER_LIST:
-                    continue #XXX
-                sid = target_sid #dummy
-                id = None #dummy
+                    continue  # XXX
+                sid = target_sid  # dummy
+                id = None  # dummy
         else:
             if not sid:
                 continue
@@ -54,15 +57,16 @@ def parseRel(fstring, consider_writer_reader=False):
         if id is not None:
             id = int(id)
 
-        data = {"type": atype, "target": target, "sid": sid, "id": id, "mode": mode}
+        data = {"type": atype, "target": target,
+                "sid": sid, "id": id, "mode": mode}
         return data
-
 
 
 class Features(dict):
     """
     タグ(基本句)のfeatureを保持するオブジェクト
     """
+
     def __init__(self, spec, splitter=u"><", ignore_first_character=True):
         assert isinstance(spec, unicode)
 
@@ -85,11 +89,11 @@ class Features(dict):
                     self.rels.append(rel)
             elif kv_splitter == -1:
                 key = self.spec[tag_start:tag_end]
-                val = True #Dummy value
+                val = True  # Dummy value
                 self[key] = val
             else:
-                key = self.spec[tag_start : kv_splitter]
-                val = self.spec[kv_splitter +1 : tag_end]
+                key = self.spec[tag_start: kv_splitter]
+                val = self.spec[kv_splitter + 1: tag_end]
                 self[key] = val
 
                 if key == u'格解析結果':
@@ -99,9 +103,10 @@ class Features(dict):
 
 
 class FeaturesTest(unittest.TestCase):
+
     def test(self):
         tag_str1 = u"<BGH:構文/こうぶん><文節内><係:文節内><文頭><体言>" \
-                u"<名詞項候補><先行詞候補><正規化代表表記:構文/こうぶん>"
+            u"<名詞項候補><先行詞候補><正規化代表表記:構文/こうぶん>"
         f1 = Features(tag_str1)
         self.assertEqual(f1.get(u"BGH"), u"構文/こうぶん")
         self.assertEqual(f1.get(u"係"), u"文節内")
