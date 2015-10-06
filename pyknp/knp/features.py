@@ -125,7 +125,7 @@ class FeaturesTest(unittest.TestCase):
         self.assertEqual(f2args.get(u"デ").get(u"no"), 1)
         self.assertEqual(f2args.get(u"デ").get(u"type"), u"C")
         self.assertEqual(f2args.get(u"デ").get(u"arg"), u"車")
-        self.assertEqual(f2args.get(u"デ").get(u"sid"), 14)
+        self.assertEqual(f2args.get(u"デ").get(u"sid"), u"14")
         self.assertEqual(f2args.get(u"ガ"), None)
         self.assertEqual(f2.rels, None)
 
