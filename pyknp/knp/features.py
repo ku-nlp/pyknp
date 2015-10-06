@@ -20,7 +20,7 @@ def parsePAS(val):
             mycasetype = items[1]
             myarg = items[2]
             myarg_no = int(items[3])
-            myarg_sent_id = int(items[5])
+            myarg_sent_id = items[5]
 
             pas[u"arguments"][mycase] = {
                 u"no": myarg_no, u"type": mycasetype, u"arg": myarg, u"sid": myarg_sent_id}
