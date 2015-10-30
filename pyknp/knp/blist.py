@@ -24,6 +24,7 @@ class BList(DrawTree):
         self.sid = ''
         self.parse(spec)
         self.set_parent_child()
+        self.set_positions()
 
     def parse(self, spec):
         for string in spec.split('\n'):
@@ -56,6 +57,20 @@ class BList(DrawTree):
             else:
                 mrph = Morpheme(string, len(self.mrph_list()))
                 self._bnst[-1].push_mrph(mrph)
+
+    def set_positions(self):
+        self.mrph_positions = [0]
+        self.tag_positions = [0]
+        for mrph in self.mrph_list():
+            self.mrph_positions.append(self.mrph_positions[-1] + len(mrph.midasi))
+        for tag in self.tag_list():
+            start_mrph_id = tag.mrph_list()[0].mrph_id
+            end_mrph_id = tag.mrph_list()[-1].mrph_id
+            length = self.mrph_positions[end_mrph_id + 1] - self.mrph_positions[start_mrph_id]
+            self.tag_positions.append(self.tag_positions[-1] + length)
+
+    def get_tag_span(self, tag_id):
+        return (self.tag_positions[tag_id], self.tag_positions[tag_id + 1] - 1)
 
     def set_parent_child(self):
         for bnst in self._bnst:
@@ -162,6 +177,11 @@ class BListTest(unittest.TestCase):
         self.assertEqual(blist[0].children, [])
         self.assertEqual(blist.tag_list()[1].parent, blist.tag_list()[2])
         self.assertEqual(blist.tag_list()[2].children, [blist.tag_list()[1]])
+        self.assertEqual(blist.mrph_positions, [0, 2, 4, 5, 7, 8, 10, 11])
+        self.assertEqual(blist.tag_positions, [0, 2, 5, 8, 11])
+        spans = [(0, 1), (2, 4), (5, 7), (8, 10)]
+        for i, t in enumerate(blist.tag_list()):
+            self.assertEqual(blist.get_tag_span(t.tag_id), spans[i])
 
 if __name__ == '__main__':
     unittest.main()
