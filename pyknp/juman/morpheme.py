@@ -9,7 +9,7 @@ class Morpheme(object):
     形態素の各種情報を保持するオブジェクト．
     """
 
-    def __init__(self, spec, mrph_id=""):
+    def __init__(self, spec, mrph_id="", newstyle=False):
         assert isinstance(spec, unicode)
         self.mrph_id = mrph_id
         self.doukei = []
@@ -27,7 +27,28 @@ class Morpheme(object):
         self.imis = ''
         self.fstring = ''
         self.repname = ''
-        self._parse_spec(spec.strip("\n"))
+        if newstyle:
+            self._parse_new_spec(spec.strip("\n"))
+        else:
+            self._parse_spec(spec.strip("\n"))
+
+    def _parse_new_spec(self, spec):
+        parts = spec.split(u"\t")
+        assert parts[0] == u"-"
+        self.mrph_id = parts[1]
+        self.midasi = parts[5]
+        self.yomi = parts[7]
+        self.genkei = parts[8]
+        self.hinsi = parts[9]
+        self.hinsi_id = int(parts[10])
+        self.bunrui = parts[11]
+        self.bunrui_id = int(parts[12])
+        self.katuyou1 = parts[13]
+        self.katuyou1_id = int(parts[14])
+        self.katuyou2 = parts[15]
+        self.katuyou2_id = int(parts[16])
+        self.fstring = parts[17]
+        self.repname = parts[6]
 
     def _parse_spec(self, spec):
         parts = []
@@ -103,12 +124,33 @@ class Morpheme(object):
              self.katuyou2, self.katuyou2_id, imis, self.fstring)
         return "%s\n" % spec.rstrip()
 
+    def new_spec(self, prev_mrph_id, position):
+        assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, unicode)
+        assert isinstance(position, int)
+        out = []
+        out.append(u"-\t%s" % self.mrph_id)
+        out.append(u"\t%s" % prev_mrph_id)
+        out.append(u"\t%d\t%d" % (position, position + len(self.midasi) - 1))
+        out.append(u"\t%s" % self.midasi)
+        reps = self.repnames()
+        if len(reps) == 0:
+            #             out.append(u"\t%s/%s" % (self.midasi, self.yomi))
+            out.append(u"\t%s/%s" % (self.genkei, self.genkei))
+        else:
+            out.append(u"\t%s" % reps)
+        out.append(u"\t%s\t%s\t%s\t%s" % (self.yomi, self.genkei, self.hinsi, self.hinsi_id))
+        out.append(u"\t%s\t%s\t%s\t%s\t%s\t%s" % (self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id, self.katuyou2, self.katuyou2_id))
+        out.append(u"\t")
+        out.append(self.fstring)
+        out.append(u"\n")
+        return u"".join(out)
+
 
 class MorphemeTest(unittest.TestCase):
 
     def test_simple(self):
         spec = u"であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18\n"
-        mrph = Morpheme(spec)
+        mrph = Morpheme(spec, 123)
         self.assertEqual(mrph.midasi, u'であり')
         self.assertEqual(mrph.yomi, u'であり')
         self.assertEqual(mrph.genkei, u'だ')
@@ -120,7 +162,9 @@ class MorphemeTest(unittest.TestCase):
         self.assertEqual(mrph.katuyou1_id, 25)
         self.assertEqual(mrph.katuyou2, u'デアル列基本連用形')
         self.assertEqual(mrph.katuyou2_id, 18)
+        self.assertEqual(mrph.fstring, "")
         self.assertEqual(mrph.spec(), spec)
+        self.assertEqual(mrph.new_spec(8, 9), u"-\t123\t8\t9\t11\tであり\tだ/だ\tであり\tだ\t判定詞\t4\t*\t0\t判定詞\t25\tデアル列基本連用形\t18\t\n")
 
     def test_nil(self):
         spec = u"であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18 NIL\n"
@@ -150,6 +194,38 @@ class MorphemeTest(unittest.TestCase):
         self.assertEqual(mrph.imis, u'NIL')
         self.assertEqual(mrph.fstring, u'<漢字><かな漢字><自立><←複合><名詞相当語>')
         self.assertEqual(mrph.spec(), spec)
+
+
+class MorphemeTest2(unittest.TestCase):
+
+    def test_simple(self):
+        spec = u"""-	36	2	2	4	貰った	貰う/もらう	もらった	もらう	動詞	2	*	0	子音動詞ワ行	12	タ形	10	付属動詞候補（タ系）\n"""
+
+        mrph = Morpheme(spec, newstyle=True)
+        self.assertEqual(mrph.midasi, u'貰った')
+        self.assertEqual(mrph.yomi, u'もらった')
+        self.assertEqual(mrph.genkei, u'もらう')
+        self.assertEqual(mrph.hinsi, u'動詞')
+        self.assertEqual(mrph.hinsi_id, 2)
+        self.assertEqual(mrph.bunrui, u'*')
+        self.assertEqual(mrph.bunrui_id, 0)
+        self.assertEqual(mrph.katuyou1, u'子音動詞ワ行')
+        self.assertEqual(mrph.katuyou1_id, 12)
+        self.assertEqual(mrph.katuyou2, u'タ形')
+        self.assertEqual(mrph.katuyou2_id, 10)
+        self.assertEqual(mrph.imis, '')
+        self.assertEqual(mrph.fstring, u"付属動詞候補（タ系）")
+        self.assertEqual(mrph.spec(), u"貰った もらった もらう 動詞 2 * 0 子音動詞ワ行 12 タ形 10  付属動詞候補（タ系）\n")
+        self.assertEqual(mrph.new_spec(2, 2), spec)
+
+    def test_doukei(self):
+        spec1 = u"""-	1	0	0	0	母	母/ぼ	ぼ	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:音|漢字\n"""
+        spec2 = u"""-	2	0	0	0	母	母/はは	はは	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:訓|カテゴリ:人|漢字\n"""
+        m1 = Morpheme(spec1, newstyle=True)
+        m2 = Morpheme(spec2, newstyle=True)
+        m1.push_doukei(m2)
+        self.assertEqual(m1.repnames(), u"母/ぼ?母/はは")
+
 
 if __name__ == '__main__':
     unittest.main()
