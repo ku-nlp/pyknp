@@ -120,13 +120,16 @@ class Morpheme(object):
         return "%s\n" % spec.rstrip()
 
     def new_spec(self, prev_mrph_id, position):
-        assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, unicode)
+        assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, unicode) or isinstance(prev_mrph_id, list)
         assert isinstance(position, int)
         if self.mrph_id is None:
             raise NotImplementedError
         out = []
         out.append(u"-\t%s" % self.mrph_id)
-        out.append(u"\t%s" % prev_mrph_id)
+        if isinstance(prev_mrph_id, list):
+            out.append(u"\t%s" % u";".join([u"%s" % pm for pm in prev_mrph_id]))
+        else:
+            out.append(u"\t%s" % prev_mrph_id)
         out.append(u"\t%d\t%d" % (position, position + len(self.midasi) - 1))
         out.append(u"\t%s" % self.midasi)
         reps = self.repnames()
@@ -138,7 +141,17 @@ class Morpheme(object):
         out.append(u"\t%s\t%s\t%s\t%s" % (self.yomi, self.genkei, self.hinsi, self.hinsi_id))
         out.append(u"\t%s\t%s\t%s\t%s\t%s\t%s" % (self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id, self.katuyou2, self.katuyou2_id))
         out.append(u"\t")
-        out.append(self.fstring)
+        if len(self.fstring) == 0:
+            fs = []
+            for im in self.imis.split(u" "):
+                if im.startswith(u"代表表記:"):
+                    continue
+                elif im == u"NIL":
+                    continue
+                fs.append(im)
+            out.append(u"|".join(fs))
+        else:
+            out.append(self.fstring)
         out.append(u"\n")
         return u"".join(out)
 
@@ -162,6 +175,12 @@ class MorphemeTest(unittest.TestCase):
         self.assertEqual(mrph.fstring, "")
         self.assertEqual(mrph.spec(), spec)
         self.assertEqual(mrph.new_spec(8, 9), u"-\t123\t8\t9\t11\tであり\tだ/だ\tであり\tだ\t判定詞\t4\t*\t0\t判定詞\t25\tデアル列基本連用形\t18\t\n")
+
+    def test_imis(self):
+        spec = u"""解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 "代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;科学・技術"\n"""
+        mrph = Morpheme(spec)
+        self.assertEqual(mrph.spec(), spec)
+        self.assertEqual(mrph.imis, u"代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;科学・技術")
 
     def test_nil(self):
         spec = u"であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18 NIL\n"
