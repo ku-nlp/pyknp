@@ -4,28 +4,6 @@ import re
 import unittest
 
 
-def parse_spec(spec):
-    parts = []
-    part = ''
-    inside_quotes = False
-    for char in spec:
-        if char == u'"':
-            if not inside_quotes:
-                inside_quotes = True
-            else:
-                inside_quotes = False
-        if char == u' ' and not inside_quotes:
-            if part.startswith(u'"') and part.endswith(u'"'):
-                parts.append(part[1:-1])
-            else:
-                parts.append(part)
-            part = ''
-        else:
-            part += char
-    parts.append(part)
-    return parts
-
-
 class Morpheme(object):
     """
     形態素の各種情報を保持するオブジェクト．
@@ -35,7 +13,6 @@ class Morpheme(object):
         assert isinstance(spec, unicode)
         self.mrph_id = mrph_id
         self.doukei = []
-        parts = parse_spec(spec.strip("\n"))
         self.midasi = ''
         self.yomi = ''
         self.genkei = ''
@@ -49,6 +26,29 @@ class Morpheme(object):
         self.katuyou2_id = 0
         self.imis = ''
         self.fstring = ''
+        self.repname = ''
+        self._parse_spec(spec.strip("\n"))
+
+    def _parse_spec(self, spec):
+        parts = []
+        part = ''
+        inside_quotes = False
+        for char in spec:
+            if char == u'"':
+                if not inside_quotes:
+                    inside_quotes = True
+                else:
+                    inside_quotes = False
+            if char == u' ' and not inside_quotes:
+                if part.startswith(u'"') and part.endswith(u'"'):
+                    parts.append(part[1:-1])
+                else:
+                    parts.append(part)
+                part = ''
+            else:
+                part += char
+        parts.append(part)
+
         try:
             self.midasi = parts[0]
             self.yomi = parts[1]
@@ -66,7 +66,6 @@ class Morpheme(object):
         except IndexError:
             pass
         # Extract 代表表記
-        self.repname = ''
         match = re.search(ur"代表表記:([^\"\s]+)", self.imis)
         if match:
             self.repname = match.group(1)
