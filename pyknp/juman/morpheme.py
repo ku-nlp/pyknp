@@ -132,12 +132,11 @@ class Morpheme(object):
             out.append(u"\t%s" % prev_mrph_id)
         out.append(u"\t%d\t%d" % (position, position + len(self.midasi) - 1))
         out.append(u"\t%s" % self.midasi)
-        reps = self.repnames()
-        if len(reps) == 0:
+        if len(self.repname) == 0:
             #             out.append(u"\t%s/%s" % (self.midasi, self.yomi))
             out.append(u"\t%s/%s" % (self.genkei, self.genkei))
         else:
-            out.append(u"\t%s" % reps)
+            out.append(u"\t%s" % self.repname)
         out.append(u"\t%s\t%s\t%s\t%s" % (self.yomi, self.genkei, self.hinsi, self.hinsi_id))
         out.append(u"\t%s\t%s\t%s\t%s\t%s\t%s" % (self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id, self.katuyou2, self.katuyou2_id))
         out.append(u"\t")
