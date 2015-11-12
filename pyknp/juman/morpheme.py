@@ -9,8 +9,9 @@ class Morpheme(object):
     形態素の各種情報を保持するオブジェクト．
     """
 
-    def __init__(self, spec, mrph_id="", newstyle=False):
+    def __init__(self, spec, mrph_id=None, newstyle=False):
         assert isinstance(spec, unicode)
+        assert mrph_id is None or isinstance(mrph_id, int)
         self.mrph_id = mrph_id
         self.doukei = []
         self.midasi = ''
@@ -35,7 +36,7 @@ class Morpheme(object):
     def _parse_new_spec(self, spec):
         parts = spec.split(u"\t")
         assert parts[0] == u"-"
-        self.mrph_id = parts[1]
+        self.mrph_id = int(parts[1])
         self.midasi = parts[5]
         self.yomi = parts[7]
         self.genkei = parts[8]
@@ -82,7 +83,7 @@ class Morpheme(object):
             self.katuyou1_id = int(parts[8])
             self.katuyou2 = parts[9]
             self.katuyou2_id = int(parts[10])
-            self.imis = parts[11]
+            self.imis = parts[11].lstrip("\"").rstrip("\"")
             self.fstring = parts[12]
         except IndexError:
             pass
@@ -90,12 +91,6 @@ class Morpheme(object):
         match = re.search(ur"代表表記:([^\"\s]+)", self.imis)
         if match:
             self.repname = match.group(1)
-
-    def push_imis(self, imis):
-        if self.imis == 'NIL':
-            self.imis = '"%s"' % ' '.join(imis)
-        else:
-            self.imis = '%s%s"' % (self.imis[:-1], ' '.join(' ', imis))
 
     def push_doukei(self, mrph):
         self.doukei.append(mrph)
@@ -127,6 +122,8 @@ class Morpheme(object):
     def new_spec(self, prev_mrph_id, position):
         assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, unicode)
         assert isinstance(position, int)
+        if self.mrph_id is None:
+            raise NotImplementedError
         out = []
         out.append(u"-\t%s" % self.mrph_id)
         out.append(u"\t%s" % prev_mrph_id)

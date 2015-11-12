@@ -24,7 +24,7 @@ class MList(object):
                 elif line.startswith('EOS'):
                     pass
                 else:
-                    self.push_mrph(Morpheme(line))
+                    self.push_mrph(Morpheme(line, len(self._mrph)))
 
     def push_mrph(self, mrph):
         if self._readonly:
@@ -62,8 +62,10 @@ class MListTest(unittest.TestCase):
 
     def setUp(self):
         self.mlist = MList()
-        self.mlist.push_mrph(Morpheme(u"構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0\n"))
-        self.mlist.push_mrph(Morpheme(u"解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0\n"))
+        self.spec1 = u"""構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 "代表表記:構文/こうぶん カテゴリ:抽象物"\n"""
+        self.spec2 = u"""解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 "代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;科学・技術"\n"""
+        self.mlist.push_mrph(Morpheme(self.spec1))
+        self.mlist.push_mrph(Morpheme(self.spec2))
 
     def test_mrph(self):
         self.assertEqual(len(self.mlist), 2)
@@ -72,6 +74,8 @@ class MListTest(unittest.TestCase):
 
     def test_mrph_list(self):
         self.assertEqual(''.join([x.midasi for x in self.mlist]), u'構文解析')
+        self.assertEqual(self.mlist.spec(), self.spec1 + self.spec2)
+
 
 if __name__ == '__main__':
     unittest.main()
