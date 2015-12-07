@@ -49,7 +49,7 @@ class BList(DrawTree):
             elif string.startswith('!!'):
                 synnodes = SynNodes(string)
                 self._bnst[-1].tag_list().push_synnodes(synnodes)
-            elif string.startswith('!'):
+            elif string.startswith('!') and not string.startswith('! ! !'):
                 synnode = SynNode(string)
                 self._bnst[-1].tag_list().push_synnode(synnode)
             elif string.startswith('EOS'):
