@@ -1,0 +1,61 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+"""
+"""
+__author__ = 'Yuta Hayashibe'
+__version__ = ""
+__copyright__ = ""
+__license__ = "GPL v3"
+
+
+import optparse
+import codecs
+import sys
+sys.stdin = codecs.getreader('UTF-8')(sys.stdin)
+sys.stdout = codecs.getwriter('UTF-8')(sys.stdout)
+sys.stderr = codecs.getwriter('UTF-8')(sys.stderr)
+
+
+import pyknp
+import json
+
+
+def draw_trees(inf, outf):
+    lines = []
+    for line in inf:
+        lines.append(line)
+        if line == u"EOS\n":
+            bl = pyknp.BList(u"".join(lines))
+            outf.write(u"%s\n" % bl.sid)
+            bl.draw_tag_tree(outf)
+            lines = []
+            outf.write(u"\n")
+            for t in bl.tag_list():
+                pas = t.features.pas
+                if pas is not None:
+                    outf.write(u"%s\n" % json.dumps(pas, ensure_ascii=False))
+
+            outf.write(u"\n\n")
+
+
+def main():
+    oparser = optparse.OptionParser()
+    oparser.add_option("-i", "--input", dest="input", default="-")
+    oparser.add_option("-o", "--output", dest="output", default="-")
+    (opts, args) = oparser.parse_args()
+
+    if opts.input == "-":
+        inf = sys.stdin
+    else:
+        inf = codecs.open(opts.input, "r", "utf8")
+
+    if opts.output == "-":
+        outf = sys.stdout
+    else:
+        outf = codecs.open(opts.output, "w", "utf8")
+    draw_trees(inf, outf)
+
+
+if __name__ == '__main__':
+    main()
