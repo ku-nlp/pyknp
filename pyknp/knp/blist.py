@@ -27,14 +27,18 @@ class BList(DrawTree):
         self.set_positions()
 
     def parse(self, spec):
+        newstyle = False
         for string in spec.split('\n'):
             if string.strip() == "":
                 continue
             if string.startswith('#'):
+                newstyle = False
                 self.comment = string
                 match = re.match(r'# S-ID:(.*?)[ $]', self.comment)
                 if match:
                     self.sid = match.group(1)
+                if 'KNP++' in string:
+                    newstyle = True
             elif re.match(self.pattern, string):
                 break
             elif string.startswith(';;'):
@@ -44,8 +48,11 @@ class BList(DrawTree):
                 bnst = Bunsetsu(string, len(self._bnst))
                 self._bnst.append(bnst)
             elif string.startswith('+'):
+                if newstyle:
+                    bnst = Bunsetsu(string, len(self._bnst), newstyle)
+                    self._bnst.append(bnst)
                 self._bnst[-1].push_tag(
-                    Tag(string, len(self.tag_list())))
+                    Tag(string, len(self.tag_list()), newstyle))
             elif string.startswith('!!'):
                 synnodes = SynNodes(string)
                 self._bnst[-1].tag_list().push_synnodes(synnodes)
@@ -55,7 +62,7 @@ class BList(DrawTree):
             elif string.startswith('EOS'):
                 pass
             else:
-                mrph = Morpheme(string, len(self.mrph_list()))
+                mrph = Morpheme(string, len(self.mrph_list()), newstyle)
                 self._bnst[-1].push_mrph(mrph)
 
     def set_positions(self):
@@ -180,6 +187,48 @@ class BListTest(unittest.TestCase):
         self.assertEqual(blist.mrph_positions, [0, 2, 4, 5, 7, 8, 10, 11])
         self.assertEqual(blist.tag_positions, [0, 2, 5, 8, 11])
         spans = [(0, 1), (2, 4), (5, 7), (8, 10)]
+        for i, t in enumerate(blist.tag_list()):
+            self.assertEqual(blist.get_tag_span(t.tag_id), spans[i])
+
+
+class BList2Test(unittest.TestCase):
+
+    def setUp(self):
+        self.result = u"""# S-ID:none KNP++:a9af601
++	0	3	D	1;3	母が	母/ぼ	-	-	-	-	-	-	-	-	-	-	BP:Phrase|CFG_RULE_ID:1|BOS|BP_TYPE|ガ|助詞
+-	1	0	0	0	母	母/ぼ	ぼ	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:音|漢字|CONT|RelWord-105522
+-	3	1;2	1	1	が	*	が	が	助詞	9	接続助詞	3	*	0	*	0	FUNC|Ｔ固有付属|Ｔ固有任意
++	1	3	D	5;6	姉に	姉/あね	-	-	-	-	-	-	-	-	-	-	BP:Phrase|CFG_RULE_ID:1|BP_TYPE|ニ|助詞|体言
+-	5	3;4	2	2	姉	姉/あね	あね	姉	名詞	6	普通名詞	1	*	0	*	0	漢字読み:訓|カテゴリ:人|漢字|CONT|LD
+-	6	5	3	3	に	*	に	に	助詞	9	接続助詞	3	*	0	*	0	FUNC|Ｔ固有付属|Ｔ固有任意
++	2	3	D	8;9	弁当を	弁当/べんとう	-	-	-	-	-	-	-	-	-	-	BP:Phrase|CFG_RULE_ID:1|BP_TYPE|ヲ
+-	8	6;7	4	5	弁当	弁当/べんとう	べんとう	弁当	名詞	6	普通名詞	1	*	0	*	0	カテゴリ:人工物-食べ
+-	9	8	6	6	を	*	を	を	助詞	9	格助詞	1	*	0	*	0	FUNC|Ｔ固有付属|Ｔ固有任意
++	3	-1	D	10	渡した	渡す/わたす	-	-	-	-	-	-	-	-	-	-	EOS|BP:Phrase|CFG_RULE_ID:0|BP_TYPE
+-	10	9	7	9	渡した	渡す/わたす	わたした	渡す	動詞	2	*	0	子音動詞サ行	5	タ形	10	付属動詞候補（基本）
+EOS"""
+
+    def test(self):
+        blist = BList(self.result)
+        self.assertEqual(len(blist), 4)
+        self.assertEqual(len(blist.tag_list()), 4)
+        self.assertEqual(len(blist.mrph_list()), 7)
+        self.assertEqual(''.join([mrph.midasi for mrph in blist.mrph_list()]),
+                         u'母が姉に弁当を渡した')
+        self.assertEqual(blist.sid, 'none')
+        self.assertEqual(blist[1].parent, blist[3])
+        self.assertEqual(blist[1].parent_id, 3)
+        self.assertEqual(blist[3].parent, None)
+        self.assertEqual(blist[3].parent_id, -1)
+        self.assertEqual(blist[0].children, [])
+        self.assertEqual(blist[1].children, [])
+        self.assertEqual(blist[3].children, [blist[0], blist[1], blist[2]])
+
+        self.assertEqual(blist.tag_list()[1].parent, blist.tag_list()[3])
+        self.assertEqual(blist.tag_list()[3].children, [blist.tag_list()[0], blist.tag_list()[1],blist.tag_list()[2]])
+        self.assertEqual(blist.mrph_positions, [0, 1, 2, 3, 4, 6, 7, 10])
+        self.assertEqual(blist.tag_positions, [0, 2, 4, 7, 10])
+        spans = [(0, 1), (2, 3), (4, 6), (7, 9)]
         for i, t in enumerate(blist.tag_list()):
             self.assertEqual(blist.get_tag_span(t.tag_id), spans[i])
 

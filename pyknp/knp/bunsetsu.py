@@ -14,7 +14,7 @@ class Bunsetsu(object):
     KNP による係り受け解析の単位である文節の各種情報を保持するオブジェクト．
     """
 
-    def __init__(self, spec, bnst_id=0):
+    def __init__(self, spec, bnst_id=0, newstyle=False):
         self._mrph_list = MList()
         self._tag_list = TList()
         self.parent_id = -1
@@ -27,6 +27,12 @@ class Bunsetsu(object):
         spec = spec.strip()
         if spec == '*':
             pass
+        elif newstyle:
+            items = spec.split(u"\t")
+            self.parent_id = int(items[2])
+            self.dpndtype = items[3]
+            self.fstring = items[17]
+            self.repname = items[6]
         elif re.match(r'\* (-?\d+)([DPIA])(.*)$', spec):
             match = re.match(r'\* (-?\d+)([DPIA])(.*)$', spec)
             self.parent_id = int(match.group(1))
@@ -35,11 +41,13 @@ class Bunsetsu(object):
         else:
             sys.stderr.write("Illegal bunsetsu spec: %s\n" % spec)
             quit(1)
+
         # Extract 正規化代表表記
-        self.repname = ''
-        match = re.search(ur"<正規化代表表記:([^\"\s]+?)>", self.fstring)
-        if match:
-            self.repname = match.group(1)
+        if not newstyle:
+            self.repname = ''
+            match = re.search(ur"<正規化代表表記:([^\"\s]+?)>", self.fstring)
+            if match:
+                self.repname = match.group(1)
 
     def push_mrph(self, mrph):
         if len(self._tag_list) > 0:

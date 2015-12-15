@@ -36,7 +36,7 @@ class Morpheme(object):
     def _parse_new_spec(self, spec):
         parts = spec.split(u"\t")
         assert parts[0] == u"-"
-        self.mrph_id = int(parts[1])
+#         self.mrph_id = int(parts[1])
         self.midasi = parts[5]
         self.yomi = parts[7]
         self.genkei = parts[8]
