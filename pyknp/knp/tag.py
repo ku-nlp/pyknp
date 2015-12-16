@@ -13,7 +13,7 @@ class Tag(object):
     格解析の単位となるタグ(基本句)の各種情報を保持するオブジェクト．
     """
 
-    def __init__(self, spec, tag_id=0):
+    def __init__(self, spec, tag_id=0, newstyle=False):
         self._mrph_list = MList()
         self.parent_id = -1
         self.parent = None
@@ -27,6 +27,13 @@ class Tag(object):
         spec = spec.strip()
         if spec == '+':
             pass
+        elif newstyle:
+            items = spec.split(u"\t")
+            self.parent_id = int(items[2])
+            self.dpndtype = items[3]
+            self.fstring = items[17]
+            self.repname = items[6]
+            self.features = Features(self.fstring, u"|", False)
         elif re.match(r'\+ (-?\d+)(\w)(.*)$', spec):
             match = re.match(r'\+ (-?\d+)(\w)(.*)$', spec)
             self.parent_id = int(match.group(1))
@@ -35,12 +42,14 @@ class Tag(object):
         else:
             sys.stderr.write("Illegal tag spec: %s\n" % spec)
             quit(1)
+
         # Extract 正規化代表表記
-        self.repname = ''
-        self.features = Features(self.fstring)
-        rep = self.features.get(u"正規化代表表記")
-        if rep is not None:
-            self.repname = rep
+        if not newstyle:
+            self.repname = ''
+            self.features = Features(self.fstring)
+            rep = self.features.get(u"正規化代表表記")
+            if rep is not None:
+                self.repname = rep
 
     def push_mrph(self, mrph):
         self._mrph_list.push_mrph(mrph)
