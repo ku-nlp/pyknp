@@ -27,7 +27,7 @@ def draw_trees(inf, outf):
         lines.append(line)
         if line == u"EOS\n":
             bl = pyknp.BList(u"".join(lines))
-            outf.write(u"%s\n" % bl.sid)
+            outf.write(u"# S-ID: %s\n" % bl.sid)
             bl.draw_tag_tree(outf)
             lines = []
             outf.write(u"\n")
