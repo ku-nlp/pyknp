@@ -9,6 +9,8 @@ from pyknp import DrawTree
 import re
 import sys
 import unittest
+import json
+import bisect
 
 
 class BList(DrawTree):
@@ -22,16 +24,47 @@ class BList(DrawTree):
         self.pattern = pattern
         self.comment = ''
         self.sid = ''
+        self._pinfos = []
         self.parse(spec)
         self.set_parent_child()
         self.set_positions()
+        self._setPAS()
+
+    def _setPAS(self):
+        """Set PAS to BList with new format"""
+        for pinfo in self._pinfos:
+            pinfo = json.loads(pinfo)
+            outinfo = {u"cfid": pinfo[u"cfid"], u"arguments": {}}
+
+            start = pinfo[u"head_token_start"]
+            end = pinfo[u"head_token_end"]
+            tag_idx = bisect.bisect(self.tag_positions, end) - 1
+            tag = self.tag_list()[tag_idx]
+
+            for casename, argsinfo in pinfo[u"args"].items():
+                #                 possible_cases = argsinfo[u"possible_cases"]
+                for arg in argsinfo[u"arguments"]:
+                    # FIXME double arg like A and B
+                    arg_tag_idx = bisect.bisect(self.tag_positions, arg[u"head_token_end"]) - 1
+                    arg_sid = None
+                    if arg[u"sid"] is None:
+                        arg_sid = self.sid
+                    else:
+                        arg_sid = arg[u"sid"]
+                    outinfo[u"arguments"][casename] = {
+                        u"no": arg_tag_idx, u"type": u"???", u"arg": arg[u"rep"], u"sid": arg_sid}
+            tag.features.pas = outinfo
 
     def parse(self, spec):
         newstyle = False
         for string in spec.split('\n'):
             if string.strip() == "":
                 continue
-            if string.startswith('#'):
+            if string.startswith(u'#\t') and newstyle:
+                items = string.split(u"\t")
+                if len(items) >= 3 and items[1] == u"PAS":
+                    self._pinfos.append(items[2])
+            elif string.startswith('#'):
                 newstyle = False
                 self.comment = string
                 match = re.match(r'# S-ID:(.*?)[ $]', self.comment)
@@ -206,6 +239,7 @@ class BList2Test(unittest.TestCase):
 -	9	8	6	6	を	*	を	を	助詞	9	格助詞	1	*	0	*	0	FUNC|Ｔ固有付属|Ｔ固有任意
 +	3	-1	D	10	渡した	渡す/わたす	-	-	-	-	-	-	-	-	-	-	EOS|BP:Phrase|CFG_RULE_ID:0|BP_TYPE
 -	10	9	7	9	渡した	渡す/わたす	わたした	渡す	動詞	2	*	0	子音動詞サ行	5	タ形	10	付属動詞候補（基本）
+#	PAS	{"predtype" : "PRED", "sid":null, "token_start":7, "token_end":9, "rep":"渡す/わたす", "head_token_start":7, "head_token_end":9, "cfid" : "渡す/わたす:動1", "score" : -27.2318, "args" : {"ヲ" : {"possible_cases": ["ヲ"], "arguments": [{"sid":null, "token_start":4, "token_end":6, "rep":"弁当/べんとう", "head_token_start":4, "head_token_end":6}]}, "ガ" : {"possible_cases": ["ガ"], "arguments": [{"sid":null, "token_start":0, "token_end":1, "rep":"母/ぼ", "head_token_start":0, "head_token_end":1}]}, "ニ" : {"possible_cases": ["ニ"], "arguments": [{"sid":null, "token_start":2, "token_end":3, "rep":"姉/あね", "head_token_start":2, "head_token_end":3}]}}}
 EOS"""
 
     def test(self):
@@ -225,7 +259,7 @@ EOS"""
         self.assertEqual(blist[3].children, [blist[0], blist[1], blist[2]])
 
         self.assertEqual(blist.tag_list()[1].parent, blist.tag_list()[3])
-        self.assertEqual(blist.tag_list()[3].children, [blist.tag_list()[0], blist.tag_list()[1],blist.tag_list()[2]])
+        self.assertEqual(blist.tag_list()[3].children, [blist.tag_list()[0], blist.tag_list()[1], blist.tag_list()[2]])
         self.assertEqual(blist.mrph_positions, [0, 1, 2, 3, 4, 6, 7, 10])
         self.assertEqual(blist.tag_positions, [0, 2, 4, 7, 10])
         spans = [(0, 1), (2, 3), (4, 6), (7, 9)]
