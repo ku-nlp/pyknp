@@ -12,6 +12,8 @@ class Morpheme(object):
     def __init__(self, spec, mrph_id=None, newstyle=False):
         assert isinstance(spec, unicode)
         assert mrph_id is None or isinstance(mrph_id, int)
+        if newstyle and mrph_id is None:
+            raise KeyError
         self.mrph_id = mrph_id
         self.doukei = []
         self.midasi = ''
@@ -216,7 +218,7 @@ class MorphemeTest2(unittest.TestCase):
     def test_simple(self):
         spec = u"""-	36	2	2	4	貰った	貰う/もらう	もらった	もらう	動詞	2	*	0	子音動詞ワ行	12	タ形	10	付属動詞候補（タ系）\n"""
 
-        mrph = Morpheme(spec, newstyle=True)
+        mrph = Morpheme(spec, 36, newstyle=True)
         self.assertEqual(mrph.midasi, u'貰った')
         self.assertEqual(mrph.yomi, u'もらった')
         self.assertEqual(mrph.genkei, u'もらう')
@@ -236,8 +238,8 @@ class MorphemeTest2(unittest.TestCase):
     def test_doukei(self):
         spec1 = u"""-	1	0	0	0	母	母/ぼ	ぼ	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:音|漢字\n"""
         spec2 = u"""-	2	0	0	0	母	母/はは	はは	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:訓|カテゴリ:人|漢字\n"""
-        m1 = Morpheme(spec1, newstyle=True)
-        m2 = Morpheme(spec2, newstyle=True)
+        m1 = Morpheme(spec1, 1, newstyle=True)
+        m2 = Morpheme(spec2, 1, newstyle=True)
         m1.push_doukei(m2)
         self.assertEqual(m1.repnames(), u"母/ぼ?母/はは")
 
