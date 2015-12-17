@@ -33,27 +33,21 @@ WRITER_READER_LIST = [u"著者", u"読者"]
 WRITER_READER_CONV_LIST = {u"一人称": u"著者", u"二人称": u"読者"}
 
 
-def parseRel(fstring, consider_writer_reader=False):
+def parseRel(fstring, consider_writer_reader=True):
     for match in re.findall(r"%s" % REL_PAT, fstring):
         atype, mode, target, sid, id = match
         if mode == u"？":
             continue
 
-        if consider_writer_reader:
-            if not sid:
-                if target == u"なし":
-                    continue
-                if target in WRITER_READER_CONV_LIST:
-                    target = WRITER_READER_CONV_LIST[target]
+        if target == u"なし":
+            continue
 
-                if target not in WRITER_READER_LIST:
-                    continue  # XXX
-                sid = target_sid  # dummy
-                id = None  # dummy
-        else:
-            if not sid:
-                continue
-
+        if len(sid) == 0:
+            sid = None #dummy
+            if target in WRITER_READER_CONV_LIST:
+                target = WRITER_READER_CONV_LIST[target]
+        if len(id) == 0:
+            id = None  # dummy
         if id is not None:
             id = int(id)
 
