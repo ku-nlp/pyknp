@@ -21,22 +21,47 @@ import pyknp
 import json
 
 
+def draw_tree(bl, outf):
+    assert isinstance(bl, pyknp.BList)
+
+    tl = pyknp.TList()
+    tags = bl.tag_list()
+    for tag in tags:
+        tl.push_tag(tag)
+    nodelines = tl.sprint_tree().split(u"\n")[:-1]
+
+    outf.write(u"# S-ID: %s\n" % bl.sid)
+
+    max_width = 0
+    for i, nl in enumerate(nodelines):
+        outf.write(nl)
+        outf.write(u"\t")
+        outf.write(u"/ ")
+        pas = tags[i].features.pas
+        if pas is not None:
+            outf.write(pas[u"cfid"])
+            outf.write(u"\t")
+            for casename, arg in sorted(pas[u"arguments"].items()):
+                outf.write(u"%s:%s " % (casename, arg[u"arg"]))
+
+        outf.write(u"/ ")
+        rels = tags[i].features.rels
+        if rels is not None:
+            for rel in sorted(rels, key=lambda x: x[u"type"]):
+                outf.write(u"%s:%s " % (rel[u"type"], rel[u"target"]))
+        outf.write(u"\n")
+
+    outf.write(u"\n\n")
+
+
 def draw_trees(inf, outf):
     lines = []
     for line in inf:
         lines.append(line)
         if line == u"EOS\n":
             bl = pyknp.BList(u"".join(lines))
-            outf.write(u"%s\n" % bl.sid)
-            bl.draw_tag_tree(outf)
+            draw_tree(bl, outf)
             lines = []
-            outf.write(u"\n")
-            for t in bl.tag_list():
-                pas = t.features.pas
-                if pas is not None:
-                    outf.write(u"%s\n" % json.dumps(pas, ensure_ascii=False))
-
-            outf.write(u"\n\n")
 
 
 def main():
