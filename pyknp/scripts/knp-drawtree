@@ -48,8 +48,8 @@ def draw_tree(bl, outf):
         outf.write(u"/ ")
         rels = tags[i].features.rels
         if rels is not None:
-            for rel in sorted(rels, key=lambda x: x[u"type"]):
-                outf.write(u"%s:%s " % (rel[u"type"], rel[u"target"]))
+            for rel in sorted(rels, key=lambda x: x.atype):
+                outf.write(u"%s:%s " % (rel.atype, rel.target))
         outf.write(u"\n")
 
     outf.write(u"\n\n")

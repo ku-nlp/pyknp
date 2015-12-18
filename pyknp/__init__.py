@@ -1,6 +1,7 @@
 from pyknp.juman.morpheme import Morpheme
 from pyknp.juman.mlist import MList
 from pyknp.juman.juman import Juman, Socket, Subprocess
+from pyknp.knp.rel import Rel
 from pyknp.knp.pas import Argument, Pas
 from pyknp.knp.features import Features
 from pyknp.knp.tag import Tag

@@ -2,35 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from pyknp import Pas
+from pyknp import Rel
 import unittest
-import re
-
-REL_PAT = "rel type=\"([^\s]+?)\"(?: mode=\"([^>]+?)\")? target=\"([^\s]+?)\"(?: sid=\"(.+?)\" id=\"(.+?)\")?/"
-WRITER_READER_LIST = [u"著者", u"読者"]
-WRITER_READER_CONV_LIST = {u"一人称": u"著者", u"二人称": u"読者"}
-
-
-def parseRel(fstring, consider_writer_reader=True):
-    for match in re.findall(r"%s" % REL_PAT, fstring):
-        atype, mode, target, sid, id = match
-        if mode == u"？":
-            continue
-
-        if target == u"なし":
-            continue
-
-        if len(sid) == 0:
-            sid = None #dummy
-            if target in WRITER_READER_CONV_LIST:
-                target = WRITER_READER_CONV_LIST[target]
-        if len(id) == 0:
-            id = None  # dummy
-        if id is not None:
-            id = int(id)
-
-        data = {"type": atype, "target": target,
-                "sid": sid, "id": id, "mode": mode}
-        return data
 
 
 class Features(dict):
@@ -53,8 +26,8 @@ class Features(dict):
             tag_end = self.spec.find(splitter, tag_start)
             kv_splitter = self.spec.find(u':', tag_start, tag_end)
             if self.spec[tag_start:].startswith(u'rel '):
-                rel = parseRel(self.spec[tag_start:tag_end])
-                if rel is not None:
+                rel = Rel(self.spec[tag_start:tag_end])
+                if rel.ignore == False:
                     if self.rels is None:
                         self.rels = []
                     self.rels.append(rel)
@@ -112,12 +85,12 @@ class FeaturesTest(unittest.TestCase):
 
         f = Features(tag_str)
         self.assertEqual(f.pas, None)
-        self.assertEqual(len(f.rels), 3)
-        self.assertEqual(f.rels[0].get(u"id"), 1)
-        self.assertEqual(f.rels[0].get(u"mode"), u"")
-        self.assertEqual(f.rels[0].get(u"type"), u"時間")
-        self.assertEqual(f.rels[0].get(u"sid"), u"950101003-002")
-        self.assertEqual(f.rels[0].get(u"target"), u"一九九五年")
+        self.assertEqual(len(f.rels), 4)
+        self.assertEqual(f.rels[0].tid, 1)
+        self.assertEqual(f.rels[0].mode, u"")
+        self.assertEqual(f.rels[0].atype, u"時間")
+        self.assertEqual(f.rels[0].sid, u"950101003-002")
+        self.assertEqual(f.rels[0].target, u"一九九五年")
 
 
 if __name__ == '__main__':
