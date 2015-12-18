@@ -20,6 +20,8 @@ class Pas(object):
         assert isinstance(knpstyle, bool)
         self.cfid = None
         self.arguments = collections.defaultdict(list)
+        if val is None:
+            return
         if knpstyle:
             self._parseKnpStyle(val)
             return

@@ -1,5 +1,6 @@
 #-*- encoding: utf-8 -*-
 
+from pyknp import Argument, Pas
 from pyknp import Bunsetsu
 from pyknp import Morpheme
 from pyknp import Tag
@@ -34,26 +35,25 @@ class BList(DrawTree):
         """Set PAS to BList with new format"""
         for pinfo in self._pinfos:
             pinfo = json.loads(pinfo)
-            outinfo = {u"cfid": pinfo[u"cfid"], u"arguments": {}}
-
             start = pinfo[u"head_token_start"]
             end = pinfo[u"head_token_end"]
             tag_idx = bisect.bisect(self.tag_positions, end) - 1
             tag = self.tag_list()[tag_idx]
+            tag.features.pas = Pas()
+            tag.features.pas.cfid = pinfo[u"cfid"]
+
 
             for casename, argsinfo in pinfo[u"args"].items():
                 #                 possible_cases = argsinfo[u"possible_cases"]
                 for arg in argsinfo[u"arguments"]:
-                    # FIXME double arg like A and B
                     arg_tag_idx = bisect.bisect(self.tag_positions, arg[u"head_token_end"]) - 1
                     arg_sid = None
                     if arg[u"sid"] is None:
                         arg_sid = self.sid
                     else:
                         arg_sid = arg[u"sid"]
-                    outinfo[u"arguments"][casename] = {
-                        u"no": arg_tag_idx, u"type": u"???", u"arg": arg[u"rep"], u"sid": arg_sid}
-            tag.features.pas = outinfo
+                    arg = Argument(arg_sid, arg_tag_idx, arg[u"rep"])
+                    tag.features.pas.arguments[casename].append(arg)
 
     def parse(self, spec):
         newstyle = False
