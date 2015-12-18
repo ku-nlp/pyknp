@@ -19,6 +19,9 @@ class Rel(object):
         self.ignore = False
 
         match = re.findall(r"%s" % REL_PAT, fstring)
+        if len(match) == 0:
+            self.ignore = True
+            return
         atype, mode, target, sid, id = match[0]
         if mode == u"？":
             self.ignore = True
