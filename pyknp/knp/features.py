@@ -1,33 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from pyknp import Pas
 import unittest
-
-
-def parsePAS(val):
-    c0 = val.find(u':')
-    c1 = val.find(u':', c0 + 1)
-    cfid = val[:c0] + u":" + val[c0 + 1:c1]
-    pas = {u"cfid": cfid, u"arguments": {}}
-
-    if val.count(u":") < 2:  # For copula
-        return
-
-    for k in val[c1 + 1:].split(u';'):
-        items = k.split(u"/")
-        if items[1] != u"U" and items[1] != u"-":
-            mycase = items[0]
-            mycasetype = items[1]
-            myarg = items[2]
-            myarg_no = int(items[3])
-            myarg_sent_id = items[5]
-
-            pas[u"arguments"][mycase] = {
-                u"no": myarg_no, u"type": mycasetype, u"arg": myarg, u"sid": myarg_sent_id}
-    return pas
-
-
 import re
+
 REL_PAT = "rel type=\"([^\s]+?)\"(?: mode=\"([^>]+?)\")? target=\"([^\s]+?)\"(?: sid=\"(.+?)\" id=\"(.+?)\")?/"
 WRITER_READER_LIST = [u"著者", u"読者"]
 WRITER_READER_CONV_LIST = {u"一人称": u"著者", u"二人称": u"読者"}
@@ -91,7 +68,7 @@ class Features(dict):
                 self[key] = val
 
                 if key == u'格解析結果':
-                    self.pas = parsePAS(val)
+                    self.pas = Pas(val, knpstyle=True)
 
             tag_start = tag_end + len(splitter)
 
@@ -109,17 +86,21 @@ class FeaturesTest(unittest.TestCase):
         self.assertEqual(f1.get(u"正規化代表表記"), u"構文/こうぶん")
 
     def testPAS(self):
-        pas_input = u"分/ふん:判1:ガ/U/-/-/-/-;ヲ/U/-/-/-/-;ニ/U/-/-/-/-;デ/C/車/1/0/14;カラ/U/-/-/-/-;ヨリ/C/インター/0/0/14;マデ/U/-/-/-/-;ヘ/U/-/-/-/-;時間/U/-/-/-/-"
+        pas_input = u"分/ふん:判1:ガ/U/-/-/-/-;ヲ/U/-/-/-/-;ニ/U/-/-/-/-;デ/C/車/1/0/14;デ/C/徒歩/7/0/17;カラ/U/-/-/-/-;ヨリ/C/インター/0/0/14;マデ/U/-/-/-/-;ヘ/U/-/-/-/-;時間/U/-/-/-/-"
         tag_str2 = u"""<文末><カウンタ:分><時間><強時間><数量><体言><用言:判><体言止><レベル:C><区切:5-5><ID:（文末）><修飾><提題受:30><主節><状態述語><判定詞><正規化代表表記:３/さん+分/ふん><用言代表表記:分/ふん><時制-無時制><格関係0:ヨリ:インター><格関係1:デ:車><格解析結果:%s>""" % pas_input
         f2 = Features(tag_str2)
         self.assertEqual(f2.get(u"格解析結果"), pas_input)
-        self.assertEqual(f2.pas.get(u"cfid"), u"分/ふん:判1")
-        f2args = f2.pas.get(u"arguments")
+        self.assertEqual(f2.pas.cfid, u"分/ふん:判1")
+        f2args = f2.pas.arguments
         self.assertEqual(len(f2args), 2)
-        self.assertEqual(f2args.get(u"デ").get(u"no"), 1)
-        self.assertEqual(f2args.get(u"デ").get(u"type"), u"C")
-        self.assertEqual(f2args.get(u"デ").get(u"arg"), u"車")
-        self.assertEqual(f2args.get(u"デ").get(u"sid"), u"14")
+        self.assertEqual(len(f2args.get(u"デ")), 2)
+        self.assertEqual(f2args.get(u"デ")[0].rep, u"車")
+        self.assertEqual(f2args.get(u"デ")[0].tid, 1)
+        self.assertEqual(f2args.get(u"デ")[0].sid, u"14")
+        self.assertEqual(f2args.get(u"デ")[1].rep, u"徒歩")
+        self.assertEqual(f2args.get(u"デ")[1].tid, 7)
+        self.assertEqual(f2args.get(u"デ")[1].sid, u"17")
+        self.assertEqual(len(f2args.get(u"ヨリ")), 1)
         self.assertEqual(f2args.get(u"ガ"), None)
         self.assertEqual(f2.rels, None)
 

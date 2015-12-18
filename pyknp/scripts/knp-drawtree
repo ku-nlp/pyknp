@@ -39,10 +39,11 @@ def draw_tree(bl, outf):
         outf.write(u"/ ")
         pas = tags[i].features.pas
         if pas is not None:
-            outf.write(pas[u"cfid"])
+            outf.write(pas.cfid)
             outf.write(u"\t")
-            for casename, arg in sorted(pas[u"arguments"].items()):
-                outf.write(u"%s:%s " % (casename, arg[u"arg"]))
+            for casename, arglist in sorted(pas.arguments.items()):
+                for arg in arglist:
+                    outf.write(u"%s:%s " % (casename, arg.rep))
 
         outf.write(u"/ ")
         rels = tags[i].features.rels
