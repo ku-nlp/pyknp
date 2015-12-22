@@ -17,6 +17,8 @@ class Features(dict):
         self.spec = spec.rstrip()
         self.pas = None
         self.rels = None
+        if len(spec) == 0:
+            return
 
         tag_start = 0
         if ignore_first_character:
