@@ -260,7 +260,7 @@ class BListTest(unittest.TestCase):
 class BList2Test(unittest.TestCase):
 
     def setUp(self):
-        self.result = u"""# S-ID:none KNP++:a9af601
+        self.result = u"""# S-ID:foo KNP++:a9af601
 +	0	3	D	1;3	母が	母/ぼ	-	-	-	-	-	-	-	-	-	-	BP:Phrase|CFG_RULE_ID:1|BOS|BP_TYPE|ガ|助詞
 -	1	0	0	0	母	母/ぼ	ぼ	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:音|漢字|CONT|RelWord-105522
 -	3	1;2	1	1	が	*	が	が	助詞	9	接続助詞	3	*	0	*	0	FUNC|Ｔ固有付属|Ｔ固有任意
@@ -282,7 +282,7 @@ EOS"""
         self.assertEqual(len(blist.mrph_list()), 7)
         self.assertEqual(''.join([mrph.midasi for mrph in blist.mrph_list()]),
                          u'母が姉に弁当を渡した')
-        self.assertEqual(blist.sid, 'none')
+        self.assertEqual(blist.sid, 'foo')
         self.assertEqual(blist[1].parent, blist[3])
         self.assertEqual(blist[1].parent_id, 3)
         self.assertEqual(blist[3].parent, None)
@@ -296,9 +296,20 @@ EOS"""
         self.assertEqual(blist.mrph_positions, [0, 1, 2, 3, 4, 6, 7, 10])
         self.assertEqual(blist.tag_positions, [0, 2, 4, 7, 10])
         spans = [(0, 1), (2, 3), (4, 6), (7, 9)]
-        for i, t in enumerate(blist.tag_list()):
+        tags = blist.tag_list()
+        for i, t in enumerate(tags):
             self.assertEqual(blist.get_tag_span(t.tag_id), spans[i])
         self.assertEqual(blist.get_clause_starts(), [0])
+
+        self.assertEqual(tags[0].features.pas, None)
+        self.assertEqual(tags[1].features.pas, None)
+        self.assertEqual(tags[2].features.pas, None)
+        self.assertEqual(tags[3].features.pas.cfid, u"渡す/わたす:動1")
+        args = tags[3].features.pas.arguments
+        self.assertEqual(len(args), 3)
+        self.assertEqual(len(args[u"ヲ"]), 1)
+        self.assertEqual(args[u"ヲ"][0].sid, u"foo")
+        self.assertEqual(args[u"ヲ"][0].tid, 2)
 
 if __name__ == '__main__':
     unittest.main()

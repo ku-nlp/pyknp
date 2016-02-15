@@ -43,7 +43,10 @@ def draw_tree(bl, outf):
             outf.write(u"\t")
             for casename, arglist in sorted(pas.arguments.items()):
                 for arg in arglist:
-                    outf.write(u"%s:%s " % (casename, arg.rep))
+                    rep = arg.rep
+                    if len(rep) == 0:
+                        rep = u"<sid=%s,tid=%s>" % (arg.sid, arg.tid)
+                    outf.write(u"%s:%s " % (casename, rep))
 
         outf.write(u"/ ")
         rels = tags[i].features.rels
