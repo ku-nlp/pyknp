@@ -44,12 +44,13 @@ class BList(DrawTree):
 
             for casename, args in pinfo[u"args"].items():
                 for arg in args:
-                    arg_tag_idx = bisect.bisect(self.tag_positions, arg[u"head_token_end"]) - 1
-                    arg_sid = None
-                    if len(arg[u"sid"]) == 0:
+                    arg_tag_idx = arg.get(u"tid")
+                    if arg_tag_idx is None:
+                        arg_tag_idx = bisect.bisect(self.tag_positions, arg[u"head_token_end"]) - 1
+                    arg_sid = arg.get(u"sid")
+                    if (arg_sid is None) or (len(arg[u"sid"]) == 0):
                         arg_sid = self.sid
-                    else:
-                        arg_sid = arg[u"sid"]
+
                     arg = Argument(arg_sid, arg_tag_idx, arg[u"rep"])
                     tag.features.pas.arguments[casename].append(arg)
 
