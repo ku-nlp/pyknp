@@ -35,9 +35,12 @@ class BList(DrawTree):
         """Set PAS to BList with new format"""
         for pinfo in self._pinfos:
             pinfo = json.loads(pinfo)
-            start = pinfo[u"head_token_start"]
-            end = pinfo[u"head_token_end"]
-            tag_idx = bisect.bisect(self.tag_positions, end) - 1
+
+            tag_idx = pinfo.get(u"tid")
+            if tag_idx is None:
+                end = pinfo[u"head_token_end"]
+                tag_idx = bisect.bisect(self.tag_positions, end) - 1
+
             tag = self.tag_list()[tag_idx]
             tag.features.pas = Pas()
             tag.features.pas.cfid = pinfo[u"cfid"]
