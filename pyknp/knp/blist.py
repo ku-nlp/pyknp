@@ -46,7 +46,7 @@ class BList(DrawTree):
                 for arg in args:
                     arg_tag_idx = bisect.bisect(self.tag_positions, arg[u"head_token_end"]) - 1
                     arg_sid = None
-                    if arg[u"sid"] is None:
+                    if len(arg[u"sid"]) == 0:
                         arg_sid = self.sid
                     else:
                         arg_sid = arg[u"sid"]
@@ -271,7 +271,7 @@ class BList2Test(unittest.TestCase):
 -	9	8	6	6	を	*	を	を	助詞	9	格助詞	1	*	0	*	0	FUNC|Ｔ固有付属|Ｔ固有任意
 +	3	-1	D	10	渡した	渡す/わたす	-	-	-	-	-	-	-	-	-	-	EOS|BP:Phrase|CFG_RULE_ID:0|BP_TYPE
 -	10	9	7	9	渡した	渡す/わたす	わたした	渡す	動詞	2	*	0	子音動詞サ行	5	タ形	10	付属動詞候補（基本）
-#	PAS	{"predtype" : "PRED", "sid":null, "token_start":7, "token_end":9, "rep":"渡す/わたす", "head_token_start":7, "head_token_end":9, "cfid" : "渡す/わたす:動1", "score" : -27.2318, "args" : {"ヲ" : [{"sid":null, "token_start":4, "token_end":6, "rep":"弁当/べんとう", "head_token_start":4, "head_token_end":6}], "ガ" : [{"sid":null, "token_start":0, "token_end":1, "rep":"母/ぼ", "head_token_start":0, "head_token_end":1}], "ニ" : [{"sid":null, "token_start":2, "token_end":3, "rep":"姉/あね", "head_token_start":2, "head_token_end":3}]}}
+#	PAS	{"predtype" : "PRED", "sid":"", "token_start":7, "token_end":9, "rep":"渡す/わたす", "head_token_start":7, "head_token_end":9, "cfid" : "渡す/わたす:動1", "score" : -27.2318, "args" : {"ヲ" : [{"sid":"", "token_start":4, "token_end":6, "rep":"弁当/べんとう", "head_token_start":4, "head_token_end":6}], "ガ" : [{"sid":"", "token_start":0, "token_end":1, "rep":"母/ぼ", "head_token_start":0, "head_token_end":1}], "ニ" : [{"sid":"", "token_start":2, "token_end":3, "rep":"姉/あね", "head_token_start":2, "head_token_end":3}]}}
 EOS"""
 
     def test(self):
