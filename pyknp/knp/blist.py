@@ -62,7 +62,7 @@ class BList(DrawTree):
         for string in spec.split('\n'):
             if string.strip() == "":
                 continue
-            if string.startswith(u'#\t') and newstyle:
+            if string.startswith(u'#\t'):
                 items = string.split(u"\t")
                 if len(items) >= 3 and items[1] == u"PAS":
                     self._pinfos.append(items[2])
