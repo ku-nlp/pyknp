@@ -1,5 +1,6 @@
 #-*- encoding: utf-8 -*-
 
+from __future__ import absolute_import
 from pyknp import KNP
 
 my_knp = KNP()

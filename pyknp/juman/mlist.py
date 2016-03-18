@@ -1,5 +1,6 @@
 #-*- encoding: utf-8 -*-
 
+from __future__ import absolute_import
 from pyknp import Morpheme
 import unittest
 
@@ -100,7 +101,7 @@ u"""-\t2\t1\t2\t3\t解析\t解析/かいせき\tかいせき\t解析\t名詞\t6\
 @ 母 ぼ 母 名詞 6 普通名詞 1 * 0 * 0 "代表表記:母/ぼ 漢字読み:音 カテゴリ:人"
 です です だ 判定詞 4 * 0 判定詞 25 デス列基本形 27 NIL
 """
-	new_spec = u"""-\t1\t0\t0\t0\t母\t母/はは\tはは\t母\t名詞\t6\t普通名詞\t1\t*\t0\t*\t0\t漢字読み:訓|カテゴリ:人|ドメイン:家庭・暮らし
+        new_spec = u"""-\t1\t0\t0\t0\t母\t母/はは\tはは\t母\t名詞\t6\t普通名詞\t1\t*\t0\t*\t0\t漢字読み:訓|カテゴリ:人|ドメイン:家庭・暮らし
 -\t2\t0\t0\t0\t母\t母/ぼ\tぼ\t母\t名詞\t6\t普通名詞\t1\t*\t0\t*\t0\t漢字読み:音|カテゴリ:人
 -\t3\t1;2\t1\t2\tです\tだ/だ\tです\tだ\t判定詞\t4\t*\t0\t判定詞\t25\tデス列基本形\t27\t
 """

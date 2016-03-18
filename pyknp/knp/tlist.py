@@ -1,5 +1,6 @@
 #-*- encoding: utf-8 -*-
 
+from __future__ import absolute_import
 from pyknp import Morpheme
 from pyknp import Tag
 from pyknp import DrawTree

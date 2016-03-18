@@ -1,7 +1,10 @@
 #-*- encoding: utf-8 -*-
 
+from __future__ import absolute_import
 import re
 import unittest
+import six
+from six import u
 
 
 class Morpheme(object):
@@ -10,7 +13,7 @@ class Morpheme(object):
     """
 
     def __init__(self, spec, mrph_id=None, newstyle=False):
-        assert isinstance(spec, unicode)
+        assert isinstance(spec, six.text_type)
         assert mrph_id is None or isinstance(mrph_id, int)
         if newstyle and mrph_id is None:
             raise KeyError
@@ -90,7 +93,7 @@ class Morpheme(object):
         except IndexError:
             pass
         # Extract 代表表記
-        match = re.search(ur"代表表記:([^\"\s]+)", self.imis)
+        match = re.search(u(r"代表表記:([^\"\s]+)"), self.imis)
         if match:
             self.repname = match.group(1)
 
@@ -122,7 +125,7 @@ class Morpheme(object):
         return "%s\n" % spec.rstrip()
 
     def new_spec(self, prev_mrph_id, position):
-        assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, unicode) or isinstance(prev_mrph_id, list)
+        assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, six.text_type) or isinstance(prev_mrph_id, list)
         assert isinstance(position, int)
         if self.mrph_id is None:
             raise NotImplementedError

@@ -1,6 +1,9 @@
 #-*- encoding: utf-8 -*-
 
+from __future__ import absolute_import
+from __future__ import print_function
 import re
+from six.moves import range
 
 POS_MARK = {
     u'特殊': '*',
@@ -34,7 +37,7 @@ class DrawTree(object):
             fh.write(self.sprint_tree())
         # 指定なしの場合は標準出力を用いる．
         else:
-            print self.sprint_tree(),
+            print(self.sprint_tree(), end=' ')
 
     def sprint_tree(self):
         """ 構文木を文字列で返す． """
@@ -44,9 +47,9 @@ class DrawTree(object):
         active_column = [0] * limit
         limit -= 1
 
-        for i in xrange(limit):
+        for i in range(limit):
             para_row = 1 if leaves[i].dpndtype == "P" else 0
-            for j in xrange(i + 1, limit + 1):
+            for j in range(i + 1, limit + 1):
                 if j < leaves[i].parent_id:
                     if active_column[j] == 2:
                         item[i][j] = u"╋" if para_row else u"╂"
@@ -84,13 +87,13 @@ class DrawTree(object):
                         item[i][j] = u"　"
 
         line = [self.leaf_string(leaf) for leaf in self.draw_tree_leaves()]
-        for i in xrange(limit):
-            for j in xrange(i + 1, limit + 1):
+        for i in range(limit):
+            for j in range(i + 1, limit + 1):
                 line[i] += item[i][j]
 
         max_length = max([self._str_real_length(l) for l in line])
         buf = ""
-        for i in xrange(limit + 1):
+        for i in range(limit + 1):
             diff = max_length - self._str_real_length(line[i])
             buf += " " * diff
             buf += line[i] + leaves[i].pstring() + "\n"

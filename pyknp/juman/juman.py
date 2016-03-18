@@ -1,5 +1,6 @@
 #-*- encoding: utf-8 -*-
 
+from __future__ import absolute_import
 from pyknp import MList
 from pyknp import Morpheme
 import os
@@ -8,6 +9,7 @@ import re
 import socket
 import subprocess
 import unittest
+import six
 
 
 class Socket(object):
@@ -29,7 +31,7 @@ class Socket(object):
             self.sock.close()
 
     def query(self, sentence, pattern):
-        assert(isinstance(sentence, unicode))
+        assert(isinstance(sentence, six.text_type))
         self.sock.sendall("%s\n" % sentence.encode('utf-8').strip())
         data = self.sock.recv(1024)
         recv = data
@@ -43,7 +45,7 @@ class Subprocess(object):
 
     def __init__(self, command):
         subproc_args = {'stdin': subprocess.PIPE, 'stdout': subprocess.PIPE,
-                        'stderr': subprocess.STDOUT, 'cwd': '.', 'close_fds': True}
+                'stderr': subprocess.STDOUT, 'cwd': '.', 'close_fds': True}
         try:
             env = os.environ.copy()
             self.process = subprocess.Popen('bash -c "%s"' % command, env=env,
@@ -61,16 +63,17 @@ class Subprocess(object):
             pass
 
     def query(self, sentence, pattern):
-        assert(isinstance(sentence, unicode))
-        self.process.stdin.write("%s\n" % sentence.encode('utf-8'))
+        assert(isinstance(sentence, six.text_type))
+        self.process.stdin.write(sentence.encode('utf-8')+six.b('\n'))
+        self.process.stdin.flush()
         result = ""
         while True:
-            line = self.stdouterr.readline()[:-1]
+            line = self.stdouterr.readline()[:-1].decode('utf-8')
             if re.search(pattern, line):
                 break
-            result = "%s%s\n" % (result, line.decode('utf-8'))
+            result = "%s%s\n" % (result, line)
         return result
-
+        
 
 class Juman(object):
     """
@@ -108,7 +111,7 @@ class Juman(object):
         return self.subprocess.query(input_str, pattern=self.pattern)
 
     def juman(self, input_str):
-        assert(isinstance(input_str, unicode))
+        assert(isinstance(input_str, six.text_type))
         result = MList(self.juman_lines(input_str))
         return result
 

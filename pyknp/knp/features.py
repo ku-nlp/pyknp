@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import absolute_import
 from pyknp import Pas
 from pyknp import Rel
 import unittest
+import six
 
 
 class Features(dict):
@@ -12,7 +14,7 @@ class Features(dict):
     """
 
     def __init__(self, spec, splitter=u"><", ignore_first_character=True):
-        assert isinstance(spec, unicode)
+        assert isinstance(spec, six.text_type)
 
         self.spec = spec.rstrip()
         self.pas = None

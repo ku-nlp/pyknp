@@ -1,8 +1,10 @@
 #-*- encoding: utf-8 -*-
 
+from __future__ import absolute_import
 import re
 import sys
 import unittest
+from six import u
 
 
 class SynNodes(object):
@@ -28,10 +30,10 @@ class SynNodes(object):
             sys.stderr.write("Illegal synnodes dpnd: %s\n" % dpnd)
             quit(1)
 
-        match_midasi = re.search(ur'<見出し:([^>]+)>', string)
+        match_midasi = re.search(u(r'<見出し:([^>]+)>'), string)
         if match_midasi:
             self.midasi = match_midasi.group(1)
-            self.feature = re.sub(ur'<見出し:([^>]+)>', '', string)
+            self.feature = re.sub(u(r'<見出し:([^>]+)>'), '', string)
 
 
 class SynNode(object):
@@ -51,10 +53,10 @@ class SynNode(object):
             self.synid = match_synid.group(1)
             string = re.sub(r'<SYNID:[^>]+>', '', string)
 
-        match_score = re.search(ur'<スコア:([^>]+)>', string)
+        match_score = re.search(u(r'<スコア:([^>]+)>'), string)
         if match_score:
             self.score = float(match_score.group(1))
-            string = re.sub(ur'<スコア:[^>]+>', '', string)
+            string = re.sub(u(r'<スコア:[^>]+>'), '', string)
 
         self.feature = string
 

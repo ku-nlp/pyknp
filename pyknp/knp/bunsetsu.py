@@ -1,5 +1,6 @@
 #-*- encoding: utf-8 -*-
 
+from __future__ import absolute_import
 from pyknp import Morpheme
 from pyknp import MList
 from pyknp import Tag
@@ -7,6 +8,7 @@ from pyknp import TList
 import re
 import sys
 import unittest
+from six import u
 
 
 class Bunsetsu(object):
@@ -45,7 +47,7 @@ class Bunsetsu(object):
         # Extract 正規化代表表記
         if not newstyle:
             self.repname = ''
-            match = re.search(ur"<正規化代表表記:([^\"\s]+?)>", self.fstring)
+            match = re.search(u(r"<正規化代表表記:([^\"\s]+?)>"), self.fstring)
             if match:
                 self.repname = match.group(1)
 

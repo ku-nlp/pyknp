@@ -1,11 +1,13 @@
 #-*- encoding: utf-8 -*-
 
+from __future__ import absolute_import
 from pyknp import Juman
 from pyknp import Socket, Subprocess  # TODO(john): move to separate file
 from pyknp import BList
 import os
 import sys
 import unittest
+import six
 
 
 class KNP(object):
@@ -38,7 +40,7 @@ class KNP(object):
         """
         文字列 sentence を対象として構文解析を行い，構文解析結果オブジェクトを返す．
         """
-        assert(isinstance(sentence, unicode))
+        assert(isinstance(sentence, six.text_type))
         juman_lines = self.juman.juman_lines(sentence)
         juman_str = "%s%s" % (juman_lines, self.pattern)
         if not self.socket and not self.subprocess:
