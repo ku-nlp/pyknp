@@ -68,7 +68,6 @@ class BList(DrawTree):
                 if len(items) >= 3 and items[1] == u"PAS":
                     self._pinfos.append(items[2])
             elif string.startswith('#'):
-                newstyle = False
                 self.comment = string
                 match = re.match(r'# S-ID:(.*?)[ $]', self.comment)
                 if match:
