@@ -1,6 +1,6 @@
 #-*- encoding: utf-8 -*-
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 from pyknp import Morpheme
 from pyknp import MList
 from pyknp import Tag
@@ -47,7 +47,7 @@ class Bunsetsu(object):
         # Extract 正規化代表表記
         if not newstyle:
             self.repname = ''
-            match = re.search(u(r"<正規化代表表記:([^\"\s]+?)>"), self.fstring)
+            match = re.search(r"<正規化代表表記:([^\"\s]+?)>", self.fstring)
             if match:
                 self.repname = match.group(1)
 

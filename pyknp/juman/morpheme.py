@@ -1,6 +1,6 @@
 #-*- encoding: utf-8 -*-
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 import re
 import unittest
 import six
@@ -93,7 +93,7 @@ class Morpheme(object):
         except IndexError:
             pass
         # Extract 代表表記
-        match = re.search(u(r"代表表記:([^\"\s]+)"), self.imis)
+        match = re.search(r"代表表記:([^\"\s]+)", self.imis)
         if match:
             self.repname = match.group(1)
 
