@@ -53,10 +53,10 @@ class SynNode(object):
             self.synid = match_synid.group(1)
             string = re.sub(r'<SYNID:[^>]+>', '', string)
 
-        match_score = re.search(u(r'<スコア:([^>]+)>'), string)
-        if match_score:
-            self.score = float(match_score.group(1))
-            string = re.sub(u(r'<スコア:[^>]+>'), '', string)
+        if string.startswith(u"<スコア:"):
+            end = string.find(u">")
+            self.score = float(string[5:end])
+            string = string[end + 1:]
 
         self.feature = string
 
