@@ -30,10 +30,12 @@ class SynNodes(object):
             sys.stderr.write("Illegal synnodes dpnd: %s\n" % dpnd)
             quit(1)
 
-        match_midasi = re.search(u(r'<見出し:([^>]+)>'), string)
-        if match_midasi:
-            self.midasi = match_midasi.group(1)
-            self.feature = re.sub(u(r'<見出し:([^>]+)>'), '', string)
+        if string.startswith(u"<見出し:"):
+            end = string.find(u">")
+            self.midasi = string[5:end]
+            self.feature = string[end + 1:]
+        else:
+            self.feature = string
 
 
 class SynNode(object):
@@ -53,10 +55,10 @@ class SynNode(object):
             self.synid = match_synid.group(1)
             string = re.sub(r'<SYNID:[^>]+>', '', string)
 
-        match_score = re.search(u(r'<スコア:([^>]+)>'), string)
-        if match_score:
-            self.score = float(match_score.group(1))
-            string = re.sub(u(r'<スコア:[^>]+>'), '', string)
+        if string.startswith(u"<スコア:"):
+            end = string.find(u">")
+            self.score = float(string[5:end])
+            string = string[end + 1:]
 
         self.feature = string
 
