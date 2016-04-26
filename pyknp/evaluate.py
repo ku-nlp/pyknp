@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from knp.blist import BList
+from pyknp.knp.blist import BList
 
 
 def evaluateDependency(g, s):
