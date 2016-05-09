@@ -11,4 +11,4 @@ from pyknp.knp.bunsetsu import Bunsetsu
 from pyknp.knp.syngraph import SynNodes, SynNode
 from pyknp.knp.blist import BList
 from pyknp.knp.knp import KNP
-from pyknp.evaluate import evaluateDependency
+import pyknp.evaluate

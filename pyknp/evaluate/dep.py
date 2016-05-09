@@ -4,7 +4,7 @@
 from pyknp.knp.blist import BList
 
 
-def evaluateDependency(g, s):
+def dependency(g, s):
     assert isinstance(g, BList)
     assert isinstance(s, BList)
 
