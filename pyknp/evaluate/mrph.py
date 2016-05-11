@@ -45,6 +45,7 @@ def morpheme(g, s, level):
         s = s_mrphs[s_id]
         if len(g.midasi) != len(s.midasi):
             scorer.fp += 1
+            scorer.fn += 1
             continue
         if level == 0:
             scorer.tp += 1
@@ -55,6 +56,7 @@ def morpheme(g, s, level):
             s.hinsi = u"名詞"
         if g.hinsi != s.hinsi:
             scorer.fp += 1
+            scorer.fn += 1
         else:
             scorer.tp += 1
 
