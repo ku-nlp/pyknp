@@ -5,9 +5,12 @@ from pyknp.knp.blist import BList
 from pyknp.evaluate.scorer import Scorer
 
 
-def dependency(g, s):
+def dependency(g, s, level=2):
     assert isinstance(g, BList)
     assert isinstance(s, BList)
+    assert isinstance(level, int)
+    if level != 1 and level != 2:
+        raise KeyError
 
     spans = set([])
     g_spans = [g.get_tag_span(t.tag_id) for t in g.tag_list()]
@@ -21,6 +24,8 @@ def dependency(g, s):
         s_to_span = None
         try:
             gold_pid = g_spans.index(span)
+            if (level == 2) and (gold_pid == len(g_spans) - 2):
+                continue
             g_to = g.tag_list()[gold_pid].parent_id
             if g_to == -1:
                 continue
