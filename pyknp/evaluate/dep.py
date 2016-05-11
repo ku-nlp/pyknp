@@ -2,9 +2,10 @@
 # -*- coding: utf-8 -*-
 
 from pyknp.knp.blist import BList
+from pyknp.evaluate.scorer import Scorer
 
 
-def evaluateDependency(g, s):
+def dependency(g, s):
     assert isinstance(g, BList)
     assert isinstance(s, BList)
 
@@ -14,7 +15,7 @@ def evaluateDependency(g, s):
     spans = spans.union(set(g_spans))
     spans = spans.union(set(s_spans))
 
-    (fp, fn, tp, tn) = (0, 0, 0, 0)
+    scorer = Scorer()
     for span in spans:
         g_to_span = None
         s_to_span = None
@@ -37,13 +38,13 @@ def evaluateDependency(g, s):
 
         if g_to_span is None:
             if s_to_span is None:
-                tn += 1
+                scorer.tn += 1
             else:
-                fp += 1
+                scorer.fp += 1
         else:
             if g_to_span == s_to_span:
-                tp += 1
+                scorer.tp += 1
             else:
-                fn += 1
+                scorer.fn += 1
 
-    return (fp, fn, tp, tn)
+    return scorer
