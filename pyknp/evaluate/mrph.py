@@ -27,22 +27,20 @@ def morpheme(g, s, level):
 
     scorer = Scorer()
     for position in starts:
-        g_start = None
+        g_id = None
         try:
-            g_start = g_starts.index(position)
+            g_id = g_starts.index(position)
         except:
             scorer.fp += 1
             continue
 
-        s_start = None
+        s_id = None
         try:
-            s_start = s_starts.index(position)
+            s_id = s_starts.index(position)
         except:
             scorer.fn += 1
             continue
 
-        g_id = g_starts.index(position)
-        s_id = g_starts.index(position)
         g = g_mrphs[g_id]
         s = s_mrphs[s_id]
         if len(g.midasi) != len(s.midasi):
