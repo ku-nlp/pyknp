@@ -22,12 +22,15 @@ class Scorer(object):
         dump += u"F1         : %.2f\n" % (self.f_measure(1) * 100)
         return dump
 
+    def getTotal(self):
+        return self.fp + self.fn + self.tp + self.fn
+
     def getDict(self):
         return {u"Fp": self.fp,
                 u"Fn": self.fn,
                 u"Tp": self.tp,
                 u"Tn": self.tn,
-                u"Total": self.fp + self.fn + self.tp + self.fn,
+                u"Total": self.getTotal(),
                 u"Prec": self.precision() * 100,
                 u"Rec": self.recall() * 100,
                 u"F1": self.f_measure() * 100
