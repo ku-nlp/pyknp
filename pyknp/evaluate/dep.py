@@ -43,7 +43,7 @@ def dependency(g, s, level=2):
 
         if g_to_span is None:
             if s_to_span is None:
-                scorer.tn += 1
+                scorer.tn += 1  # Never reach
             else:
                 scorer.fp += 1
         else:
