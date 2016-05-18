@@ -2,7 +2,7 @@
 
 __author__ = 'John Richardson'
 __email__ = 'john@nlp.ist.i.kyoto-u.ac.jp'
-__version__ = '0.1'
+__version__ = '0.2'
 __copyright__ = ''
 __license__ = 'See COPYING'
 
