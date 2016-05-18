@@ -45,7 +45,8 @@ class Subprocess(object):
 
     def __init__(self, command):
         subproc_args = {'stdin': subprocess.PIPE, 'stdout': subprocess.PIPE,
-                'stderr': subprocess.STDOUT, 'cwd': '.', 'close_fds': True}
+                'stderr': subprocess.STDOUT, 'cwd': '.',
+                'close_fds': sys.platform != "win32"}
         try:
             env = os.environ.copy()
             self.process = subprocess.Popen('bash -c "%s"' % command, env=env,
