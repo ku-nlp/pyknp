@@ -30,6 +30,7 @@ def phrase(g, s, level=0):
             sys_pid = s_spans.index(span)
         except ValueError:
             scorer.fn += 1
+            continue
 
         scorer.tp += 1
 
