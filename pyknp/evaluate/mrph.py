@@ -9,11 +9,12 @@ def morpheme(g, s, level):
     """
     level=0: segmentation のみ評価
     level=1: segmentation+POS の評価
+    level=2: segmentation+POS+{原形，品詞細分類，活用型，活用形} の評価
     """
     assert isinstance(g, BList)
     assert isinstance(s, BList)
     assert isinstance(level, int)
-    if level != 1 and level != 2:
+    if level < 1 or level > 2:
         raise KeyError
 
     starts = set([])
@@ -51,10 +52,21 @@ def morpheme(g, s, level):
             scorer.tp += 1
             continue
 
-        # level=1
         if s.hinsi == u"未定義語":
             s.hinsi = u"名詞"
-        if g.hinsi != s.hinsi:
+        ok = True
+
+        if level >= 1 and g.hinsi != s.hinsi:
+            ok = False
+        if level >= 2:
+            if g.yomi != s.yomi or \
+                    g.genkei != s.genkei or \
+                    g.bunrui != s.bunrui or \
+                    g.katuyou1 != s.katuyou1 or \
+                    g.katuyou2 != s.katuyou2:
+                ok = False
+
+        if ok:
             scorer.fp += 1
             scorer.fn += 1
         else:
