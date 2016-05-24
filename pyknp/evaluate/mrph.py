@@ -14,7 +14,7 @@ def morpheme(g, s, level):
     assert isinstance(g, BList)
     assert isinstance(s, BList)
     assert isinstance(level, int)
-    if level < 1 or level > 2:
+    if level < 0 or level > 2:
         raise KeyError
 
     starts = set([])
@@ -67,9 +67,9 @@ def morpheme(g, s, level):
                 ok = False
 
         if ok:
+            scorer.tp += 1
+        else:
             scorer.fp += 1
             scorer.fn += 1
-        else:
-            scorer.tp += 1
 
     return scorer
