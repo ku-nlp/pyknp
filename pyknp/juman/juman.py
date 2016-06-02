@@ -62,6 +62,11 @@ class Subprocess(object):
             self.process.wait()
         except OSError:
             pass
+        except TypeError:
+            pass
+        except AttributeError:
+            pass
+
 
     def query(self, sentence, pattern):
         assert(isinstance(sentence, six.text_type))
