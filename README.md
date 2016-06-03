@@ -1,4 +1,4 @@
-# pyknp: Python Module for KNP/JUMAN Version 0.2
+# pyknp: Python Module for KNP/JUMAN
 
 - Kurohashi-Kawahara Lab, Kyoto University
 - Written by 
