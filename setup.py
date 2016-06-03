@@ -2,7 +2,6 @@
 
 __author__ = 'John Richardson'
 __email__ = 'john@nlp.ist.i.kyoto-u.ac.jp'
-__version__ = '0.2'
 __copyright__ = ''
 __license__ = 'See COPYING'
 
@@ -12,6 +11,7 @@ from setuptools import setup, find_packages, Extension
 version_file = os.path.join(os.path.dirname(__file__), 'VERSION')
 with open(version_file) as fh:
     pyknp_version = fh.read().strip()
+__version__ = pyknp_version
 
 setup(
     name='pyknp',
