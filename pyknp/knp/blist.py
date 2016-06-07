@@ -182,9 +182,9 @@ class BList(DrawTree):
         """ draw_tree メソッドとの通信用のメソッド． """
         return self.bnst_list()
 
-    def get_clause_starts(self):
+    def get_clause_starts(self, disable_levelA=False):
         def levelOK(lv):
-            if lv.startswith(u"B") or lv.startswith(u"C") or lv == u"A":
+            if lv.startswith(u"B") or lv.startswith(u"C") or (not disable_levelA and (lv == u"A")):
                 return True
             return False
 
