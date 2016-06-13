@@ -5,7 +5,7 @@ from pyknp.knp.blist import BList
 from pyknp.evaluate.scorer import Scorer
 
 
-def dependency(g, s, level=2):
+def dependency(g, s, level=2, checkType=False):
     assert isinstance(g, BList)
     assert isinstance(s, BList)
     assert isinstance(level, int)
@@ -22,6 +22,8 @@ def dependency(g, s, level=2):
     for span in spans:
         g_to_span = None
         s_to_span = None
+        g_dpndtype = None
+        s_dpndtype = None
         try:
             gold_pid = g_spans.index(span)
             if (level == 2) and (gold_pid == len(g_spans) - 2):
@@ -29,6 +31,7 @@ def dependency(g, s, level=2):
             g_to = g.tag_list()[gold_pid].parent_id
             if g_to == -1:
                 continue
+            g_dpndtype = g.tag_list()[gold_pid].dpndtype
             g_to_span = g_spans[g_to]
         except ValueError:
             pass
@@ -37,6 +40,7 @@ def dependency(g, s, level=2):
             s_to = s.tag_list()[sys_pid].parent_id
             if s_to == -1:
                 continue
+            s_dpndtype = s.tag_list()[sys_pid].dpndtype
             s_to_span = s_spans[s_to]
         except ValueError:
             pass
@@ -48,7 +52,13 @@ def dependency(g, s, level=2):
                 scorer.fp += 1
         else:
             if g_to_span == s_to_span:
-                scorer.tp += 1
+                if checkType:
+                    if g_dpndtype == s_dpndtype:
+                        scorer.tp += 1
+                    else:
+                        scorer.fn += 1
+                else:
+                    scorer.tp += 1
             else:
                 scorer.fn += 1
 
