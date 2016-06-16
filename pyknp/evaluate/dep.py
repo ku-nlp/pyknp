@@ -51,15 +51,20 @@ def dependency(g, s, level=2, checkType=False):
             else:
                 scorer.fp += 1
         else:
-            if g_to_span == s_to_span:
-                if checkType:
-                    if g_dpndtype == s_dpndtype:
-                        scorer.tp += 1
-                    else:
-                        scorer.fn += 1
-                else:
-                    scorer.tp += 1
-            else:
+            if s_to_span is None:
                 scorer.fn += 1
+            else:
+                if g_to_span == s_to_span:
+                    if checkType:
+                        if g_dpndtype == s_dpndtype:
+                            scorer.tp += 1
+                        else:
+                            scorer.fp += 1
+                            scorer.fn += 1
+                    else:
+                        scorer.tp += 1
+                else:
+                    scorer.fp += 1
+                    scorer.fn += 1
 
     return scorer
