@@ -9,7 +9,7 @@ def morpheme(g, s, level):
     """
     level=0: segmentation のみ評価
     level=1: segmentation+POS の評価
-    level=2: segmentation+POS+{原形，品詞細分類，活用型，活用形} の評価
+    level=2: segmentation+POS+{読み，原形，品詞細分類，活用型，活用形} の評価
     """
     assert isinstance(g, BList)
     assert isinstance(s, BList)
