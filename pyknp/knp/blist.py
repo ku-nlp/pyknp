@@ -20,10 +20,11 @@ class BList(DrawTree):
     文節列を保持するオブジェクト．
     """
 
-    def __init__(self, spec='', pattern='EOS'):
+    def __init__(self, spec='', pattern='EOS', newstyle=False):
         self._bnst = []
         self._readonly = False
         self.pattern = pattern
+        self.newstyle = newstyle
         self.comment = ''
         self.sid = ''
         self._pinfos = []
@@ -59,7 +60,6 @@ class BList(DrawTree):
                     tag.features.pas.arguments[casename].append(arg)
 
     def parse(self, spec):
-        newstyle = False
         for string in spec.split('\n'):
             if string.strip() == "":
                 continue
@@ -74,7 +74,7 @@ class BList(DrawTree):
                 if match:
                     self.sid = match.group(1)
                 if 'KNP++' in string:
-                    newstyle = True
+                    self.newstyle = True
             elif re.match(self.pattern, string):
                 break
             elif string.startswith(';;'):
@@ -84,11 +84,11 @@ class BList(DrawTree):
                 bnst = Bunsetsu(string, len(self._bnst))
                 self._bnst.append(bnst)
             elif string.startswith('+'):
-                if newstyle:
-                    bnst = Bunsetsu(string, len(self._bnst), newstyle)
+                if self.newstyle:
+                    bnst = Bunsetsu(string, len(self._bnst), self.newstyle)
                     self._bnst.append(bnst)
                 self._bnst[-1].push_tag(
-                    Tag(string, len(self.tag_list()), newstyle))
+                    Tag(string, len(self.tag_list()), self.newstyle))
             elif string.startswith('!!'):
                 synnodes = SynNodes(string)
                 self._bnst[-1].tag_list().push_synnodes(synnodes)
@@ -98,7 +98,7 @@ class BList(DrawTree):
             elif string.startswith('EOS'):
                 pass
             else:
-                mrph = Morpheme(string, len(self.mrph_list()), newstyle)
+                mrph = Morpheme(string, len(self.mrph_list()), self.newstyle)
                 self._bnst[-1].push_mrph(mrph)
 
     def set_positions(self):
