@@ -70,7 +70,7 @@ class BList(DrawTree):
             elif string.startswith('#'):
                 self.comment += string
                 self.comment += u"\n"
-                match = re.match(r'# S-ID:(.*?)[ $]', self.comment)
+                match = re.match(r'# S-ID:(.*?)[ $\n]', self.comment)
                 if match:
                     self.sid = match.group(1)
                 if 'KNP++' in string:
