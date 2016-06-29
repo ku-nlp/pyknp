@@ -134,18 +134,10 @@ class BList(DrawTree):
         self._bnst[bnst.parent].child.append(bnst.bnst_id)
 
     def tag_list(self):
-        result = []
-        for bnst in self._bnst:
-            for tag in bnst.tag_list():
-                result.append(tag)
-        return result
+        return [tag for bnst in self._bnst for tag in bnst.tag_list()]
 
     def mrph_list(self):
-        result = []
-        for bnst in self._bnst:
-            for mrph in bnst.mrph_list():
-                result.append(mrph)
-        return result
+        return [mrph for bnst in self._bnst for mrph in bnst.mrph_list()]
 
     def bnst_list(self):
         return self._bnst
