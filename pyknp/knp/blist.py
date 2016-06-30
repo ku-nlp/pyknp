@@ -35,6 +35,7 @@ class BList(DrawTree):
 
     def _setPAS(self):
         """Set PAS to BList with new format"""
+        tag_list = self.tag_list()
         for pinfo in self._pinfos:
             pinfo = json.loads(pinfo)
 
@@ -43,7 +44,7 @@ class BList(DrawTree):
                 end = pinfo[u"head_token_end"]
                 tag_idx = bisect.bisect(self.tag_positions, end) - 1
 
-            tag = self.tag_list()[tag_idx]
+            tag = tag_list[tag_idx]
             tag.features.pas = Pas()
             tag.features.pas.cfid = pinfo[u"cfid"]
 
@@ -127,25 +128,17 @@ class BList(DrawTree):
                     tag.parent = None
                 else:
                     tag.parent = self.tag_list()[tag.parent_id]
-                    self.tag_list()[tag.parent_id].children.append(tag)
+                    tag.parent.children.append(tag)
 
     def push_bnst(self, bnst):
         self._bnst.append(bnst)
         self._bnst[bnst.parent].child.append(bnst.bnst_id)
 
     def tag_list(self):
-        result = []
-        for bnst in self._bnst:
-            for tag in bnst.tag_list():
-                result.append(tag)
-        return result
+        return [tag for bnst in self._bnst for tag in bnst.tag_list()]
 
     def mrph_list(self):
-        result = []
-        for bnst in self._bnst:
-            for mrph in bnst.mrph_list():
-                result.append(mrph)
-        return result
+        return [mrph for bnst in self._bnst for mrph in bnst.mrph_list()]
 
     def bnst_list(self):
         return self._bnst
