@@ -5,16 +5,23 @@ from pyknp.knp.blist import BList
 from pyknp.evaluate.scorer import Scorer
 
 
-def dependency(g, s, level=2, checkType=False):
+def dependency(g, s, level=2, checkType=False, ignoreStart=True):
     assert isinstance(g, BList)
     assert isinstance(s, BList)
     assert isinstance(level, int)
+    assert isinstance(checkType, bool)
+    assert isinstance(ignoreStart, bool)
     if level != 1 and level != 2:
         raise KeyError
 
     spans = set([])
     g_spans = [g.get_tag_span(t.tag_id) for t in g.tag_list()]
     s_spans = [s.get_tag_span(t.tag_id) for t in s.tag_list()]
+    if ignoreStart:
+        for i, g_span in enumerate(g_spans):
+            g_spans[i] = g_span[1]
+        for i, s_span in enumerate(s_spans):
+            s_spans[i] = s_span[1]
     spans = spans.union(set(g_spans))
     spans = spans.union(set(s_spans))
 
