@@ -18,6 +18,8 @@ class Morpheme(object):
         if newstyle and mrph_id is None:
             raise KeyError
         self.mrph_id = mrph_id
+        self.char_from = 0
+        self.char_to = 0
         self.doukei = []
         self.midasi = ''
         self.yomi = ''
@@ -37,11 +39,13 @@ class Morpheme(object):
             self._parse_new_spec(spec.strip("\n"))
         else:
             self._parse_spec(spec.strip("\n"))
-
+    
     def _parse_new_spec(self, spec):
         parts = spec.split(u"\t")
         assert parts[0] == u"-"
 #         self.mrph_id = int(parts[1])
+        self.char_from = parts[3]
+        self.char_to = parts[4]
         self.midasi = parts[5]
         self.yomi = parts[7]
         self.genkei = parts[8]
@@ -54,6 +58,7 @@ class Morpheme(object):
         self.katuyou2 = parts[15]
         self.katuyou2_id = int(parts[16])
         self.fstring = parts[17]
+        self.feature = self.parse_fstring(self.fstring)
         self.repname = parts[6]
 
     def _parse_spec(self, spec):
@@ -158,7 +163,15 @@ class Morpheme(object):
             out.append(self.fstring)
         out.append(u"\n")
         return u"".join(out)
-
+    
+    def parse_fstring(self, fstring):
+        rvalue = {}
+        for feature in fstring.split(u"|"):
+            fs = feature.rstrip().lstrip().split(u":")
+            key = ":".join(fs[:-1])
+            val = fs[-1]
+            rvalue[key]=val.split(u";")
+        return rvalue
 
 class MorphemeTest(unittest.TestCase):
 

@@ -100,6 +100,9 @@ class BList(DrawTree):
                 pass
             else:
                 mrph = Morpheme(string, len(self.mrph_list()), self.newstyle)
+                if(len(self._bnst)==0):
+                    bnst = Bunsetsu("*", len(self._bnst))
+                    self._bnst.append(bnst)
                 self._bnst[-1].push_mrph(mrph)
 
     def set_positions(self):
