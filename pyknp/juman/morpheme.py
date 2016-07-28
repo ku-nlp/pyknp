@@ -18,8 +18,8 @@ class Morpheme(object):
         if newstyle and mrph_id is None:
             raise KeyError
         self.mrph_id = mrph_id
-        self.char_from = 0
-        self.char_to = 0
+        self.prev_mrph_id = 0
+        self.span = (0, 0)
         self.doukei = []
         self.midasi = ''
         self.yomi = ''
@@ -43,9 +43,9 @@ class Morpheme(object):
     def _parse_new_spec(self, spec):
         parts = spec.split(u"\t")
         assert parts[0] == u"-"
-#         self.mrph_id = int(parts[1])
-        self.char_from = parts[3]
-        self.char_to = parts[4]
+        self.mrph_id = int(parts[1])
+        self.prev_mrph_id = [int(mid) for mid in parts[2].split(u";")]
+        self.span = (int(parts[3]), int(parts[4]))
         self.midasi = parts[5]
         self.yomi = parts[7]
         self.genkei = parts[8]
@@ -129,18 +129,21 @@ class Morpheme(object):
              self.katuyou2, self.katuyou2_id, imis, self.fstring)
         return "%s\n" % spec.rstrip()
 
-    def new_spec(self, prev_mrph_id, position):
-        assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, six.text_type) or isinstance(prev_mrph_id, list)
-        assert isinstance(position, int)
+    def new_spec(self, prev_mrph_id=None):
+        assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, six.text_type) or isinstance(prev_mrph_id, list) or prev_mrph_id is None
+        if(prev_mrph_id is None):
+            prev_mrph_id = self.prev_mrph_id
+        
         if self.mrph_id is None:
             raise NotImplementedError
+        
         out = []
         out.append(u"-\t%s" % self.mrph_id)
         if isinstance(prev_mrph_id, list):
             out.append(u"\t%s" % u";".join([u"%s" % pm for pm in prev_mrph_id]))
         else:
             out.append(u"\t%s" % prev_mrph_id)
-        out.append(u"\t%d\t%d" % (position, position + len(self.midasi) - 1))
+        out.append(u"\t%d\t%d" % self.span)
         out.append(u"\t%s" % self.midasi)
         if len(self.repname) == 0:
             #             out.append(u"\t%s/%s" % (self.midasi, self.yomi))
