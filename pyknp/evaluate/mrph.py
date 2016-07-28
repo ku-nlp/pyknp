@@ -21,8 +21,8 @@ def morpheme(g, s, level):
     g_mrphs = g.mrph_list()
     s_mrphs = s.mrph_list()
 
-    g_starts = [g.mrph_positions[t.mrph_id] for t in g_mrphs]
-    s_starts = [s.mrph_positions[t.mrph_id] for t in s_mrphs]
+    g_starts = [g.mrph_positions[t.mrph_index] for t in g_mrphs]
+    s_starts = [s.mrph_positions[t.mrph_index] for t in s_mrphs]
     starts = starts.union(set(g_starts))
     starts = starts.union(set(s_starts))
 
