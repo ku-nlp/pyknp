@@ -108,12 +108,13 @@ class BList(DrawTree):
     def set_positions(self):
         self.mrph_positions = [0]
         self.tag_positions = [0]
+        mrph_positions_map = {}
         for mrph in self.mrph_list():
             self.mrph_positions.append(self.mrph_positions[-1] + len(mrph.midasi))
         for tag in self.tag_list():
-            start_mrph_id = tag.mrph_list()[0].mrph_id
-            end_mrph_id = tag.mrph_list()[-1].mrph_id
-            length = self.mrph_positions[end_mrph_id + 1] - self.mrph_positions[start_mrph_id]
+            start_mrph_index = tag.mrph_list()[0].mrph_index
+            end_mrph_index = tag.mrph_list()[-1].mrph_index
+            length = self.mrph_positions[end_mrph_index + 1] - self.mrph_positions[start_mrph_index]
             self.tag_positions.append(self.tag_positions[-1] + length)
 
     def get_tag_span(self, tag_id):

@@ -17,6 +17,7 @@ class Morpheme(object):
         assert mrph_id is None or isinstance(mrph_id, int)
         if newstyle and mrph_id is None:
             raise KeyError
+        self.mrph_index = mrph_id
         self.mrph_id = mrph_id
         self.prev_mrph_id = 0
         self.span = (0, 0)
@@ -129,10 +130,21 @@ class Morpheme(object):
              self.katuyou2, self.katuyou2_id, imis, self.fstring)
         return "%s\n" % spec.rstrip()
 
-    def new_spec(self, prev_mrph_id=None):
+    def new_spec(self, prev_mrph_id=None, span=None):
         assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, six.text_type) or isinstance(prev_mrph_id, list) or prev_mrph_id is None
         if(prev_mrph_id is None):
             prev_mrph_id = self.prev_mrph_id
+        
+        # This method accepts character position instead of morpheme span for backward comatibility.
+        assert isinstance(span, tuple) or isinstance(span, list) or isinstance(span, int) or isinstance(span, six.text_type) or span is None
+        if(span is None):
+            span = self.span
+        elif(isinstance(span, tuple) or isinstance(span, list)):
+            span = (span[0], span[1])
+        elif(span is six.text_type):
+            span = (int(span), int(span) + len(self.midasi) -1)
+        elif(isinstance(span, int)):
+            span = (span, span + len(self.midasi) -1)
         
         if self.mrph_id is None:
             raise NotImplementedError
@@ -143,7 +155,7 @@ class Morpheme(object):
             out.append(u"\t%s" % u";".join([u"%s" % pm for pm in prev_mrph_id]))
         else:
             out.append(u"\t%s" % prev_mrph_id)
-        out.append(u"\t%d\t%d" % self.span)
+        out.append(u"\t%d\t%d" % span)
         out.append(u"\t%s" % self.midasi)
         if len(self.repname) == 0:
             #             out.append(u"\t%s/%s" % (self.midasi, self.yomi))
