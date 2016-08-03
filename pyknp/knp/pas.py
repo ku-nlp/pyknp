@@ -8,12 +8,13 @@ import six
 
 class Argument(object):
 
-    def __init__(self, sid, tid, rep):
+    def __init__(self, sid, tid, rep, flag=None):
         assert isinstance(tid, int)
         assert isinstance(rep, six.text_type)
         self.sid = sid
         self.tid = tid
         self.rep = rep
+        self.flag = flag
 
 
 class Pas(object):
@@ -40,15 +41,15 @@ class Pas(object):
 
         for k in val[c1 + 1:].split(u';'):
             items = k.split(u"/")
-            casetype = items[1]
-            if casetype == u"U" or casetype == u"-":
+            caseflag = items[1]
+            if caseflag == u"U" or caseflag == u"-":
                 continue
 
             mycase = items[0]
             rep = items[2]
             tid = int(items[3])
             sid = items[5]
-            arg = Argument(sid, tid, rep)
+            arg = Argument(sid, tid, rep, caseflag)
 
             self.arguments[mycase].append(arg)
 
