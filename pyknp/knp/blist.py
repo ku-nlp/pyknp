@@ -179,7 +179,7 @@ class BList(DrawTree):
         """ draw_tree メソッドとの通信用のメソッド． """
         return self.bnst_list()
 
-    def get_clause_starts(self, disable_levelA=False):
+    def get_clause_starts(self, concat_clause_in_paren=False, disable_levelA=False):
         def levelOK(lv):
             if lv.startswith(u"B") or lv.startswith(u"C") or (not disable_levelA and (lv == u"A")):
                 return True
@@ -197,7 +197,7 @@ class BList(DrawTree):
                 paren_level -= 1
             level = features.get(u"レベル")
 
-            if (paren_level == 0) and (level is not None) and levelOK(level):
+            if (not concat_clause_in_paren or paren_level == 0) and (level is not None) and levelOK(level):
                 kakari = features.get(u"係")
                 myid = features.get(u"ID")
                 if kakari in [u"連格", u"連体"]:
