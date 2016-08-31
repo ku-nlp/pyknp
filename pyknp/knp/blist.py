@@ -106,8 +106,13 @@ class BList(DrawTree):
                 self._bnst[-1].push_mrph(mrph)
 
     def set_positions(self):
-        self.mrph_positions = [0]
-        self.tag_positions = [0]
+        mrphs = self.mrph_list()
+        if(len(mrphs)==0):
+            return
+        begin_position = mrphs[0].span[0] 
+        
+        self.mrph_positions = [begin_position]
+        self.tag_positions = [begin_position]
         mrph_positions_map = {}
         for mrph in self.mrph_list():
             self.mrph_positions.append(self.mrph_positions[-1] + len(mrph.midasi))
