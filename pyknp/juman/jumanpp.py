@@ -77,12 +77,13 @@ class JumanppTest(unittest.TestCase):
         self.assertEqual(result[2].midasi, u"響き")
         self.assertEqual(result[2].hinsi, u"名詞")
     
-    #def test_whitespace(self):
-    #    test_str = u"半角 スペース"
-    #    result = self.jumanpp.analysis(test_str)
-    #    self.assertEqual(len(result), 3)
-    #    self.assertEqual(''.join(mrph.midasi for mrph in result), u"半角\ スペース")
-    #    self.assertGreaterEqual(len(result.spec().split("\n")), 3)
+    def test_whitespace(self):
+        test_str = u"半角 スペース"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(len(result), 3)
+        self.assertEqual((result[1].bunrui == u'空白'), True) 
+        self.assertEqual(''.join(mrph.midasi for mrph in result), u"半角\ スペース")
+        self.assertGreaterEqual(len(result.spec().split("\n")), 3)
 
 if __name__ == '__main__':
     unittest.main()

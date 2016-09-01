@@ -143,5 +143,13 @@ class JumanTest(unittest.TestCase):
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
         self.assertGreaterEqual(len(result.spec().split("\n")), 7)
 
+    def test_whitespace(self):
+        test_str = u"半角 スペース"
+        result = self.juman.analysis(test_str)
+        self.assertEqual(len(result), 4) # 半|角|\ |スペース
+        self.assertEqual((result[2].bunrui == u'空白'), True) 
+        self.assertEqual(''.join(mrph.midasi for mrph in result), u"半角\ スペース")
+        self.assertGreaterEqual(len(result.spec().split("\n")), 4)
+
 if __name__ == '__main__':
     unittest.main()

@@ -66,21 +66,24 @@ class Morpheme(object):
         parts = []
         part = ''
         inside_quotes = False
-        for char in spec:
-            if char == u'"':
-                if not inside_quotes:
-                    inside_quotes = True
+        if(spec.startswith(u'\  \  \  特殊 1 空白 6 * 0 * 0')):
+            parts = [u'\ ',u'\ ',u'\ ',u'特殊',u'1',u'空白','6',u'*',u'0',u'*',u'0',u'NIL']
+        else:
+            for char in spec:
+                if char == u'"':
+                    if not inside_quotes:
+                        inside_quotes = True
+                    else:
+                        inside_quotes = False
+                if char == u' ' and not inside_quotes:
+                    if part.startswith(u'"') and part.endswith(u'"'):
+                        parts.append(part[1:-1])
+                    else:
+                        parts.append(part)
+                    part = ''
                 else:
-                    inside_quotes = False
-            if char == u' ' and not inside_quotes:
-                if part.startswith(u'"') and part.endswith(u'"'):
-                    parts.append(part[1:-1])
-                else:
-                    parts.append(part)
-                part = ''
-            else:
-                part += char
-        parts.append(part)
+                    part += char
+            parts.append(part)
 
         try:
             self.midasi = parts[0]
