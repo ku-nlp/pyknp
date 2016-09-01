@@ -1,7 +1,7 @@
 #-*- encoding: utf-8 -*-
 
 from __future__ import absolute_import
-from pyknp import Juman
+from pyknp import Juman, Jumanpp
 from pyknp import Socket, Subprocess  # TODO(john): move to separate file
 from pyknp import BList
 import os
@@ -17,7 +17,7 @@ class KNP(object):
 
     def __init__(self, command='knp', server=None, port=31000, timeout=60,
                  option='-tab', rcfile='', pattern=r'EOS',
-                 jumancommand='juman', jumanrcfile=''):
+                 jumancommand='juman', jumanrcfile='', jumanpp=False):
         self.command = command
         self.server = server
         self.port = port
@@ -27,11 +27,16 @@ class KNP(object):
         self.pattern = pattern
         self.socket = None
         self.subprocess = None
+        self.jumanpp = (jumancommand == "jumanpp") or jumanpp
+
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
             sys.stderr.write("Can't read rcfile (%s)!\n" % self.rcfile)
             quit(1)
 
-        self.juman = Juman(command=jumancommand, rcfile=jumanrcfile)
+        if(self.jumanpp):
+            self.juman = Jumanpp()
+        else:
+            self.juman = Juman(command=jumancommand, rcfile=jumanrcfile)
 
     def knp(self, sentence):
         self.parse(sentence)

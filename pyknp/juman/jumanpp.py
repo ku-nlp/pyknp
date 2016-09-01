@@ -35,11 +35,17 @@ class Jumanpp(object):
             command = "%s %s" % (self.command, self.option)
             self.subprocess = Subprocess(command)
         return self.subprocess.query(input_str, pattern=self.pattern)
+    
+    def juman_lines(self, input_str):
+        return self.jumanpp_lines(input_str)
 
     def jumanpp(self, input_str):
         assert(isinstance(input_str, six.text_type))
         result = MList(self.jumanpp_lines(input_str))
         return result
+    
+    def juman(self, input_str):
+        return self.jumanpp(input_str)
 
     def analysis(self, input_str):
         """
