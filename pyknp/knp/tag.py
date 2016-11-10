@@ -36,6 +36,7 @@ class Tag(object):
             self.fstring = items[17]
             self.repname = items[6]
             self.features = Features(self.fstring, u"|", False)
+            self.features._tag = self
         elif re.match(r'\+ (-?\d+)(\w)(.*)$', spec):
             match = re.match(r'\+ (-?\d+)(\w)(.*)$', spec)
             self.parent_id = int(match.group(1))
@@ -49,6 +50,7 @@ class Tag(object):
         if not newstyle:
             self.repname = ''
             self.features = Features(self.fstring)
+            self.features._tag = self
             rep = self.features.get(u"正規化代表表記")
             if rep is not None:
                 self.repname = rep

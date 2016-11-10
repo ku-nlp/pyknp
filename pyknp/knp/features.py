@@ -18,6 +18,7 @@ class Features(dict):
 
         self.spec = spec.rstrip()
         self.rels = None
+        self._tag = None
         if len(spec) == 0:
             return
 
@@ -44,6 +45,10 @@ class Features(dict):
                 self[key] = val
 
             tag_start = tag_end + len(splitter)
+
+    @property
+    def pas(self):
+        return self._tag.pas
 
 
 class FeaturesTest(unittest.TestCase):

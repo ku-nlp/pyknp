@@ -317,6 +317,7 @@ EOS"""
         self.assertEqual(tags[1].pas, None)
         self.assertEqual(tags[2].pas, None)
         self.assertEqual(tags[3].pas.cfid, u"渡す/わたす:動1")
+        self.assertEqual(tags[3].features.pas.cfid, u"渡す/わたす:動1")
         args = tags[3].pas.arguments
         self.assertEqual(len(args), 3)
         self.assertEqual(len(args[u"ヲ"]), 1)
