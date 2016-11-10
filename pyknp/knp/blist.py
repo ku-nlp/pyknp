@@ -31,34 +31,40 @@ class BList(DrawTree):
         self.parse(spec)
         self.set_parent_child()
         self.set_positions()
-        self._setPAS()
+        self._setPAS(newstyle)
 
-    def _setPAS(self):
-        """Set PAS to BList with new format"""
+    def _setPAS(self, newstyle):
+        """Set PAS"""
         tag_list = self.tag_list()
-        for pinfo in self._pinfos:
-            pinfo = json.loads(pinfo)
+        if(newstyle):
+            for pinfo in self._pinfos:
+                pinfo = json.loads(pinfo)
 
-            tag_idx = pinfo.get(u"tid")
-            if tag_idx is None:
-                end = pinfo[u"head_token_end"]
-                tag_idx = bisect.bisect(self.tag_positions, end) - 1
+                tag_idx = pinfo.get(u"tid")
+                if tag_idx is None:
+                    end = pinfo[u"head_token_end"]
+                    tag_idx = bisect.bisect(self.tag_positions, end) - 1
 
-            tag = tag_list[tag_idx]
-            tag.features.pas = Pas()
-            tag.features.pas.cfid = pinfo[u"cfid"]
+                tag = tag_list[tag_idx]
+                tag.features.pas = Pas()
+                tag.features.pas.cfid = pinfo[u"cfid"]
 
-            for casename, args in pinfo[u"args"].items():
-                for arg in args:
-                    arg_tag_idx = arg.get(u"tid")
-                    if arg_tag_idx is None:
-                        arg_tag_idx = bisect.bisect(self.tag_positions, arg[u"head_token_end"]) - 1
-                    arg_sid = arg.get(u"sid")
-                    if (arg_sid is None) or (len(arg[u"sid"]) == 0):
-                        arg_sid = self.sid
+                for casename, args in pinfo[u"args"].items():
+                    for arg in args:
+                        arg_tag_idx = arg.get(u"tid")
+                        if arg_tag_idx is None:
+                            arg_tag_idx = bisect.bisect(self.tag_positions, arg[u"head_token_end"]) - 1
+                        arg_sid = arg.get(u"sid")
+                        if (arg_sid is None) or (len(arg[u"sid"]) == 0):
+                            arg_sid = self.sid
 
-                    arg = Argument(arg_sid, arg_tag_idx, arg[u"rep"])
-                    tag.features.pas.arguments[casename].append(arg)
+                        arg = Argument(arg_sid, arg_tag_idx, arg[u"rep"])
+                        tag.features.pas.arguments[casename].append(arg)
+        else:
+            # KNPの述語項構造をparse
+            for tag in self.tag_list()
+                if(u"格解析結果" in tag.feature):
+                    tag.pas = Pas(tag.tag_id, self)
 
     def parse(self, spec):
         for string in spec.split('\n'):

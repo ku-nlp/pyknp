@@ -24,6 +24,7 @@ class Tag(object):
         self.features = None
         self._pstring = ''
         self.tag_id = tag_id
+        self.pas = None
         self.synnodes = []
         spec = spec.strip()
         if spec == '+':

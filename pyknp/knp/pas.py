@@ -10,19 +10,22 @@ ArgRepname = collections.namedtuple("ArgRepname", "repname,tid_list")
 
 
 class Pas(object):
-    def __init__(self, tid, result, knpstyle=True):
+    def __init__(self, tid=0, result=None, knpstyle=True):
         """
             述語項構造を扱うクラス
             文をまたがる述語項構造は非対応
             result = knp.result(knp_result)
             pas = Pas(5, result)
         """
-        if result is None:
-            raise ValueError
         self.valid = True
         self.cfid = None 
-        self.tid = tid
         self.arguments = collections.defaultdict(list)
+         
+        if result is None:
+            self.valid = False
+            return
+            
+        self.tid = tid
         self.tag_list = result.tag_list()
         case_analysis = self.tag_list[self.tid].features.get(u"格解析結果")
         if(case_analysis is None):
