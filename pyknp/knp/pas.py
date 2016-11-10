@@ -6,6 +6,8 @@ import collections
 import six
 
 Argument = collections.namedtuple("Argument", "sid,sdist,tid,rep,flag")
+ArgRepname = collections.namedtuple("ArgRepname", "repname,tid_list")
+
 
 class Pas(object):
     def __init__(self, tid, result):
@@ -68,7 +70,7 @@ class Pas(object):
             tid = arg.tid
             rep = self.tag_list[tid].repname
             arguments.append(rep)
-        return arguments
+        return ArgRepname(arguments,[tid])
     
     def get_long_arguments(self, case):
         """
@@ -90,7 +92,7 @@ class Pas(object):
             for tid in tids:
                 long_rep.append(self.tag_list[tid].repname)
             arguments.append("+".join(long_rep)) 
-        return arguments
+        return ArgRepname(arguments, tids)
      
     def get_orig_result(self):
         return self.tag_list[self.tid].features.get(u"格解析結果")
