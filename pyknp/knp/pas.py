@@ -10,7 +10,7 @@ ArgRepname = collections.namedtuple("ArgRepname", "repname,tid_list")
 
 
 class Pas(object):
-    def __init__(self, tid, result):
+    def __init__(self, tid, result, knpstyle=True):
         """
             述語項構造を扱うクラス
             文をまたがる述語項構造は非対応
