@@ -46,8 +46,8 @@ class BList(DrawTree):
                     tag_idx = bisect.bisect(self.tag_positions, end) - 1
 
                 tag = tag_list[tag_idx]
-                tag.features.pas = Pas()
-                tag.features.pas.cfid = pinfo[u"cfid"]
+                tag.pas = Pas()
+                tag.pas.cfid = pinfo[u"cfid"]
 
                 for casename, args in pinfo[u"args"].items():
                     for arg in args:
@@ -59,11 +59,11 @@ class BList(DrawTree):
                             arg_sid = self.sid
 
                         arg = Argument(arg_sid, arg_tag_idx, arg[u"rep"])
-                        tag.features.pas.arguments[casename].append(arg)
+                        tag.pas.arguments[casename].append(arg)
         else:
             # KNPの述語項構造をparse
-            for tag in self.tag_list()
-                if(u"格解析結果" in tag.feature):
+            for tag in tag_list:
+                if(u"格解析結果" in tag.features):
                     tag.pas = Pas(tag.tag_id, self)
 
     def parse(self, spec):
@@ -288,7 +288,7 @@ class BList2Test(unittest.TestCase):
 EOS"""
 
     def test(self):
-        blist = BList(self.result)
+        blist = BList(self.result, newstyle=True)
         self.assertEqual(len(blist), 4)
         self.assertEqual(len(blist.tag_list()), 4)
         self.assertEqual(len(blist.mrph_list()), 7)
@@ -313,11 +313,11 @@ EOS"""
             self.assertEqual(blist.get_tag_span(t.tag_id), spans[i])
         self.assertEqual(blist.get_clause_starts(), [0])
 
-        self.assertEqual(tags[0].features.pas, None)
-        self.assertEqual(tags[1].features.pas, None)
-        self.assertEqual(tags[2].features.pas, None)
-        self.assertEqual(tags[3].features.pas.cfid, u"渡す/わたす:動1")
-        args = tags[3].features.pas.arguments
+        self.assertEqual(tags[0].pas, None)
+        self.assertEqual(tags[1].pas, None)
+        self.assertEqual(tags[2].pas, None)
+        self.assertEqual(tags[3].pas.cfid, u"渡す/わたす:動1")
+        args = tags[3].pas.arguments
         self.assertEqual(len(args), 3)
         self.assertEqual(len(args[u"ヲ"]), 1)
         self.assertEqual(args[u"ヲ"][0].sid, u"foo")

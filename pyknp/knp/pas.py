@@ -5,12 +5,21 @@ from __future__ import absolute_import
 import collections
 import six
 
-Argument = collections.namedtuple("Argument", "sid,sdist,tid,rep,flag")
+class Argument(object):
+    def __init__(self, sid, tid, rep, flag=None, sdist=None):
+        assert isinstance(tid, int)
+        assert isinstance(rep, six.text_type)
+        self.sid = sid
+        self.tid = tid
+        self.rep = rep
+        self.flag = flag
+        self.sdist = sdist 
+
 ArgRepname = collections.namedtuple("ArgRepname", "repname,tid_list")
 
 
 class Pas(object):
-    def __init__(self, tid=0, result=None, knpstyle=True):
+    def __init__(self, tid=None, result=None, knpstyle=True):
         """
             述語項構造を扱うクラス
             文をまたがる述語項構造は非対応
@@ -21,7 +30,7 @@ class Pas(object):
         self.cfid = None 
         self.arguments = collections.defaultdict(list)
          
-        if result is None:
+        if tid is None:
             self.valid = False
             return
             
@@ -128,7 +137,7 @@ class Pas(object):
                 self.valid = False
             else:
                 tag = self.tag_list[tid]
-            arg = Argument(sid, sdist, tid, rep, caseflag)
+            arg = Argument(sid, tid, rep, caseflag, sdist)
              
             self.arguments[mycase].append(arg)
 

@@ -65,7 +65,6 @@ class FeaturesTest(unittest.TestCase):
             u"""<rel type="時間" target="国会前" sid="950101003-asd" id="16"/>"""
 
         f = Features(tag_str)
-        self.assertEqual(f.pas, None)
         self.assertEqual(len(f.rels), 4)
         self.assertEqual(f.rels[0].tid, 1)
         self.assertEqual(f.rels[0].mode, u"")
