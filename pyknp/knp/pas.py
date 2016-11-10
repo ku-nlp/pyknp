@@ -39,7 +39,7 @@ class Pas(object):
         """
         if(self.valid()):
             return self.tag_list[self.tid].repname
-        else
+        else:
             return None
     
     def get_predicate_declinable_repname(self):
@@ -49,7 +49,7 @@ class Pas(object):
         """
         if(self.valid()):
             return self.tag_list[self.tid].repname
-        else
+        else:
             return None
         return self.tag_list[self.tid].features.get(u"用言代表表記")
     
