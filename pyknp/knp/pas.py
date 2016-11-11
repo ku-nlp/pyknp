@@ -129,7 +129,7 @@ class Pas(object):
             rep = items[2]
             tid = int(items[3])
             sdist = int(items[4])
-            sid = int(items[5])
+            sid = items[5]
            
             # It is unsupported if arguments in other sentence.
             if(sdist != 0):
