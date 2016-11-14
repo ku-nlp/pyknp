@@ -51,7 +51,7 @@ class Pas(object):
         基本句の代表表記を返す
         "道を歩き回ってた" -> 歩く/あるく
         """
-        if(self.valid()):
+        if(self.is_valid()):
             return self.tag_list[self.tid].repname
         else:
             return None
@@ -61,7 +61,7 @@ class Pas(object):
         基本句の用言代表表記を返す
         "道を歩き回ってた" -> 歩く/あるく+回る/まわる~テ形+る/る
         """
-        if(self.valid()):
+        if(self.is_valid()):
             return self.tag_list[self.tid].repname
         else:
             return None
@@ -77,12 +77,12 @@ class Pas(object):
         """
         指定した格の各項ごとに代表表記の配列を返す
         """
-        arguments = []
+        output = []
         for arg in self.arguments[case]:
             tid = arg.tid
             rep = self.tag_list[tid].repname
-            arguments.append(rep)
-        return ArgRepname(arguments,[tid])
+            output.append(ArgRepname("+".join(long_rep),tids)) 
+        return output
     
     def get_long_arguments(self, case):
         """
@@ -94,7 +94,7 @@ class Pas(object):
         self.get_long_arguments(ガ) 
         > [ "研究/けんきゅう+者/しゃ" ]
         """
-        arguments = []
+        output = []
         for arg in self.arguments[case]:
             tids = [arg.tid]
             long_rep = []
@@ -103,8 +103,8 @@ class Pas(object):
                 tids.insert(0, arg.tid-1)
             for tid in tids:
                 long_rep.append(self.tag_list[tid].repname)
-            arguments.append("+".join(long_rep)) 
-        return ArgRepname(arguments, tids)
+            output.append(ArgRepname("+".join(long_rep),tids)) 
+        return output
      
     def get_orig_result(self):
         return self.tag_list[self.tid].features.get(u"格解析結果")
