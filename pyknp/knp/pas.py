@@ -81,13 +81,13 @@ class Pas(object):
         for arg in self.arguments[case]:
             tid = arg.tid
             rep = self.tag_list[tid].repname
-            output.append(ArgRepname("+".join(long_rep),tids)) 
+            output.append(ArgRepname("+".join(rep),tid)) 
         return output
     
     def get_long_arguments(self, case):
         """
         項の主辞’代表表記相当を与える．
-        主辞が一文字漢字である場合は，その直前の基本句を連結した表記を返す．
+        主辞が一文字漢字であり，直前が名詞の場合は，その直前の基本句を連結した表記を返す．
         格に対して項は複数存在しうるので，戻り値は配列を渡す．
         
         Usage:
@@ -99,7 +99,9 @@ class Pas(object):
             tids = [arg.tid]
             long_rep = []
             
-            if(u"一文字漢字" in self.tag_list[arg.tid].features):
+            if(u"一文字漢字" in self.tag_list[arg.tid].features 
+                    and arg.tid > 0 
+                    and self.tag_list[arg.tid-1].mrph_list()[-1].hinsi == "名詞"):
                 tids.insert(0, arg.tid-1)
             for tid in tids:
                 long_rep.append(self.tag_list[tid].repname)
