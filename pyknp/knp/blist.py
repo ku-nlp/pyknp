@@ -69,8 +69,9 @@ class BList(DrawTree):
                 if len(items) >= 3 and items[1] == u"PAS":
                     self._pinfos.append(items[2])
             elif string.startswith('#'):
+                if self.comment:
+                    self.comment += "\n"
                 self.comment += string
-                self.comment += u"\n"
                 match = re.match(r'# S-ID:(.*?)[ $\n]', self.comment)
                 if match:
                     self.sid = match.group(1)
@@ -247,6 +248,7 @@ class BListTest(unittest.TestCase):
         self.assertEqual(''.join([mrph.midasi for mrph in blist.mrph_list()]),
                          u'構文解析の実例を示す。')
         self.assertEqual(blist.sid, '123')
+        self.assertEqual(blist.all(), self.result + "\n")
         # Check parent/children relations
         self.assertEqual(blist[1].parent, blist[2])
         self.assertEqual(blist[1].parent_id, 2)
