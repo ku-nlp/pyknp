@@ -41,8 +41,7 @@ class Tag(object):
             self.dpndtype = match.group(2)
             self.fstring = match.group(3).strip()
         else:
-            sys.stderr.write("Illegal tag spec: %s\n" % spec)
-            quit(1)
+            raise Exception("Illegal tag spec: %s" % spec)
 
         # Extract 正規化代表表記
         if not newstyle:

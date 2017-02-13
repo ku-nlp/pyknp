@@ -41,8 +41,7 @@ class Bunsetsu(object):
             self.dpndtype = match.group(2)
             self.fstring = match.group(3).strip()
         else:
-            sys.stderr.write("Illegal bunsetsu spec: %s\n" % spec)
-            quit(1)
+            raise Exception("Illegal bunsetsu spec: %s" % spec)
 
         # Extract 正規化代表表記
         if not newstyle:
@@ -58,8 +57,7 @@ class Bunsetsu(object):
 
     def push_tag(self, tag):
         if len(self._tag_list) == 0 and len(self._mrph_list) > 0:
-            sys.stderr.write("Unsafe addition of tags!\n")
-            quit(1)
+            raise Exception("Unsafe addition of tags!")
         self._tag_list.push_tag(tag)
 
     def spec(self):

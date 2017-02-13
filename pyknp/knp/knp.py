@@ -30,8 +30,7 @@ class KNP(object):
         self.jumanpp = (jumancommand == "jumanpp") or jumanpp
 
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
-            sys.stderr.write("Can't read rcfile (%s)!\n" % self.rcfile)
-            quit(1)
+            raise Exception("Can't read rcfile (%s)!" % self.rcfile)
 
         if(self.jumanpp):
             self.juman = Jumanpp()
