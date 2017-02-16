@@ -27,8 +27,7 @@ class SynNodes(object):
             self.dpndtype = match.group(2)
             self.parentids = [int(n) for n in parent.split(',')]
         else:
-            sys.stderr.write("Illegal synnodes dpnd: %s\n" % dpnd)
-            quit(1)
+            raise Exception("Illegal synnodes dpnd: %s" % dpnd)
 
         if string.startswith(u"<見出し:"):
             end = string.find(u">")

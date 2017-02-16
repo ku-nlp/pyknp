@@ -80,8 +80,7 @@ class BList(DrawTree):
             elif re.match(self.pattern, string):
                 break
             elif string.startswith(';;'):
-                sys.stderr.write("Error: %s\n" % string)
-                quit(1)
+                raise Exception("Error: %s" % string)
             elif string.startswith('*'):
                 bnst = Bunsetsu(string, len(self._bnst))
                 self._bnst.append(bnst)
