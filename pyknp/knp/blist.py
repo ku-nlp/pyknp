@@ -31,34 +31,40 @@ class BList(DrawTree):
         self.parse(spec)
         self.set_parent_child()
         self.set_positions()
-        self._setPAS()
+        self._setPAS(newstyle)
 
-    def _setPAS(self):
-        """Set PAS to BList with new format"""
+    def _setPAS(self, newstyle):
+        """Set PAS"""
         tag_list = self.tag_list()
-        for pinfo in self._pinfos:
-            pinfo = json.loads(pinfo)
+        if(newstyle):
+            for pinfo in self._pinfos:
+                pinfo = json.loads(pinfo)
 
-            tag_idx = pinfo.get(u"tid")
-            if tag_idx is None:
-                end = pinfo[u"head_token_end"]
-                tag_idx = bisect.bisect(self.tag_positions, end) - 1
+                tag_idx = pinfo.get(u"tid")
+                if tag_idx is None:
+                    end = pinfo[u"head_token_end"]
+                    tag_idx = bisect.bisect(self.tag_positions, end) - 1
 
-            tag = tag_list[tag_idx]
-            tag.features.pas = Pas()
-            tag.features.pas.cfid = pinfo[u"cfid"]
+                tag = tag_list[tag_idx]
+                tag.pas = Pas()
+                tag.pas.cfid = pinfo[u"cfid"]
 
-            for casename, args in pinfo[u"args"].items():
-                for arg in args:
-                    arg_tag_idx = arg.get(u"tid")
-                    if arg_tag_idx is None:
-                        arg_tag_idx = bisect.bisect(self.tag_positions, arg[u"head_token_end"]) - 1
-                    arg_sid = arg.get(u"sid")
-                    if (arg_sid is None) or (len(arg[u"sid"]) == 0):
-                        arg_sid = self.sid
+                for casename, args in pinfo[u"args"].items():
+                    for arg in args:
+                        arg_tag_idx = arg.get(u"tid")
+                        if arg_tag_idx is None:
+                            arg_tag_idx = bisect.bisect(self.tag_positions, arg[u"head_token_end"]) - 1
+                        arg_sid = arg.get(u"sid")
+                        if (arg_sid is None) or (len(arg[u"sid"]) == 0):
+                            arg_sid = self.sid
 
-                    arg = Argument(arg_sid, arg_tag_idx, arg[u"rep"])
-                    tag.features.pas.arguments[casename].append(arg)
+                        arg = Argument(arg_sid, arg_tag_idx, arg[u"rep"])
+                        tag.pas.arguments[casename].append(arg)
+        else:
+            # KNPの述語項構造をparse
+            for tag in tag_list:
+                if(u"格解析結果" in tag.features):
+                    tag.pas = Pas(tag.tag_id, self)
 
     def parse(self, spec):
         for string in spec.split('\n'):
@@ -283,7 +289,7 @@ class BList2Test(unittest.TestCase):
 EOS"""
 
     def test(self):
-        blist = BList(self.result)
+        blist = BList(self.result, newstyle=True)
         self.assertEqual(len(blist), 4)
         self.assertEqual(len(blist.tag_list()), 4)
         self.assertEqual(len(blist.mrph_list()), 7)
@@ -308,11 +314,12 @@ EOS"""
             self.assertEqual(blist.get_tag_span(t.tag_id), spans[i])
         self.assertEqual(blist.get_clause_starts(), [0])
 
-        self.assertEqual(tags[0].features.pas, None)
-        self.assertEqual(tags[1].features.pas, None)
-        self.assertEqual(tags[2].features.pas, None)
+        self.assertEqual(tags[0].pas, None)
+        self.assertEqual(tags[1].pas, None)
+        self.assertEqual(tags[2].pas, None)
+        self.assertEqual(tags[3].pas.cfid, u"渡す/わたす:動1")
         self.assertEqual(tags[3].features.pas.cfid, u"渡す/わたす:動1")
-        args = tags[3].features.pas.arguments
+        args = tags[3].pas.arguments
         self.assertEqual(len(args), 3)
         self.assertEqual(len(args[u"ヲ"]), 1)
         self.assertEqual(args[u"ヲ"][0].sid, u"foo")
