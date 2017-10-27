@@ -87,14 +87,14 @@ class Juman(object):
     形態素解析器 JUMAN を Python から利用するためのモジュールである．
     """
 
-    def __init__(self, command='juman', server=None, port=32000, timeout=30,
-                 option='-e2 -B', rcfile='', ignorepattern='',
-                 pattern=r'EOS'):
-        self.command = command
+    def __init__(self, command='jumanpp', server=None, port=32000, timeout=30,
+                 option='', rcfile='', ignorepattern='',
+                 pattern=r'EOS', juman=False):
+        self.command = 'juman' if juman else command
         self.server = server
         self.port = port
         self.timeout = timeout
-        self.option = option
+        self.option = option+' -e2 -B' if juman else option
         self.rcfile = rcfile
         self.ignorepattern = ignorepattern
         self.pattern = pattern
@@ -112,7 +112,7 @@ class Juman(object):
                 self.socket = Socket(self.server, self.port, "RUN -e2\n")
             else:
                 command = "%s %s" % (self.command, self.option)
-                if self.rcfile:
+                if 'jumanpp' not in self.command and self.rcfile:
                     command += " -r %s" % self.rcfile
                 self.subprocess = Subprocess(command)
         if self.socket:
@@ -137,16 +137,44 @@ class Juman(object):
 class JumanTest(unittest.TestCase):
 
     def setUp(self):
-        self.juman = Juman()
+        self.jumanpp = Juman()
+        self.juman = Juman(juman=True)
 
-    def test_normal(self):
+    
+    # JUMANPP
+    def test_normal_jumanpp(self):
+        test_str = u"この文を解析してください。"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(len(result), 7)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
+        self.assertGreaterEqual(len(result.spec().split("\n")), 7)
+
+    def test_nominalization_jumanpp(self):
+        test_str = u"音の響きを感じる。"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(len(result), 6)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
+        self.assertGreaterEqual(len(result.spec().split("\n")), 6)
+        self.assertEqual(result[2].midasi, u"響き")
+        self.assertEqual(result[2].hinsi, u"名詞")
+    
+    def test_whitespace_jumanpp(self):
+        test_str = u"半角 スペース"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(len(result), 3)
+        self.assertEqual((result[1].bunrui == u'空白'), True) 
+        self.assertEqual(''.join(mrph.midasi for mrph in result), u"半角\ スペース")
+        self.assertGreaterEqual(len(result.spec().split("\n")), 3)
+
+    # JUMAN 
+    def test_normal_juman(self):
         test_str = u"この文を解析してください。"
         result = self.juman.analysis(test_str)
         self.assertEqual(len(result), 7)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
         self.assertGreaterEqual(len(result.spec().split("\n")), 7)
 
-    def test_whitespace(self):
+    def test_whitespace_juman(self):
         test_str = u"半角 スペース"
         result = self.juman.analysis(test_str)
         self.assertEqual(len(result), 4) # 半|角|\ |スペース
