@@ -1,6 +1,7 @@
 #-*- encoding: utf-8 -*-
 
 from __future__ import absolute_import
+from __future__ import print_function
 from pyknp import MList
 from pyknp import Morpheme
 import os
@@ -103,6 +104,9 @@ class Juman(object):
             raise Exception("Can't read rcfile (%s)!" % self.rcfile)
 
     def juman_lines(self, input_str):
+        if '\n' in input_str:
+            input_str = input_str.replace('\n','')
+            print('Analysis is done ignoring "\\n".', file=sys.stderr)
         if not self.socket and not self.subprocess:
             if self.server is not None:
                 self.socket = Socket(self.server, self.port, "RUN -e2\n")
