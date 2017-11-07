@@ -81,7 +81,7 @@ class BList(DrawTree):
                 match = re.match(r'# S-ID:(.*?)[ $\n]', self.comment)
                 if match:
                     self.sid = match.group(1)
-                if 'KNP++' in string:
+                if 'KNP++' in string and 'output:KNP' not in string:
                     self.newstyle = True
             elif re.match(self.pattern, string):
                 break
