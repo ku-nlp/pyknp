@@ -8,11 +8,12 @@ import six
 import sys
 
 class Argument(object):
-    def __init__(self, sid, tid, rep, flag=None, sdist=None):
+    def __init__(self, sid=None, tid=None, eid=None, rep='', flag=None, sdist=None):
         assert isinstance(tid, int)
         assert isinstance(rep, six.text_type)
         self.sid = sid
         self.tid = tid
+        self.eid = eid
         self.rep = rep
         self.flag = flag
         self.sdist = sdist 
@@ -38,6 +39,11 @@ class Pas(object):
             
         self.tid = tid
         self.tag_list = result.tag_list()
+
+        pas_analysis = self.tag_list[self.tid].features.get(u"述語項構造") # -anaphoraの場合
+        if pas_analysis is not None:
+            self.__parse_case_analysis(pas_analysis, pasFlag=True)
+
         case_analysis = self.tag_list[self.tid].features.get(u"格解析結果")
         if(case_analysis is None):
             self.valid = False
@@ -124,7 +130,7 @@ class Pas(object):
     def get_orig_result(self):
         return self.tag_list[self.tid].features.get(u"格解析結果")
      
-    def __parse_case_analysis(self, analysis_result):
+    def __parse_case_analysis(self, analysis_result, pasFlag):
         assert isinstance(analysis_result, six.text_type)
         c0 = analysis_result.find(u':')
         c1 = analysis_result.find(u':', c0 + 1)
@@ -140,20 +146,28 @@ class Pas(object):
             if caseflag == u"U" or caseflag == u"-":
                 continue
             
-            mycase = items[0]
-            rep = items[2]
-            tid = int(items[3])
-            sdist = int(items[4])
-            sid = items[5]
-           
-            # It is unsupported if arguments in other sentence.
-            if(sdist != 0):
-                tag = None
-                self.valid = False
+            if pasFlag: # anaphora
+                mycase = items[0]
+                rep = items[2]
+                sdist = int(items[3])
+                tid = int(items[4])
+                eid = int(items[5])
+                arg = Argument(sdist=sdist, tid=tid, eid=eid, rep=rep, flag=caseflag)
+                self.arguments[mycase].append(arg)
             else:
-                tag = self.tag_list[tid]
-            arg = Argument(sid, tid, rep, caseflag, sdist)
-             
-            self.arguments[mycase].append(arg)
+                mycase = items[0]
+                rep = items[2]
+                tid = int(items[3])
+                sdist = int(items[4])
+                sid = items[5]
+               
+                # It is unsupported if arguments in other sentence.
+                if(sdist != 0):
+                    tag = None
+                    self.valid = False
+                else:
+                    tag = self.tag_list[tid]
+                arg = Argument(sid, tid, rep, caseflag, sdist)
+                self.arguments[mycase].append(arg)
 
 
