@@ -63,7 +63,7 @@ class BList(DrawTree):
         else:
             # KNPの述語項構造をparse
             for tag in tag_list:
-                if(u"格解析結果" in tag.features):
+                if (u"格解析結果" in tag.features) or (u"述語項構造" in tag.features):
                     tag.pas = Pas(tag.tag_id, self)
 
     def parse(self, spec):
