@@ -130,7 +130,7 @@ class Pas(object):
     def get_orig_result(self):
         return self.tag_list[self.tid].features.get(u"格解析結果")
      
-    def __parse_case_analysis(self, analysis_result, pasFlag):
+    def __parse_case_analysis(self, analysis_result, pasFlag=False):
         assert isinstance(analysis_result, six.text_type)
         c0 = analysis_result.find(u':')
         c1 = analysis_result.find(u':', c0 + 1)
