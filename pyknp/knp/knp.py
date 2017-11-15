@@ -27,13 +27,13 @@ class KNP(object):
         self.pattern = pattern
         self.socket = None
         self.subprocess = None
-        self.jumanpp = False if juman or jumancommand == "juman" else True
+        self.jumanpp = False if juman else True
 
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
             raise Exception("Can't read rcfile (%s)!" % self.rcfile)
 
         if(self.jumanpp):
-            self.juman = Juman()
+            self.juman = Juman(command=jumancommand)
         else:
             self.juman = Juman(command=jumancommand, rcfile=jumanrcfile, juman=True)
 
