@@ -22,22 +22,19 @@ class TList(DrawTree):
         if len(self._tag) > 0:
             self._tag[-1].push_mrph(mrph)
         else:
-            sys.stderr.write("Cannot push mrph: no tags.")
-            quit(1)
+            raise Exception("Cannot push mrph: no tags.")
 
     def push_synnodes(self, synnodes):
         if len(self._tag) > 0:
             self._tag[-1].synnodes.append(synnodes)
         else:
-            sys.stderr.write("Cannot push synnodes: no tags.")
-            quit(1)
+            raise Exception("Cannot push synnodes: no tags.")
 
     def push_synnode(self, synnode):
         if len(self._tag) > 0:
             self._tag[-1].synnodes[-1].synnode.append(synnode)
         else:
-            sys.stderr.write("Cannot push synnode: no tags.")
-            quit(1)
+            raise Exception("Cannot push synnode: no tags.")
 
     def spec(self):
         return ''.join([tag.spec() for tag in self._tag])

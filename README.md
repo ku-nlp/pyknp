@@ -1,4 +1,4 @@
-# pyknp: Python Module for KNP/JUMAN Version 0.1
+# pyknp: Python Module for KNP/JUMAN
 
 - Kurohashi-Kawahara Lab, Kyoto University
 - Written by 
@@ -35,7 +35,7 @@ Morphemes contain the following:
 Bunsetsu contain the following:
     mrph_list (list of Morphemes), tag_list (list of Tags), parent_id (ID of
     parent bunsetsu), parent (parent bunsetsu), children (child bunsetsu, = child in Perl module),
-    dpndtype, fstring (feature string), bnst_id (= id in Perl module) 
+    dpndtype (D:dependency, P:parallel, I:incomplete parallel, A:apposition), fstring (feature string), bnst_id (= id in Perl module) 
 
 Tags contain the following:
     mrph_list (list of Morphemes), parent_id, parent, children,

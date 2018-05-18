@@ -21,7 +21,7 @@ class MList(object):
                     continue
                 elif line.startswith('#'):
                     self.comment += line
-                elif line.startswith('@'):
+                elif line.startswith('@') and not line.startswith('@ @'):
                     self._mrph[-1].push_doukei(Morpheme(line[2:], mid))
                     mid += 1
                 elif line.startswith('EOS'):

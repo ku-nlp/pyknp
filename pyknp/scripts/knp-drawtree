@@ -58,12 +58,12 @@ def draw_tree(bl, outf):
     outf.write(u"\n\n")
 
 
-def draw_trees(inf, outf):
+def draw_trees(inf, outf, newstyle):
     lines = []
     for line in inf:
         lines.append(line)
         if line == u"EOS\n":
-            bl = pyknp.BList(u"".join(lines))
+            bl = pyknp.BList(u"".join(lines), newstyle=newstyle)
             draw_tree(bl, outf)
             lines = []
 
@@ -72,6 +72,7 @@ def main():
     oparser = optparse.OptionParser()
     oparser.add_option("-i", "--input", dest="input", default="-")
     oparser.add_option("-o", "--output", dest="output", default="-")
+    oparser.add_option("--newstyle", dest="newstyle", action="store_true", default=False)
     (opts, args) = oparser.parse_args()
 
     if opts.input == "-":
@@ -83,7 +84,7 @@ def main():
         outf = sys.stdout
     else:
         outf = codecs.open(opts.output, "w", "utf8")
-    draw_trees(inf, outf)
+    draw_trees(inf, outf, opts.newstyle)
 
 
 if __name__ == '__main__':

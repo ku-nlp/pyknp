@@ -1,6 +1,6 @@
 #-*- encoding: utf-8 -*-
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 from pyknp import Morpheme
 from pyknp import MList
 from pyknp import Tag
@@ -41,13 +41,12 @@ class Bunsetsu(object):
             self.dpndtype = match.group(2)
             self.fstring = match.group(3).strip()
         else:
-            sys.stderr.write("Illegal bunsetsu spec: %s\n" % spec)
-            quit(1)
+            raise Exception("Illegal bunsetsu spec: %s" % spec)
 
         # Extract 正規化代表表記
         if not newstyle:
             self.repname = ''
-            match = re.search(u(r"<正規化代表表記:([^\"\s]+?)>"), self.fstring)
+            match = re.search(r"<正規化代表表記:([^\"\s]+?)>", self.fstring)
             if match:
                 self.repname = match.group(1)
 
@@ -58,8 +57,7 @@ class Bunsetsu(object):
 
     def push_tag(self, tag):
         if len(self._tag_list) == 0 and len(self._mrph_list) > 0:
-            sys.stderr.write("Unsafe addition of tags!\n")
-            quit(1)
+            raise Exception("Unsafe addition of tags!")
         self._tag_list.push_tag(tag)
 
     def spec(self):

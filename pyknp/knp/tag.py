@@ -24,6 +24,7 @@ class Tag(object):
         self.features = None
         self._pstring = ''
         self.tag_id = tag_id
+        self.pas = None
         self.synnodes = []
         spec = spec.strip()
         if spec == '+':
@@ -35,19 +36,20 @@ class Tag(object):
             self.fstring = items[17]
             self.repname = items[6]
             self.features = Features(self.fstring, u"|", False)
+            self.features._tag = self
         elif re.match(r'\+ (-?\d+)(\w)(.*)$', spec):
             match = re.match(r'\+ (-?\d+)(\w)(.*)$', spec)
             self.parent_id = int(match.group(1))
             self.dpndtype = match.group(2)
             self.fstring = match.group(3).strip()
         else:
-            sys.stderr.write("Illegal tag spec: %s\n" % spec)
-            quit(1)
+            raise Exception("Illegal tag spec: %s" % spec)
 
         # Extract 正規化代表表記
         if not newstyle:
             self.repname = ''
             self.features = Features(self.fstring)
+            self.features._tag = self
             rep = self.features.get(u"正規化代表表記")
             if rep is not None:
                 self.repname = rep

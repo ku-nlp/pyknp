@@ -20,46 +20,53 @@ class BList(DrawTree):
     文節列を保持するオブジェクト．
     """
 
-    def __init__(self, spec='', pattern='EOS'):
+    def __init__(self, spec='', pattern='EOS', newstyle=False):
         self._bnst = []
         self._readonly = False
         self.pattern = pattern
+        self.newstyle = newstyle
         self.comment = ''
         self.sid = ''
         self._pinfos = []
         self.parse(spec)
         self.set_parent_child()
         self.set_positions()
-        self._setPAS()
+        self._setPAS(newstyle)
 
-    def _setPAS(self):
-        """Set PAS to BList with new format"""
-        for pinfo in self._pinfos:
-            pinfo = json.loads(pinfo)
+    def _setPAS(self, newstyle):
+        """Set PAS"""
+        tag_list = self.tag_list()
+        if(newstyle):
+            for pinfo in self._pinfos:
+                pinfo = json.loads(pinfo)
 
-            tag_idx = pinfo.get(u"tid")
-            if tag_idx is None:
-                end = pinfo[u"head_token_end"]
-                tag_idx = bisect.bisect(self.tag_positions, end) - 1
+                tag_idx = pinfo.get(u"tid")
+                if tag_idx is None:
+                    end = pinfo[u"head_token_end"]
+                    tag_idx = bisect.bisect(self.tag_positions, end) - 1
 
-            tag = self.tag_list()[tag_idx]
-            tag.features.pas = Pas()
-            tag.features.pas.cfid = pinfo[u"cfid"]
+                tag = tag_list[tag_idx]
+                tag.pas = Pas()
+                tag.pas.cfid = pinfo[u"cfid"]
 
-            for casename, args in pinfo[u"args"].items():
-                for arg in args:
-                    arg_tag_idx = arg.get(u"tid")
-                    if arg_tag_idx is None:
-                        arg_tag_idx = bisect.bisect(self.tag_positions, arg[u"head_token_end"]) - 1
-                    arg_sid = arg.get(u"sid")
-                    if (arg_sid is None) or (len(arg[u"sid"]) == 0):
-                        arg_sid = self.sid
+                for casename, args in pinfo[u"args"].items():
+                    for arg in args:
+                        arg_tag_idx = arg.get(u"tid")
+                        if arg_tag_idx is None:
+                            arg_tag_idx = bisect.bisect(self.tag_positions, arg[u"head_token_end"]) - 1
+                        arg_sid = arg.get(u"sid")
+                        if (arg_sid is None) or (len(arg[u"sid"]) == 0):
+                            arg_sid = self.sid
 
-                    arg = Argument(arg_sid, arg_tag_idx, arg[u"rep"])
-                    tag.features.pas.arguments[casename].append(arg)
+                        arg = Argument(arg_sid, arg_tag_idx, arg[u"rep"])
+                        tag.pas.arguments[casename].append(arg)
+        else:
+            # KNPの述語項構造をparse
+            for tag in tag_list:
+                if (u"格解析結果" in tag.features) or (u"述語項構造" in tag.features):
+                    tag.pas = Pas(tag.tag_id, self)
 
     def parse(self, spec):
-        newstyle = False
         for string in spec.split('\n'):
             if string.strip() == "":
                 continue
@@ -68,27 +75,27 @@ class BList(DrawTree):
                 if len(items) >= 3 and items[1] == u"PAS":
                     self._pinfos.append(items[2])
             elif string.startswith('#'):
-                newstyle = False
-                self.comment = string
-                match = re.match(r'# S-ID:(.*?)[ $]', self.comment)
+                if self.comment:
+                    self.comment += "\n"
+                self.comment += string
+                match = re.match(r'# S-ID:(.*?)[ $\n]', self.comment)
                 if match:
                     self.sid = match.group(1)
-                if 'KNP++' in string:
-                    newstyle = True
+                if 'KNP++' in string and 'output:KNP' not in string:
+                    self.newstyle = True
             elif re.match(self.pattern, string):
                 break
             elif string.startswith(';;'):
-                sys.stderr.write("Error: %s\n" % string)
-                quit(1)
+                raise Exception("Error: %s" % string)
             elif string.startswith('*'):
                 bnst = Bunsetsu(string, len(self._bnst))
                 self._bnst.append(bnst)
             elif string.startswith('+'):
-                if newstyle:
-                    bnst = Bunsetsu(string, len(self._bnst), newstyle)
+                if self.newstyle:
+                    bnst = Bunsetsu(string, len(self._bnst), self.newstyle)
                     self._bnst.append(bnst)
                 self._bnst[-1].push_tag(
-                    Tag(string, len(self.tag_list()), newstyle))
+                    Tag(string, len(self.tag_list()), self.newstyle))
             elif string.startswith('!!'):
                 synnodes = SynNodes(string)
                 self._bnst[-1].tag_list().push_synnodes(synnodes)
@@ -98,18 +105,27 @@ class BList(DrawTree):
             elif string.startswith('EOS'):
                 pass
             else:
-                mrph = Morpheme(string, len(self.mrph_list()), newstyle)
+                mrph = Morpheme(string, len(self.mrph_list()), self.newstyle)
+                if(len(self._bnst)==0):
+                    bnst = Bunsetsu("*", len(self._bnst))
+                    self._bnst.append(bnst)
                 self._bnst[-1].push_mrph(mrph)
 
     def set_positions(self):
-        self.mrph_positions = [0]
-        self.tag_positions = [0]
+        mrphs = self.mrph_list()
+        if(len(mrphs)==0):
+            return
+        begin_position = mrphs[0].span[0] 
+        
+        self.mrph_positions = [begin_position]
+        self.tag_positions = [begin_position]
+        mrph_positions_map = {}
         for mrph in self.mrph_list():
             self.mrph_positions.append(self.mrph_positions[-1] + len(mrph.midasi))
         for tag in self.tag_list():
-            start_mrph_id = tag.mrph_list()[0].mrph_id
-            end_mrph_id = tag.mrph_list()[-1].mrph_id
-            length = self.mrph_positions[end_mrph_id + 1] - self.mrph_positions[start_mrph_id]
+            start_mrph_index = tag.mrph_list()[0].mrph_index
+            end_mrph_index = tag.mrph_list()[-1].mrph_index
+            length = self.mrph_positions[end_mrph_index + 1] - self.mrph_positions[start_mrph_index]
             self.tag_positions.append(self.tag_positions[-1] + length)
 
     def get_tag_span(self, tag_id):
@@ -127,25 +143,17 @@ class BList(DrawTree):
                     tag.parent = None
                 else:
                     tag.parent = self.tag_list()[tag.parent_id]
-                    self.tag_list()[tag.parent_id].children.append(tag)
+                    tag.parent.children.append(tag)
 
     def push_bnst(self, bnst):
         self._bnst.append(bnst)
         self._bnst[bnst.parent].child.append(bnst.bnst_id)
 
     def tag_list(self):
-        result = []
-        for bnst in self._bnst:
-            for tag in bnst.tag_list():
-                result.append(tag)
-        return result
+        return [tag for bnst in self._bnst for tag in bnst.tag_list()]
 
     def mrph_list(self):
-        result = []
-        for bnst in self._bnst:
-            for mrph in bnst.mrph_list():
-                result.append(mrph)
-        return result
+        return [mrph for bnst in self._bnst for mrph in bnst.mrph_list()]
 
     def bnst_list(self):
         return self._bnst
@@ -182,9 +190,9 @@ class BList(DrawTree):
         """ draw_tree メソッドとの通信用のメソッド． """
         return self.bnst_list()
 
-    def get_clause_starts(self):
+    def get_clause_starts(self, concat_clause_in_paren=False, disable_levelA=False):
         def levelOK(lv):
-            if lv.startswith(u"B") or lv.startswith(u"C") or lv == u"A":
+            if lv.startswith(u"B") or lv.startswith(u"C") or (not disable_levelA and (lv == u"A")):
                 return True
             return False
 
@@ -200,7 +208,7 @@ class BList(DrawTree):
                 paren_level -= 1
             level = features.get(u"レベル")
 
-            if (paren_level == 0) and (level is not None) and levelOK(level):
+            if (not concat_clause_in_paren or paren_level == 0) and (level is not None) and levelOK(level):
                 kakari = features.get(u"係")
                 myid = features.get(u"ID")
                 if kakari in [u"連格", u"連体"]:
@@ -245,6 +253,7 @@ class BListTest(unittest.TestCase):
         self.assertEqual(''.join([mrph.midasi for mrph in blist.mrph_list()]),
                          u'構文解析の実例を示す。')
         self.assertEqual(blist.sid, '123')
+        self.assertEqual(blist.all(), self.result + "\n")
         # Check parent/children relations
         self.assertEqual(blist[1].parent, blist[2])
         self.assertEqual(blist[1].parent_id, 2)
@@ -280,7 +289,7 @@ class BList2Test(unittest.TestCase):
 EOS"""
 
     def test(self):
-        blist = BList(self.result)
+        blist = BList(self.result, newstyle=True)
         self.assertEqual(len(blist), 4)
         self.assertEqual(len(blist.tag_list()), 4)
         self.assertEqual(len(blist.mrph_list()), 7)
@@ -305,11 +314,12 @@ EOS"""
             self.assertEqual(blist.get_tag_span(t.tag_id), spans[i])
         self.assertEqual(blist.get_clause_starts(), [0])
 
-        self.assertEqual(tags[0].features.pas, None)
-        self.assertEqual(tags[1].features.pas, None)
-        self.assertEqual(tags[2].features.pas, None)
+        self.assertEqual(tags[0].pas, None)
+        self.assertEqual(tags[1].pas, None)
+        self.assertEqual(tags[2].pas, None)
+        self.assertEqual(tags[3].pas.cfid, u"渡す/わたす:動1")
         self.assertEqual(tags[3].features.pas.cfid, u"渡す/わたす:動1")
-        args = tags[3].features.pas.arguments
+        args = tags[3].pas.arguments
         self.assertEqual(len(args), 3)
         self.assertEqual(len(args[u"ヲ"]), 1)
         self.assertEqual(args[u"ヲ"][0].sid, u"foo")

@@ -1,6 +1,6 @@
 #-*- encoding: utf-8 -*-
 
-from __future__ import absolute_import
+from __future__ import absolute_import, unicode_literals
 import re
 import unittest
 import six
@@ -17,7 +17,10 @@ class Morpheme(object):
         assert mrph_id is None or isinstance(mrph_id, int)
         if newstyle and mrph_id is None:
             raise KeyError
+        self.mrph_index = mrph_id
         self.mrph_id = mrph_id
+        self.prev_mrph_id = 0
+        self.span = (0, 0)
         self.doukei = []
         self.midasi = ''
         self.yomi = ''
@@ -37,11 +40,13 @@ class Morpheme(object):
             self._parse_new_spec(spec.strip("\n"))
         else:
             self._parse_spec(spec.strip("\n"))
-
+    
     def _parse_new_spec(self, spec):
         parts = spec.split(u"\t")
         assert parts[0] == u"-"
-#         self.mrph_id = int(parts[1])
+        self.mrph_id = int(parts[1])
+        self.prev_mrph_id = [int(mid) for mid in parts[2].split(u";")]
+        self.span = (int(parts[3]), int(parts[4]))
         self.midasi = parts[5]
         self.yomi = parts[7]
         self.genkei = parts[8]
@@ -54,27 +59,31 @@ class Morpheme(object):
         self.katuyou2 = parts[15]
         self.katuyou2_id = int(parts[16])
         self.fstring = parts[17]
+        self.feature = self.parse_fstring(self.fstring)
         self.repname = parts[6]
 
     def _parse_spec(self, spec):
         parts = []
         part = ''
         inside_quotes = False
-        for char in spec:
-            if char == u'"':
-                if not inside_quotes:
-                    inside_quotes = True
+        if(spec.startswith(u'\  \  \  特殊 1 空白 6 * 0 * 0')):
+            parts = [u'\ ',u'\ ',u'\ ',u'特殊',u'1',u'空白','6',u'*',u'0',u'*',u'0',u'NIL']
+        else:
+            for char in spec:
+                if char == u'"':
+                    if not inside_quotes:
+                        inside_quotes = True
+                    else:
+                        inside_quotes = False
+                if char == u' ' and not inside_quotes:
+                    if part.startswith(u'"') and part.endswith(u'"'):
+                        parts.append(part[1:-1])
+                    else:
+                        parts.append(part)
+                    part = ''
                 else:
-                    inside_quotes = False
-            if char == u' ' and not inside_quotes:
-                if part.startswith(u'"') and part.endswith(u'"'):
-                    parts.append(part[1:-1])
-                else:
-                    parts.append(part)
-                part = ''
-            else:
-                part += char
-        parts.append(part)
+                    part += char
+            parts.append(part)
 
         try:
             self.midasi = parts[0]
@@ -93,7 +102,7 @@ class Morpheme(object):
         except IndexError:
             pass
         # Extract 代表表記
-        match = re.search(u(r"代表表記:([^\"\s]+)"), self.imis)
+        match = re.search(r"代表表記:([^\"\s]+)", self.imis)
         if match:
             self.repname = match.group(1)
 
@@ -124,18 +133,32 @@ class Morpheme(object):
              self.katuyou2, self.katuyou2_id, imis, self.fstring)
         return "%s\n" % spec.rstrip()
 
-    def new_spec(self, prev_mrph_id, position):
-        assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, six.text_type) or isinstance(prev_mrph_id, list)
-        assert isinstance(position, int)
+    def new_spec(self, prev_mrph_id=None, span=None):
+        assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, six.text_type) or isinstance(prev_mrph_id, list) or prev_mrph_id is None
+        if(prev_mrph_id is None):
+            prev_mrph_id = self.prev_mrph_id
+        
+        # This method accepts character position instead of morpheme span for backward comatibility.
+        assert isinstance(span, tuple) or isinstance(span, list) or isinstance(span, int) or isinstance(span, six.text_type) or span is None
+        if(span is None):
+            span = self.span
+        elif(isinstance(span, tuple) or isinstance(span, list)):
+            span = (span[0], span[1])
+        elif(span is six.text_type):
+            span = (int(span), int(span) + len(self.midasi) -1)
+        elif(isinstance(span, int)):
+            span = (span, span + len(self.midasi) -1)
+        
         if self.mrph_id is None:
             raise NotImplementedError
+        
         out = []
         out.append(u"-\t%s" % self.mrph_id)
         if isinstance(prev_mrph_id, list):
             out.append(u"\t%s" % u";".join([u"%s" % pm for pm in prev_mrph_id]))
         else:
             out.append(u"\t%s" % prev_mrph_id)
-        out.append(u"\t%d\t%d" % (position, position + len(self.midasi) - 1))
+        out.append(u"\t%d\t%d" % span)
         out.append(u"\t%s" % self.midasi)
         if len(self.repname) == 0:
             #             out.append(u"\t%s/%s" % (self.midasi, self.yomi))
@@ -158,7 +181,15 @@ class Morpheme(object):
             out.append(self.fstring)
         out.append(u"\n")
         return u"".join(out)
-
+    
+    def parse_fstring(self, fstring):
+        rvalue = {}
+        for feature in fstring.split(u"|"):
+            fs = feature.rstrip().lstrip().split(u":")
+            key = ":".join(fs[:-1])
+            val = fs[-1]
+            rvalue[key]=val.split(u";")
+        return rvalue
 
 class MorphemeTest(unittest.TestCase):
 
