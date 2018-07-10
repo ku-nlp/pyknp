@@ -167,7 +167,7 @@ class Pas(object):
                     self.valid = False
                 else:
                     tag = self.tag_list[tid]
-                arg = Argument(sid, tid, rep, caseflag, sdist)
+                arg = Argument(sid=sid, tid=tid, rep=rep, flag=caseflag, sdist=sdist)
                 self.arguments[mycase].append(arg)
 
 
