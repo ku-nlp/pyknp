@@ -25,4 +25,5 @@ setup(
     url='https://bitbucket.org/ku_nlp/pyknp',
     scripts=['pyknp/scripts/knp-drawtree', ],
     packages=find_packages(),
+    install_requires=['six'],
 )
