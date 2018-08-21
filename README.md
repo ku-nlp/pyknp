@@ -6,12 +6,14 @@
     - [John Richardson](john@nlp.ist.i.kyoto-u.ac.jp)
     - [Tomohide Shibata](shibata@i.kyoto-u.ac.jp)
     - [Yuta Hayashibe](yuta-h@i.kyoto-u.ac.jp)
+    - [Tomohiro Sakaguchi](sakaguchi@nlp.ist.i.kyoto-u.ac.jp)
 - See README-en.md for English README.
 
 ## インストール
 予めインストールする必要のあるプログラム
-- JUMAN++ (JUMAN) http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN++ (http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN)
-- KNP http://nlp.ist.i.kyoto-u.ac.jp/index.php?KNP
+- 形態素解析器 JUMAN++ (JUMAN) http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN++ (http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN)
+    - JUMAN++ はJUMANの後継にあたる形態素解析器
+- 構文解析器 KNP http://nlp.ist.i.kyoto-u.ac.jp/index.php?KNP
 
 pyknpのインストール:
 ```
@@ -73,27 +75,26 @@ pyknpでは、すべての入出力でUnicodeを想定しており、それ以�
     #sys.stdin = codecs.getreader('utf_8')(sys.stdin)
     #sys.stdout = codecs.getwriter('utf_8')(sys.stdout)
     
-    ### JUMANインスタンスを作成する
+    ### JUMANPPインスタンスを作成する
     # JUMANを使う場合: juman = Juman(juman=True)
     # JUMANPPをサーバモードで利用する場合: jumanpp = Juman(server='localhost', port=12345)
     jumanpp = Juman()   
 
     ### 文を解析し、解析結果を Python の内部構造に変換して result に格納する
-    result = jumanpp.analysis(u"これはペンです。")  
-    print ','.join(mrph.midasi for mrph in result)
+    result = jumanpp.analysis("これはペンです。")  
     
     for mrph in result.mrph_list(): # 各形態素にアクセス
-        print u"見出し:%s, 読み:%s, 原形:%s, 品詞:%s, 品詞細分類:%s, 活用型:%s, 活用形:%s, 意味情報:%s, 代表表記:%s" \
-        % (mrph.midasi, mrph.yomi, mrph.genkei, mrph.hinsi, mrph.bunrui, mrph.katuyou1, mrph.katuyou2, mrph.imis, mrph.repname)
+        print("見出し:%s, 読み:%s, 原形:%s, 品詞:%s, 品詞細分類:%s, 活用型:%s, 活用形:%s, 意味情報:%s, 代表表記:%s" \
+                % (mrph.midasi, mrph.yomi, mrph.genkei, mrph.hinsi, mrph.bunrui, mrph.katuyou1, mrph.katuyou2, mrph.imis, mrph.repname))
 
-###### Read from file
+###### 予め準備したJUMAN解析結果ファイルを利用する場合
     data = ""
-    with open("result.juman") as file_in:
+    with open("doc.juman") as file_in:
         for line in file_in:
             data += line.decode
             if line.strip() == "EOS":
                 result = juman.result(data)
-                print ",".join(mrph.genkei for mrph in result.mrph_list())
+                print(",".join(mrph.genkei for mrph in result.mrph_list()))
                 data = ""
 
 ### KNP
@@ -105,32 +106,32 @@ pyknpでは、すべての入出力でUnicodeを想定しており、それ以�
     # JUMANを使う場合: knp = KNP(juman=True)
     # 格解析を行わず構文解析のみ行う場合は knp = KNP(option='-dpnd -tab') とすると30倍速くなる
     knp = KNP()     
-    result = knp.parse(u"京都大学に行った。")
+    result = knp.parse("京都大学に行った。")
     
     ### 各文節へのアクセス
     for bnst in result.bnst_list():
-        print u"ID:%s, 見出し:%s, 係り受けタイプ:%s, 親文節ID:%s, 素性:%s" \
-        % (bnst.bnst_id, "".join(mrph.midasi for mrph in bnst.mrph_list()), bnst.dpndtype, bnst.parent_id, bnst.fstring)
+        print("ID:%s, 見出し:%s, 係り受けタイプ:%s, 親文節ID:%s, 素性:%s" \
+                % (bnst.bnst_id, "".join(mrph.midasi for mrph in bnst.mrph_list()), bnst.dpndtype, bnst.parent_id, bnst.fstring))
     
     ### 各基本句へのアクセス
     for tag in result.tag_list():
-        print u"ID:%s, 見出し:%s, 係り受けタイプ:%s, 親文節ID:%s, 素性:%s" \
-        % (tag.tag_id, "".join(mrph.midasi for mrph in tag.mrph_list()), tag.dpndtype, tag.parent_id, tag.fstring)
+        print("ID:%s, 見出し:%s, 係り受けタイプ:%s, 親文節ID:%s, 素性:%s" \
+                % (tag.tag_id, "".join(mrph.midasi for mrph in tag.mrph_list()), tag.dpndtype, tag.parent_id, tag.fstring))
     
     ### 各形態素へのアクセス
     for mrph in result.mrph_list():
-        print u"見出し:%s, 読み:%s, 原形:%s, 品詞:%s, 品詞細分類:%s, 活用型:%s, 活用形:%s, 意味情報:%s, 代表表記:%s" \
-        % (mrph.midasi, mrph.yomi, mrph.genkei, mrph.hinsi, mrph.bunrui, mrph.katuyou1, mrph.katuyou2, mrph.imis, mrph.repname)
+        print("見出し:%s, 読み:%s, 原形:%s, 品詞:%s, 品詞細分類:%s, 活用型:%s, 活用形:%s, 意味情報:%s, 代表表記:%s" \
+                % (mrph.midasi, mrph.yomi, mrph.genkei, mrph.hinsi, mrph.bunrui, mrph.katuyou1, mrph.katuyou2, mrph.imis, mrph.repname))
 
 
 ###### 予め準備したKNP解析結果ファイルを利用する場合
     data = ""
-    with open("result.knp") as file_in:
+    with open("doc.knp") as file_in:
         for line in file_in:
             data += line
             if line.strip() == "EOS":
                 result = knp.result(data)
-                print ",".join(mrph.genkei for mrph in result.mrph_list())
+                print(",".join(mrph.genkei for mrph in result.mrph_list()))
                 data = ""
 
 
