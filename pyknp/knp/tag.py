@@ -11,7 +11,17 @@ import unittest
 
 class Tag(object):
     """
-    格解析の単位となるタグ(基本句)の各種情報を保持するオブジェクト．
+    ある文に関する基本句列を保持するオブジェクト
+
+    Attributes:
+        tag_id (int): 基本句ID
+        parent (Tag): 親の基本句オブジェクト
+        parent_id (int): 親の基本句ID
+        children (list): 子の基本句オブジェクトのリスト
+        dpndtype (str): 係り受けタイプ
+        fstring (str): feature情報
+        features (Features): 基本句のfeatureを表すFeatureオブジェクト
+        pas (Pas): 基本句が述語の場合は項の情報(Pasオブジェクト), そうでない場合None
     """
 
     def __init__(self, spec, tag_id=0, newstyle=False):
@@ -62,6 +72,11 @@ class Tag(object):
                                   self._mrph_list.spec())
 
     def mrph_list(self):
+        """ 基本句を構成する全形態素オブジェクトを返す
+
+        Returns:
+            list: 形態素オブジェクトMorphemeのリスト
+        """
         return self._mrph_list
 
     def pstring(self, string=None):
@@ -71,6 +86,11 @@ class Tag(object):
             return self._pstring
 
     def get_surface(self):
+        """ 基本句の見出しを返す
+
+        Returns:
+            str: 基本句の見出し
+        """
         return ''.join([mrph.midasi for mrph in self.mrph_list()])
 
 

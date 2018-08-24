@@ -16,8 +16,10 @@ import bisect
 
 
 class BList(DrawTree):
-    """
-    文節列を保持するオブジェクト．
+    """ ある文に関する文節列を保持するオブジェクト
+
+    Attributes:
+        sid (str): 文ID (KNP出力中のS-ID)
     """
 
     def __init__(self, spec='', pattern='EOS', newstyle=False):
@@ -34,7 +36,7 @@ class BList(DrawTree):
         self._setPAS(newstyle)
 
     def _setPAS(self, newstyle):
-        """Set PAS"""
+        """ 各基本句にPASを設定 """
         tag_list = self.tag_list()
         if(newstyle):
             for pinfo in self._pinfos:
@@ -67,6 +69,7 @@ class BList(DrawTree):
                     tag.pas = Pas(tag.tag_id, self)
 
     def parse(self, spec):
+        """ KNPの出力を読み取る """
         for string in spec.split('\n'):
             if string.strip() == "":
                 continue
@@ -129,6 +132,14 @@ class BList(DrawTree):
             self.tag_positions.append(self.tag_positions[-1] + length)
 
     def get_tag_span(self, tag_id):
+        """ 基本句の位置情報を返す
+
+        Args:
+            tid (int): 基本句ID
+
+        Returns:
+            tuple: (基本句の開始位置, 終了位置)
+        """
         return (self.tag_positions[tag_id], self.tag_positions[tag_id + 1] - 1)
 
     def set_parent_child(self):
@@ -150,12 +161,27 @@ class BList(DrawTree):
         self._bnst[bnst.parent].child.append(bnst.bnst_id)
 
     def tag_list(self):
+        """ 文を構成する全基本句オブジェクトを返す
+
+        Returns:
+            list: 基本句オブジェクトTagのリスト
+        """
         return [tag for bnst in self._bnst for tag in bnst.tag_list()]
 
     def mrph_list(self):
+        """ 文を構成する全形態素オブジェクトを返す
+
+        Returns:
+            list: 形態素オブジェクトMorphemeのリスト
+        """
         return [mrph for bnst in self._bnst for mrph in bnst.mrph_list()]
 
     def bnst_list(self):
+        """ 文を構成する全文節オブジェクトを返す 
+
+        Returns:
+            list: 文節オブジェクトBunsetsuのリスト
+        """
         return self._bnst
 
     def set_readonly(self):

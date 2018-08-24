@@ -8,8 +8,26 @@ from six import u
 
 
 class Morpheme(object):
-    """
-    形態素の各種情報を保持するオブジェクト．
+    """ 形態素の各種情報を保持するオブジェクト．
+    
+    Attributes:
+        mrph_id (int): 形態素ID
+        span (tuple): 形態素の位置 (開始位置, 終了位置)
+        doukei (list): 
+        midasi (str): 見出し
+        yomi (str): 読み
+        genkei (str): 原形
+        hinsi (str): 品詞
+        hinsi_id (int): 品詞ID
+        bunrui (str): 品詞細分類
+        bunrui_id (int): 品詞細分類ID
+        katuyou1 (str): 活用型
+        katuyou1_id (int): 活用型ID
+        katuyou2 (str): 活用形
+        katuyou2_id (int): 活用形ID
+        imis (str): 意味情報
+        fstring (str): 代表表記
+        repname (str): その他の素性情報
     """
 
     def __init__(self, spec, mrph_id=None, newstyle=False):
@@ -110,8 +128,10 @@ class Morpheme(object):
         self.doukei.append(mrph)
 
     def repnames(self):
-        """
-        形態素の代表表記（曖昧性がある場合は「?」で連結）を返す．
+        """ 形態素の代表表記（曖昧性がある場合は「?」で連結）を返す．
+        
+        Returns:
+            str: 形態素の代表表記文字列
         """
         repnames = []
         if self.repname:

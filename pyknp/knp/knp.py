@@ -12,12 +12,18 @@ import six
 
 class KNP(object):
     """
-    KNP を用いて構文解析を行うモジュールである．
+    KNPを用いて構文解析を行う/KNPの解析結果を読み取るモジュール
     """
 
     def __init__(self, command='knp', server=None, port=31000, timeout=60,
                  option='-tab', rcfile='', pattern=r'EOS',
                  jumancommand='jumanpp', jumanrcfile='', jumanpp=True, juman=False):
+        """
+        Args:
+            command (str): KNPコマンド
+            option (str): KNPオプション (-tab, -ne など)
+            jumancommand (str): JUMANコマンド
+        """
         self.command = command
         self.server = server
         self.port = port
@@ -38,11 +44,18 @@ class KNP(object):
             self.juman = Juman(command=jumancommand, rcfile=jumanrcfile, juman=True)
 
     def knp(self, sentence):
+        """ parse関数と同じ """
         self.parse(sentence)
 
     def parse(self, sentence):
         """
-        文字列 sentence を対象として構文解析を行い，構文解析結果オブジェクトを返す．
+        文字列を入力として構文解析を行い、文節列オブジェクトを返す
+
+        Args:
+            sentence (str): 文を表す文字列
+
+        Returns:
+            BList: 文節列オブジェクト
         """
         assert(isinstance(sentence, six.text_type))
         juman_lines = self.juman.juman_lines(sentence)
@@ -64,6 +77,15 @@ class KNP(object):
         return BList(knp_lines, self.pattern)
 
     def result(self, input_str):
+        """
+        ある文に関するKNP解析結果を文節列オブジェクトに変換する
+
+        Args:
+            input_str (str): ある文に関するKNPの出力結果
+
+        Returns:
+            BList: 文節列オブジェクト
+        """
         return BList(input_str, self.pattern)
 
 
