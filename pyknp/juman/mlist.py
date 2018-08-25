@@ -64,10 +64,10 @@ class MList(object):
         return u"".join(out)
 
     def mrph_list(self):
-        """ 文を構成する全ての形態素のリストを返す．
+        """ 保持する全ての形態素のリストを返す．
         
         Returns:
-            list: 形態素オブジェクトMorphemeのリスト
+            list of Morpheme: 形態素オブジェクトMorphemeのリスト
         """
         return self._mrph
 

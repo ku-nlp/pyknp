@@ -164,7 +164,7 @@ class BList(DrawTree):
         """ 文を構成する全基本句オブジェクトを返す
 
         Returns:
-            list: 基本句オブジェクトTagのリスト
+            list of Tag: 基本句オブジェクトTagのリスト
         """
         return [tag for bnst in self._bnst for tag in bnst.tag_list()]
 
@@ -172,7 +172,7 @@ class BList(DrawTree):
         """ 文を構成する全形態素オブジェクトを返す
 
         Returns:
-            list: 形態素オブジェクトMorphemeのリスト
+            list of Morpheme: 形態素オブジェクトMorphemeのリスト
         """
         return [mrph for bnst in self._bnst for mrph in bnst.mrph_list()]
 
@@ -180,7 +180,7 @@ class BList(DrawTree):
         """ 文を構成する全文節オブジェクトを返す 
 
         Returns:
-            list: 文節オブジェクトBunsetsuのリスト
+            list of Bunsetsu: 文節オブジェクトBunsetsuのリスト
         """
         return self._bnst
 

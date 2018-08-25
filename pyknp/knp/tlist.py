@@ -57,7 +57,7 @@ class TList(DrawTree):
         """ 基本句列を構成する全基本句オブジェクトを返す
 
         Returns:
-            list: 基本句オブジェクトTagのリスト
+            list of Tag: 基本句オブジェクトTagのリスト
         """
         return self._tag
 

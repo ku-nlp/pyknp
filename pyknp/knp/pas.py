@@ -44,9 +44,10 @@ class Pas(object):
         pas = Pas(5, result)
 
     Attributes:
-        arguments (dict): 格と項を対応付けた辞書 {case: [Arg, ..]}
-                          keyは格を表す文字列, valueはArgオブジェクトのリスト。
-                          リスト形式なのは、ガ格などは複数の項を取り得るため。
+        arguments (dict of (case, list of Arg)): 
+                 格と項を対応付けた辞書 {case: [Arg, ..]}
+                 keyは格を表す文字列, valueはArgオブジェクトのリスト。
+                 リスト形式なのは、ガ格などは複数の項を取り得るため。
     """
     def __init__(self, tid=None, result=None, knpstyle=True):
         self.valid = True
