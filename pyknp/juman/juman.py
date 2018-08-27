@@ -93,7 +93,7 @@ class Juman(object):
         """
         Args:
             command (str): Jumanコマンド
-            oprtion (str): Jumanオプション (-e2, -B など)
+            option (str): Jumanオプション (-e2, -B など)
         """
         self.command = 'juman' if juman else command
         self.server = server
