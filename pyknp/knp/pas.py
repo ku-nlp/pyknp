@@ -161,12 +161,6 @@ class Pas(object):
                 sdist = int(items[4])
                 sid = items[5]
                
-                # It is unsupported if arguments in other sentence.
-                if(sdist != 0):
-                    tag = None
-                    self.valid = False
-                else:
-                    tag = self.tag_list[tid]
                 arg = Argument(sid=sid, tid=tid, rep=rep, flag=caseflag, sdist=sdist)
                 self.arguments[mycase].append(arg)
 
