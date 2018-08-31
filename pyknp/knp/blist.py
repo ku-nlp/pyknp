@@ -190,12 +190,7 @@ class BList(DrawTree):
         """ draw_tree メソッドとの通信用のメソッド． """
         return self.bnst_list()
 
-    def get_clause_starts(self, concat_clause_in_paren=False, disable_levelA=False):
-        def levelOK(lv):
-            if lv.startswith(u"B") or lv.startswith(u"C") or (not disable_levelA and (lv == u"A")):
-                return True
-            return False
-
+    def get_clause_starts(self, concat_clause_in_paren=False, discourse_clause=False):
         starts = [0]
         paren_level = 0
         tags = self.tag_list()
@@ -206,22 +201,13 @@ class BList(DrawTree):
                 paren_level += 1
             elif features.get(u"括弧終"):
                 paren_level -= 1
-            level = features.get(u"レベル")
 
-            if (not concat_clause_in_paren or paren_level == 0) and (level is not None) and levelOK(level):
-                kakari = features.get(u"係")
-                myid = features.get(u"ID")
-                if kakari in [u"連格", u"連体"]:
-                    continue
-                elif (features.get(u"格要素") or features.get(u"連体修飾")) and (features.get(u"補文") or level == u"A"):
-                    continue
-                elif myid in [u"〜と（いう）", u"〜と（引用）", u"〜と（する）", u"〜のように", u"〜とは", u"〜くらい〜", u"〜の〜", u"〜ように", u"〜く", u"〜に", u"（副詞的名詞）"]:
-                    continue
-                elif features.get(u"〜によれば"):
-                    continue
-
-                if idx != len(tags) - 1:
-                    starts.append(idx + 1)
+            if (not concat_clause_in_paren or paren_level == 0) and idx != len(tags) - 1:
+                if features.get(u"節-区切"):
+                    if discourse_clause == True and (features.get(u"節-区切") == u"連体修飾" or features.get(u"節-区切") == u"補文"):
+                        continue
+                    else:
+                        starts.append(idx + 1)
         return starts
 
 
