@@ -89,17 +89,21 @@ class Juman(object):
 
     def __init__(self, command='jumanpp', server=None, port=32000, timeout=30,
                  option='', rcfile='', ignorepattern='',
-                 pattern=r'EOS', juman=False):
+                 pattern=r'EOS', jumanpp=True):
         """
         Args:
             command (str): Jumanコマンド
             option (str): Jumanオプション (-e2, -B など)
         """
-        self.command = 'juman' if juman else command
+        if jumanpp or command != 'jumanpp':
+            self.command = command
+            self.option = option
+        else:
+            self.command = 'juman'
+            self.option = option+' -e2 -B' 
         self.server = server
         self.port = port
         self.timeout = timeout
-        self.option = option+' -e2 -B' if juman else option
         self.rcfile = rcfile
         self.ignorepattern = ignorepattern
         self.pattern = pattern

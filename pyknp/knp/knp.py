@@ -17,7 +17,7 @@ class KNP(object):
 
     def __init__(self, command='knp', server=None, port=31000, timeout=60,
                  option='-tab', rcfile='', pattern=r'EOS',
-                 jumancommand='jumanpp', jumanrcfile='', jumanpp=True, juman=False):
+                 jumancommand='jumanpp', jumanrcfile='', jumanpp=True):
         """
         Args:
             command (str): KNPコマンド
@@ -33,15 +33,12 @@ class KNP(object):
         self.pattern = pattern
         self.socket = None
         self.subprocess = None
-        self.jumanpp = False if juman else True
+        self.jumanpp = jumanpp
 
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
             raise Exception("Can't read rcfile (%s)!" % self.rcfile)
 
-        if(self.jumanpp):
-            self.juman = Juman(command=jumancommand)
-        else:
-            self.juman = Juman(command=jumancommand, rcfile=jumanrcfile, juman=True)
+        self.juman = Juman(command=jumancommand, rcfile=jumanrcfile, jumanpp=self.jumanpp)
 
     def knp(self, sentence):
         """ parse関数と同じ """
