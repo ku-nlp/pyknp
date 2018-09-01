@@ -8,6 +8,19 @@ import six
 import sys
 
 class Argument(object):
+    """ 項に関する情報を保持するオブジェクト 
+
+    詳しくは下記ページの「格要素側」の記述方法を参照
+    http://nlp.ist.i.kyoto-u.ac.jp/index.php?KNP%2F%E6%A0%BC%E8%A7%A3%E6%9E%90%E7%B5%90%E6%9E%9C%E6%9B%B8%E5%BC%8F
+
+    Attributes:
+        sid (str): 文ID
+        tid (int): 基本句ID
+        eid (int): Entity ID
+        rep (str): 表記
+        flag (str): フラグ (C, N, O, D, E, U)
+        sdist (int): 述語の何文前か
+    """
     def __init__(self, sid=None, tid=None, eid=None, rep='', flag=None, sdist=None):
         assert isinstance(tid, int)
         assert isinstance(rep, six.text_type)
@@ -22,13 +35,21 @@ ArgRepname = collections.namedtuple("ArgRepname", "repname,tid_list")
 
 
 class Pas(object):
+    """
+    述語項構造を扱うクラス
+    文をまたがる述語項構造は非対応
+
+    Usage:
+        result = knp.result(knp_result)
+        pas = Pas(5, result)
+
+    Attributes:
+        arguments (dict of (case, list of Arg)): 
+                 格と項を対応付けた辞書 {case: [Arg, ..]}
+                 keyは格を表す文字列, valueはArgオブジェクトのリスト。
+                 リスト形式なのは、ガ格などは複数の項を取り得るため。
+    """
     def __init__(self, tid=None, result=None, knpstyle=True):
-        """
-            述語項構造を扱うクラス
-            文をまたがる述語項構造は非対応
-            result = knp.result(knp_result)
-            pas = Pas(5, result)
-        """
         self.valid = True
         self.cfid = None 
         self.arguments = collections.defaultdict(list)
@@ -102,8 +123,8 @@ class Pas(object):
         格に対して項は複数存在しうるので，戻り値は配列を渡す．
         
         Usage:
-        self.get_long_arguments(ガ) 
-        > [ ("研究/けんきゅう+者/しゃ", [1,2]) ]
+            self.get_long_arguments(ガ) 
+            > [ ("研究/けんきゅう+者/しゃ", [1,2]) ]
         """
         output = []
             

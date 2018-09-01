@@ -14,6 +14,13 @@ from six import u
 class Bunsetsu(object):
     """
     KNP による係り受け解析の単位である文節の各種情報を保持するオブジェクト．
+
+    Attributes:
+        bnst_id (int): 文節ID
+        parent (Bunsetsu): 親の文節オブジェクト
+        parent_id (int): 親の文節ID
+        children (list): 子の文節オブジェクトのリスト
+        fstring (str): feature情報
     """
 
     def __init__(self, spec, bnst_id=0, newstyle=False):
@@ -51,11 +58,13 @@ class Bunsetsu(object):
                 self.repname = match.group(1)
 
     def push_mrph(self, mrph):
+        """ 新しい形態素オブジェクトをセットする """
         if len(self._tag_list) > 0:
             self._tag_list[-1].push_mrph(mrph)
         self._mrph_list.push_mrph(mrph)
 
     def push_tag(self, tag):
+        """ 新しい基本句オブジェクトをセットする """
         if len(self._tag_list) == 0 and len(self._mrph_list) > 0:
             raise Exception("Unsafe addition of tags!")
         self._tag_list.push_tag(tag)
@@ -65,9 +74,19 @@ class Bunsetsu(object):
                                   self.fstring, self._tag_list.spec())
 
     def mrph_list(self):
+        """ 文節を構成する全形態素オブジェクトを返す
+
+        Returns:
+            list: 形態素オブジェクトMorphemeのリスト
+        """
         return self._mrph_list
 
     def tag_list(self):
+        """ 文節を構成する全基本句オブジェクトを返す
+
+        Returns:
+            list: 基本句オブジェクトTagのリスト
+        """
         return self._tag_list
 
     def pstring(self, string=None):

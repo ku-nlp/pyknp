@@ -7,7 +7,7 @@ import unittest
 
 class MList(object):
     """
-    形態素列を保持するオブジェクト．
+    ある文に関する形態素列を保持するオブジェクト．
     """
 
     def __init__(self, spec=""):
@@ -64,8 +64,10 @@ class MList(object):
         return u"".join(out)
 
     def mrph_list(self):
-        """
-        全ての形態素のリストを返す．
+        """ 保持する全ての形態素のリストを返す．
+        
+        Returns:
+            list of Morpheme: 形態素オブジェクトMorphemeのリスト
         """
         return self._mrph
 

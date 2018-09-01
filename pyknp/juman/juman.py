@@ -84,12 +84,17 @@ class Subprocess(object):
 
 class Juman(object):
     """
-    形態素解析器 JUMAN を Python から利用するためのモジュールである．
+    形態素解析器 JUMAN を Python から利用するためのモジュール
     """
 
     def __init__(self, command='jumanpp', server=None, port=32000, timeout=30,
                  option='', rcfile='', ignorepattern='',
                  pattern=r'EOS', jumanpp=True):
+        """
+        Args:
+            command (str): Jumanコマンド
+            option (str): Jumanオプション (-e2, -B など)
+        """
         if jumanpp or command != 'jumanpp':
             self.command = command
             self.option = option
@@ -108,6 +113,14 @@ class Juman(object):
             raise Exception("Can't read rcfile (%s)!" % self.rcfile)
 
     def juman_lines(self, input_str):
+        """ 入力文字列に対して形態素解析を行い、そのJuman出力結果を返す
+
+        Args:
+            input_str (str): 文を表す文字列
+
+        Returns:
+            str: Juman出力結果
+        """
         if '\n' in input_str:
             input_str = input_str.replace('\n','')
             print('Analysis is done ignoring "\\n".', file=sys.stderr)
@@ -124,17 +137,31 @@ class Juman(object):
         return self.subprocess.query(input_str, pattern=self.pattern)
 
     def juman(self, input_str):
+        """ analysis関数と同じ """
         assert(isinstance(input_str, six.text_type))
         result = MList(self.juman_lines(input_str))
         return result
 
     def analysis(self, input_str):
-        """
-        指定された文字列 input_str を形態素解析し，その結果を MList オブジェクトとして返す．
+        """ 入力文字列に対して形態素解析し、その結果を MList オブジェクトとして返す
+        
+        Args:
+            input_str (str): 文を表す文字列
+
+        Returns:
+            MList: 形態素列オブジェクト
         """
         return self.juman(input_str)
 
     def result(self, input_str):
+        """ Juman出力結果に対して、その結果を MList オブジェクトとして返す
+        
+        Args:
+            input_str (str): Juman出力結果
+
+        Returns:
+            MList: 形態素列オブジェクト
+        """
         return MList(input_str)
 
 

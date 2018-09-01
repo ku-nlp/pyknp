@@ -9,6 +9,7 @@ import unittest
 
 
 class TList(DrawTree):
+    """ ある文に関する基本句列を保持するオブジェクト """
 
     def __init__(self):
         self._tag = []
@@ -53,6 +54,11 @@ class TList(DrawTree):
         return self.tag_list()
 
     def tag_list(self):
+        """ 基本句列を構成する全基本句オブジェクトを返す
+
+        Returns:
+            list of Tag: 基本句オブジェクトTagのリスト
+        """
         return self._tag
 
     def __getitem__(self, index):
