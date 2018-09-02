@@ -169,7 +169,7 @@ class JumanTest(unittest.TestCase):
 
     def setUp(self):
         self.jumanpp = Juman()
-        self.juman = Juman(juman=True)
+        self.juman = Juman(jumanpp=False)
 
     
     # JUMANPP
