@@ -50,6 +50,7 @@ class Subprocess(object):
 
     def __del__(self):
         self.process.stdin.close()
+        self.process.stdout.close()
         try:
             self.process.kill()
             self.process.wait()
