@@ -60,7 +60,7 @@ class BList(DrawTree):
                         if (arg_sid is None) or (len(arg[u"sid"]) == 0):
                             arg_sid = self.sid
 
-                        arg = Argument(arg_sid, arg_tag_idx, arg[u"rep"])
+                        arg = Argument(sid=arg_sid, tid=arg_tag_idx, rep=arg[u"rep"])
                         tag.pas.arguments[casename].append(arg)
         else:
             # KNPの述語項構造をparse
