@@ -89,7 +89,7 @@ class Juman(object):
 
     def __init__(self, command='jumanpp', server=None, port=32000, timeout=30,
                  option='', rcfile='', ignorepattern='',
-                 pattern=r'EOS', jumanpp=True):
+                 pattern=r'^EOS$', jumanpp=True):
         """
         Args:
             command (str): Jumanコマンド
@@ -194,8 +194,33 @@ class JumanTest(unittest.TestCase):
         result = self.jumanpp.analysis(test_str)
         self.assertEqual(len(result), 3)
         self.assertEqual((result[1].bunrui == u'空白'), True) 
-        self.assertEqual(''.join(mrph.midasi for mrph in result), u"半角\ スペース")
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(u" ", u"\ "))
         self.assertGreaterEqual(len(result.spec().split("\n")), 3)
+
+    def test_eos(self):
+        test_str = u"エネルギーを素敵にENEOS"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
+
+    def test_eos2(self):
+        test_str = u"Canon EOS 80D買った"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(u" ", u"\ "))
+
+    def test_dquo(self):
+        test_str = u"\"最高\"の気分"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
+
+    def test_escape(self):
+        test_str = u"&lt;tag&gt;\\エス\'ケープ"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
+
+    def test_cr(self):
+        test_str = u"これは\rどう"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
 
     # JUMAN 
     def test_normal_juman(self):
@@ -210,8 +235,9 @@ class JumanTest(unittest.TestCase):
         result = self.juman.analysis(test_str)
         self.assertEqual(len(result), 4) # 半|角|\ |スペース
         self.assertEqual((result[2].bunrui == u'空白'), True) 
-        self.assertEqual(''.join(mrph.midasi for mrph in result), u"半角\ スペース")
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(u" ", u"\ "))
         self.assertGreaterEqual(len(result.spec().split("\n")), 4)
+
 
 if __name__ == '__main__':
     unittest.main()

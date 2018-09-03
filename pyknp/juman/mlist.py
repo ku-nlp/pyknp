@@ -24,8 +24,6 @@ class MList(object):
                 elif line.startswith('@') and not line.startswith('@ @'):
                     self._mrph[-1].push_doukei(Morpheme(line[2:], mid))
                     mid += 1
-                elif line.startswith('EOS'):
-                    pass
                 else:
                     self.push_mrph(Morpheme(line, mid))
                     mid += 1
