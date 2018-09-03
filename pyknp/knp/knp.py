@@ -68,9 +68,9 @@ class KNP(object):
                 self.subprocess = Subprocess(command)
 
         if self.socket:
-            knp_lines = self.socket.query(juman_str, pattern=self.pattern)
+            knp_lines = self.socket.query(juman_str, pattern=r'^%s$'%(self.pattern))
         else:
-            knp_lines = self.subprocess.query(juman_str, pattern=self.pattern)
+            knp_lines = self.subprocess.query(juman_str, pattern=r'^%s$'%(self.pattern))
         return BList(knp_lines, self.pattern)
 
     def result(self, input_str):
@@ -108,6 +108,15 @@ class KNPTest(unittest.TestCase):
             ''.join([mrph.midasi for mrph in result[1].mrph_list()]), u'花が')
         self.assertEqual(
             ''.join([mrph.midasi for mrph in result[2].mrph_list()]), u'咲いた。')
+
+    def test_mrph2(self):
+        result = self.knp.parse(u"エネルギーを素敵にENEOS")
+        self.assertEqual(
+            ''.join([mrph.midasi for mrph in result[0].mrph_list()]), u'エネルギーを')
+        self.assertEqual(
+            ''.join([mrph.midasi for mrph in result[1].mrph_list()]), u'素敵に')
+        self.assertEqual(
+            ''.join([mrph.midasi for mrph in result[2].mrph_list()]), u'ENEOS')
 
 if __name__ == '__main__':
     unittest.main()
