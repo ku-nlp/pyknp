@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 from pyknp import Juman
-from pyknp import Socket, Subprocess  # TODO(john): move to separate file
+from pyknp import Socket, Subprocess  
 from pyknp import BList
 import os
 import sys
