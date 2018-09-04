@@ -11,19 +11,22 @@ import six
 
 
 class KNP(object):
-    """
-    KNPを用いて構文解析を行う/KNPの解析結果を読み取るモジュール
+    """ KNPを用いて構文解析を行う/KNPの解析結果を読み取るモジュール
+
+    Args:
+        command (str): KNPコマンド
+        option (str): KNP解析オプション 
+                        (詳細解析結果を出力する-tabは必須。 
+                        省略・照応解析を行う -anaphora, 格解析を行わず構文解析のみを行う -dpnd など)
+        rcfile (str): KNP設定ファイルへのパス
+        jumancommand (str): JUMANコマンド
+        jumanrcfile (str): JUMAN設定ファイルへのパス
+        jumanpp (bool): JUMAN++を用いるかJUMANを用いるか
     """
 
     def __init__(self, command='knp', server=None, port=31000, timeout=60,
                  option='-tab', rcfile='', pattern=r'EOS',
                  jumancommand='jumanpp', jumanrcfile='', jumanpp=True):
-        """
-        Args:
-            command (str): KNPコマンド
-            option (str): KNPオプション (-tab, -ne など)
-            jumancommand (str): JUMANコマンド
-        """
         self.command = command
         self.server = server
         self.port = port

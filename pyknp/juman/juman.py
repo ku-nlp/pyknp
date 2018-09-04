@@ -14,24 +14,24 @@ import six
 
 
 class Juman(object):
-    """
-    形態素解析器 JUMAN を Python から利用するためのモジュール
+    """形態素解析器 JUMAN を Python から利用するためのモジュール
+
+    Args:
+        command (str): JUMANの実行コマンド
+        option (str): JUMAN解析オプション
+        rcfile (str): JUMAN設定ファイルへのパス
+        jumanpp (bool): JUMAN++を用いるかJUMANを用いるか。commandを指定した場合は無視される。
     """
 
     def __init__(self, command='jumanpp', server=None, port=32000, timeout=30,
                  option='', rcfile='', ignorepattern='',
                  pattern=r'^EOS$', jumanpp=True):
-        """
-        Args:
-            command (str): Jumanコマンド
-            option (str): Jumanオプション (-e2, -B など)
-        """
         if jumanpp or command != 'jumanpp':
             self.command = command
             self.option = option
         else:
             self.command = 'juman'
-            self.option = option+' -e2 -B' 
+            self.option = option+' -e2 -B'
         self.server = server
         self.port = port
         self.timeout = timeout

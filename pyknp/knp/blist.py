@@ -19,6 +19,7 @@ class BList(DrawTree):
     """ ある文に関する文節列を保持するオブジェクト
 
     Attributes:
+        comment (str): KNP出力における、#から始まる行に書かれた文字列
         sid (str): 文ID (KNP出力中のS-ID)
     """
 
@@ -31,8 +32,8 @@ class BList(DrawTree):
         self.sid = ''
         self._pinfos = []
         self.parse(spec)
-        self.set_parent_child()
-        self.set_positions()
+        self._set_parent_child()
+        self._set_positions()
         self._setPAS(newstyle)
 
     def _setPAS(self, newstyle):
@@ -69,7 +70,11 @@ class BList(DrawTree):
                     tag.pas = Pas(tag.tag_id, self)
 
     def parse(self, spec):
-        """ KNPの出力を読み取る """
+        """ KNPの出力を読み取る 
+
+        Args:
+            spec (str): KNP出力
+        """
         for string in spec.split('\n'):
             if string.strip() == "":
                 continue
@@ -114,7 +119,7 @@ class BList(DrawTree):
                     self._bnst.append(bnst)
                 self._bnst[-1].push_mrph(mrph)
 
-    def set_positions(self):
+    def _set_positions(self):
         mrphs = self.mrph_list()
         if(len(mrphs)==0):
             return
@@ -142,7 +147,7 @@ class BList(DrawTree):
         """
         return (self.tag_positions[tag_id], self.tag_positions[tag_id + 1] - 1)
 
-    def set_parent_child(self):
+    def _set_parent_child(self):
         for bnst in self._bnst:
             if bnst.parent_id == -1:
                 bnst.parent = None
@@ -193,6 +198,7 @@ class BList(DrawTree):
         return "%s\n%s%s\n" % (self.comment, ''.join(b.spec() for b in self._bnst), self.pattern)
 
     def all(self):
+        """ KNPの出力結果を表示する """
         return self.spec()
 
     def __getitem__(self, index):
