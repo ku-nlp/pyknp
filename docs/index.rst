@@ -8,23 +8,25 @@ pyknp: Python Module for KNP/JUMAN++
 =========================================
 
 About
-============
+========================
 
-形態素解析器JUMAN++(JUMAN)と構文解析器KNPのPythonバインディング (Python2と3の両方に対応)
+形態素解析器JUMAN++(JUMAN)と構文解析器KNPのPythonバインディング (Python2系,3系の両方に対応)
 
-Installation
-============
+Requirements
+========================
 
-予めインストールする必要のあるプログラム
-
+- Python 
+    --  Supported Versions: 2.7.15,  3.5.6,  3.6.6.
 - 形態素解析器 `JUMAN++`_ (JUMAN_)
+    -- JUMAN++はJUMANの後継となる形態素解析器
 - 構文解析器 KNP_
 
 .. _JUMAN++: http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN++
 .. _JUMAN: http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN
 .. _KNP: http://nlp.ist.i.kyoto-u.ac.jp/index.php?KNP
 
-pyknpのインストール
+Install pyknp
+========================
 
 .. code-block:: none
 
@@ -33,7 +35,7 @@ pyknpのインストール
 
 
 Usage
-============
+========================
 
 JUMAN++/KNPでは文を3つの粒度、文節(Bunsetsu)、基本句(Tag)、形態素(Morpheme) で扱う。
 
