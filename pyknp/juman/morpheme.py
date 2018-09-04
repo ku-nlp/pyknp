@@ -25,8 +25,8 @@ class Morpheme(object):
         katuyou1_id (int): 活用型ID
         katuyou2 (str): 活用形
         katuyou2_id (int): 活用形ID
-        imis (str): 意味情報
-        fstring (str): 代表表記
+        imis (str): 代表表記
+        fstring (str): 意味情報
         repname (str): その他の素性情報
     """
 
