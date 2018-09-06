@@ -120,36 +120,6 @@ class Bunsetsu(object):
         else:
             return self._pstring
 
-    def get_normalized_repname(self):
-        """ 正規化代表表記を返す
-        
-        Returns:
-            str: 正規化代表表記
-        """
-        return self.repname
-
-    def get_head_repname(self):
-        """ 主辞代表表記を返す
-        
-        Returns:
-            str: 主辞代表表記 or ""
-        """
-        head_repname = self.features.get("主辞代表表記")
-        if head_repname:
-            return head_repname
-        return ""
-
-    def get_head_prime_repname(self):
-        """ 主辞’代表表記を返す
-        
-        Returns:
-            str: 主辞’代表表記 or ""
-        """
-        head_prime_repname = self.features.get("主辞’代表表記")
-        if head_prime_repname:
-            return head_prime_repname
-        return ""
-
 
 class BunsetsuTest(unittest.TestCase):
 
