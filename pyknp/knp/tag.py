@@ -121,7 +121,7 @@ class Tag(object):
         Returns:
             str: 基本句の見出し
         """
-        return self.midasi
+        return ''.join(mrph.midasi for mrph in self.mrph_list())
 
 
 
