@@ -1,5 +1,6 @@
 #-*- encoding: utf-8 -*-
 
+from __future__ import unicode_literals
 from __future__ import absolute_import
 from pyknp import Morpheme
 from pyknp import Tag
@@ -72,16 +73,16 @@ class TListTest(unittest.TestCase):
 
     def test(self):
         tlist = TList()
-        tag1 = Tag(u"+ 1D <BGH:構文/こうぶん><文節内><係:文節内><文頭>"
-                   u"<体言><名詞項候補><先行詞候補><正規化代表表記:構文/こうぶん>")
-        mrph1 = Morpheme(u"構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 \""
-                         u"代表表記:構文/こうぶん カテゴリ:抽象物\" "
-                         u"<代表表記:構文/こうぶん>")
-        tag2 = Tag(u"+ -1D <BGH:解析/かいせき><文末><体言><用言:判>"
-                   u"<体言止><レベル:C>")
-        mrph2 = Morpheme(u"解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 \""
-                         u"代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;"
-                         u"科学・技術\" <代表表記:解析/かいせき>")
+        tag1 = Tag("+ 1D <BGH:構文/こうぶん><文節内><係:文節内><文頭>"
+                   "<体言><名詞項候補><先行詞候補><正規化代表表記:構文/こうぶん>")
+        mrph1 = Morpheme("構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 \""
+                         "代表表記:構文/こうぶん カテゴリ:抽象物\" "
+                         "<代表表記:構文/こうぶん>")
+        tag2 = Tag("+ -1D <BGH:解析/かいせき><文末><体言><用言:判>"
+                   "<体言止><レベル:C>")
+        mrph2 = Morpheme("解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 \""
+                         "代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;"
+                         "科学・技術\" <代表表記:解析/かいせき>")
         # Add tag with included morpheme
         tag1.push_mrph(mrph1)
         tlist.push_tag(tag1)

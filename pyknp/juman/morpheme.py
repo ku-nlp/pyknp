@@ -66,10 +66,10 @@ class Morpheme(object):
             self._parse_spec(spec.strip("\n"))
     
     def _parse_new_spec(self, spec):
-        parts = spec.split(u"\t")
-        assert parts[0] == u"-"
+        parts = spec.split("\t")
+        assert parts[0] == "-"
         self.mrph_id = int(parts[1])
-        self.prev_mrph_id = [int(mid) for mid in parts[2].split(u";")]
+        self.prev_mrph_id = [int(mid) for mid in parts[2].split(";")]
         self.span = (int(parts[3]), int(parts[4]))
         self.midasi = parts[5]
         self.yomi = parts[7]
@@ -90,22 +90,22 @@ class Morpheme(object):
         parts = []
         part = ''
         inside_quotes = False
-        if spec.startswith(u' '):
+        if spec.startswith(' '):
             spec = '\\%s' % spec
-        if(spec.startswith(u'\  \  \  特殊 1 空白 6 * 0 * 0')):
-            parts = [u'\ ',u'\ ',u'\ ',u'特殊',u'1',u'空白','6',u'*',u'0',u'*',u'0',u'NIL']
+        if(spec.startswith('\  \  \  特殊 1 空白 6 * 0 * 0')):
+            parts = ['\ ','\ ','\ ','特殊','1','空白','6','*','0','*','0','NIL']
         else:
             for char in spec:
-                if char == u'"':
+                if char == '"':
                     if not inside_quotes:
                         inside_quotes = True
                     else:
                         inside_quotes = False
                 # If "\"" proceeds " ", it would be not inside_quotes, but "\"".
-                if inside_quotes and char == u' ' and part == u'"':
+                if inside_quotes and char == ' ' and part == '"':
                     inside_quotes = False
-                if part != "" and char == u' ' and not inside_quotes:
-                    if part.startswith(u'"') and part.endswith(u'"') and len(part) > 1:
+                if part != "" and char == ' ' and not inside_quotes:
+                    if part.startswith('"') and part.endswith('"') and len(part) > 1:
                         parts.append(part[1:-1])
                     else:
                         parts.append(part)
@@ -184,130 +184,130 @@ class Morpheme(object):
             raise NotImplementedError
         
         out = []
-        out.append(u"-\t%s" % self.mrph_id)
+        out.append("-\t%s" % self.mrph_id)
         if isinstance(prev_mrph_id, list):
-            out.append(u"\t%s" % u";".join([u"%s" % pm for pm in prev_mrph_id]))
+            out.append("\t%s" % ";".join(["%s" % pm for pm in prev_mrph_id]))
         else:
-            out.append(u"\t%s" % prev_mrph_id)
-        out.append(u"\t%d\t%d" % span)
-        out.append(u"\t%s" % self.midasi)
+            out.append("\t%s" % prev_mrph_id)
+        out.append("\t%d\t%d" % span)
+        out.append("\t%s" % self.midasi)
         if len(self.repname) == 0:
-            #             out.append(u"\t%s/%s" % (self.midasi, self.yomi))
-            out.append(u"\t%s/%s" % (self.genkei, self.genkei))
+            #             out.append("\t%s/%s" % (self.midasi, self.yomi))
+            out.append("\t%s/%s" % (self.genkei, self.genkei))
         else:
-            out.append(u"\t%s" % self.repname)
-        out.append(u"\t%s\t%s\t%s\t%s" % (self.yomi, self.genkei, self.hinsi, self.hinsi_id))
-        out.append(u"\t%s\t%s\t%s\t%s\t%s\t%s" % (self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id, self.katuyou2, self.katuyou2_id))
-        out.append(u"\t")
+            out.append("\t%s" % self.repname)
+        out.append("\t%s\t%s\t%s\t%s" % (self.yomi, self.genkei, self.hinsi, self.hinsi_id))
+        out.append("\t%s\t%s\t%s\t%s\t%s\t%s" % (self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id, self.katuyou2, self.katuyou2_id))
+        out.append("\t")
         if len(self.fstring) == 0:
             fs = []
-            for im in self.imis.split(u" "):
-                if im.startswith(u"代表表記:"):
+            for im in self.imis.split(" "):
+                if im.startswith("代表表記:"):
                     continue
-                elif im == u"NIL":
+                elif im == "NIL":
                     continue
                 fs.append(im)
-            out.append(u"|".join(fs))
+            out.append("|".join(fs))
         else:
             out.append(self.fstring)
-        out.append(u"\n")
-        return u"".join(out)
+        out.append("\n")
+        return "".join(out)
     
     def _parse_fstring(self, fstring):
         """ 素性情報をパースする """
         rvalue = {}
-        for feature in fstring.split(u"|"):
-            fs = feature.rstrip().lstrip().split(u":")
+        for feature in fstring.split("|"):
+            fs = feature.rstrip().lstrip().split(":")
             key = ":".join(fs[:-1])
             val = fs[-1]
-            rvalue[key]=val.split(u";")
+            rvalue[key]=val.split(";")
         return rvalue
 
 class MorphemeTest(unittest.TestCase):
 
     def test_simple(self):
-        spec = u"であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18\n"
+        spec = "であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18\n"
         mrph = Morpheme(spec, 123)
-        self.assertEqual(mrph.midasi, u'であり')
-        self.assertEqual(mrph.yomi, u'であり')
-        self.assertEqual(mrph.genkei, u'だ')
-        self.assertEqual(mrph.hinsi, u'判定詞')
+        self.assertEqual(mrph.midasi, 'であり')
+        self.assertEqual(mrph.yomi, 'であり')
+        self.assertEqual(mrph.genkei, 'だ')
+        self.assertEqual(mrph.hinsi, '判定詞')
         self.assertEqual(mrph.hinsi_id, 4)
-        self.assertEqual(mrph.bunrui, u'*')
+        self.assertEqual(mrph.bunrui, '*')
         self.assertEqual(mrph.bunrui_id, 0)
-        self.assertEqual(mrph.katuyou1, u'判定詞')
+        self.assertEqual(mrph.katuyou1, '判定詞')
         self.assertEqual(mrph.katuyou1_id, 25)
-        self.assertEqual(mrph.katuyou2, u'デアル列基本連用形')
+        self.assertEqual(mrph.katuyou2, 'デアル列基本連用形')
         self.assertEqual(mrph.katuyou2_id, 18)
         self.assertEqual(mrph.fstring, "")
         self.assertEqual(mrph.spec(), spec)
-        self.assertEqual(mrph.new_spec(8, 9), u"-\t123\t8\t9\t11\tであり\tだ/だ\tであり\tだ\t判定詞\t4\t*\t0\t判定詞\t25\tデアル列基本連用形\t18\t\n")
+        self.assertEqual(mrph.new_spec(8, 9), "-\t123\t8\t9\t11\tであり\tだ/だ\tであり\tだ\t判定詞\t4\t*\t0\t判定詞\t25\tデアル列基本連用形\t18\t\n")
 
     def test_imis(self):
-        spec = u"""解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 "代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;科学・技術"\n"""
+        spec = """解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 "代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;科学・技術"\n"""
         mrph = Morpheme(spec)
         self.assertEqual(mrph.spec(), spec)
-        self.assertEqual(mrph.imis, u"代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;科学・技術")
+        self.assertEqual(mrph.imis, "代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;科学・技術")
 
     def test_nil(self):
-        spec = u"であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18 NIL\n"
+        spec = "であり であり だ 判定詞 4 * 0 判定詞 25 デアル列基本連用形 18 NIL\n"
         mrph = Morpheme(spec)
         self.assertEqual(mrph.imis, "NIL")
         self.assertEqual(mrph.spec(), spec)
 
     def test_at(self):
-        spec = u"@ @ @ 未定義語 15 その他 1 * 0 * 0"
+        spec = "@ @ @ 未定義語 15 その他 1 * 0 * 0"
         mrph = Morpheme(spec)
-        self.assertEqual(mrph.midasi, u'@')
+        self.assertEqual(mrph.midasi, '@')
 
     def test_knp(self):
-        spec = u"構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 NIL <漢字><かな漢字><自立><←複合><名詞相当語>\n"
+        spec = "構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 NIL <漢字><かな漢字><自立><←複合><名詞相当語>\n"
         mrph = Morpheme(spec)
-        self.assertEqual(mrph.midasi, u'構文')
-        self.assertEqual(mrph.yomi, u'こうぶん')
-        self.assertEqual(mrph.genkei, u'構文')
-        self.assertEqual(mrph.hinsi, u'名詞')
+        self.assertEqual(mrph.midasi, '構文')
+        self.assertEqual(mrph.yomi, 'こうぶん')
+        self.assertEqual(mrph.genkei, '構文')
+        self.assertEqual(mrph.hinsi, '名詞')
         self.assertEqual(mrph.hinsi_id, 6)
-        self.assertEqual(mrph.bunrui, u'普通名詞')
+        self.assertEqual(mrph.bunrui, '普通名詞')
         self.assertEqual(mrph.bunrui_id, 1)
-        self.assertEqual(mrph.katuyou1, u'*')
+        self.assertEqual(mrph.katuyou1, '*')
         self.assertEqual(mrph.katuyou1_id, 0)
-        self.assertEqual(mrph.katuyou2, u'*')
+        self.assertEqual(mrph.katuyou2, '*')
         self.assertEqual(mrph.katuyou2_id, 0)
-        self.assertEqual(mrph.imis, u'NIL')
-        self.assertEqual(mrph.fstring, u'<漢字><かな漢字><自立><←複合><名詞相当語>')
+        self.assertEqual(mrph.imis, 'NIL')
+        self.assertEqual(mrph.fstring, '<漢字><かな漢字><自立><←複合><名詞相当語>')
         self.assertEqual(mrph.spec(), spec)
 
 
 class MorphemeTest2(unittest.TestCase):
 
     def test_simple(self):
-        spec = u"""-	36	2	2	4	貰った	貰う/もらう	もらった	もらう	動詞	2	*	0	子音動詞ワ行	12	タ形	10	付属動詞候補（タ系）\n"""
+        spec = """-	36	2	2	4	貰った	貰う/もらう	もらった	もらう	動詞	2	*	0	子音動詞ワ行	12	タ形	10	付属動詞候補（タ系）\n"""
 
         mrph = Morpheme(spec, 36, newstyle=True)
-        self.assertEqual(mrph.midasi, u'貰った')
-        self.assertEqual(mrph.yomi, u'もらった')
-        self.assertEqual(mrph.genkei, u'もらう')
-        self.assertEqual(mrph.hinsi, u'動詞')
+        self.assertEqual(mrph.midasi, '貰った')
+        self.assertEqual(mrph.yomi, 'もらった')
+        self.assertEqual(mrph.genkei, 'もらう')
+        self.assertEqual(mrph.hinsi, '動詞')
         self.assertEqual(mrph.hinsi_id, 2)
-        self.assertEqual(mrph.bunrui, u'*')
+        self.assertEqual(mrph.bunrui, '*')
         self.assertEqual(mrph.bunrui_id, 0)
-        self.assertEqual(mrph.katuyou1, u'子音動詞ワ行')
+        self.assertEqual(mrph.katuyou1, '子音動詞ワ行')
         self.assertEqual(mrph.katuyou1_id, 12)
-        self.assertEqual(mrph.katuyou2, u'タ形')
+        self.assertEqual(mrph.katuyou2, 'タ形')
         self.assertEqual(mrph.katuyou2_id, 10)
         self.assertEqual(mrph.imis, '')
-        self.assertEqual(mrph.fstring, u"付属動詞候補（タ系）")
-        self.assertEqual(mrph.spec(), u"貰った もらった もらう 動詞 2 * 0 子音動詞ワ行 12 タ形 10  付属動詞候補（タ系）\n")
+        self.assertEqual(mrph.fstring, "付属動詞候補（タ系）")
+        self.assertEqual(mrph.spec(), "貰った もらった もらう 動詞 2 * 0 子音動詞ワ行 12 タ形 10  付属動詞候補（タ系）\n")
         self.assertEqual(mrph.new_spec(2, 2), spec)
 
     def test_doukei(self):
-        spec1 = u"""-	1	0	0	0	母	母/ぼ	ぼ	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:音|漢字\n"""
-        spec2 = u"""-	2	0	0	0	母	母/はは	はは	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:訓|カテゴリ:人|漢字\n"""
+        spec1 = """-	1	0	0	0	母	母/ぼ	ぼ	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:音|漢字\n"""
+        spec2 = """-	2	0	0	0	母	母/はは	はは	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:訓|カテゴリ:人|漢字\n"""
         m1 = Morpheme(spec1, 1, newstyle=True)
         m2 = Morpheme(spec2, 1, newstyle=True)
         m1.push_doukei(m2)
-        self.assertEqual(m1.repnames(), u"母/ぼ?母/はは")
+        self.assertEqual(m1.repnames(), "母/ぼ?母/はは")
 
 
 if __name__ == '__main__':

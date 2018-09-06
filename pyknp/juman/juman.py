@@ -2,6 +2,7 @@
 
 from __future__ import absolute_import
 from __future__ import print_function
+from __future__ import unicode_literals
 from pyknp import MList
 from pyknp import Morpheme
 from pyknp import Socket, Subprocess
@@ -106,68 +107,68 @@ class JumanTest(unittest.TestCase):
     
     # JUMANPP
     def test_normal_jumanpp(self):
-        test_str = u"この文を解析してください。"
+        test_str = "この文を解析してください。"
         result = self.jumanpp.analysis(test_str)
         self.assertEqual(len(result), 7)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
         self.assertGreaterEqual(len(result.spec().split("\n")), 7)
 
     def test_nominalization_jumanpp(self):
-        test_str = u"音の響きを感じる。"
+        test_str = "音の響きを感じる。"
         result = self.jumanpp.analysis(test_str)
         self.assertEqual(len(result), 6)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
         self.assertGreaterEqual(len(result.spec().split("\n")), 6)
-        self.assertEqual(result[2].midasi, u"響き")
-        self.assertEqual(result[2].hinsi, u"名詞")
+        self.assertEqual(result[2].midasi, "響き")
+        self.assertEqual(result[2].hinsi, "名詞")
     
     def test_whitespace_jumanpp(self):
-        test_str = u"半角 スペース"
+        test_str = "半角 スペース"
         result = self.jumanpp.analysis(test_str)
         self.assertEqual(len(result), 3)
-        self.assertEqual((result[1].bunrui == u'空白'), True) 
-        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(u" ", u"\ "))
+        self.assertEqual((result[1].bunrui == '空白'), True) 
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(" ", "\ "))
         self.assertGreaterEqual(len(result.spec().split("\n")), 3)
 
     def test_eos(self):
-        test_str = u"エネルギーを素敵にENEOS"
+        test_str = "エネルギーを素敵にENEOS"
         result = self.jumanpp.analysis(test_str)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
 
     def test_eos2(self):
-        test_str = u"Canon EOS 80D買った"
+        test_str = "Canon EOS 80D買った"
         result = self.jumanpp.analysis(test_str)
-        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(u" ", u"\ "))
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(" ", "\ "))
 
     def test_dquo(self):
-        test_str = u"\"最高\"の気分"
+        test_str = "\"最高\"の気分"
         result = self.jumanpp.analysis(test_str)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
 
     def test_escape(self):
-        test_str = u"&lt;tag&gt;\\エス\'ケープ"
+        test_str = "&lt;tag&gt;\\エス\'ケープ"
         result = self.jumanpp.analysis(test_str)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
 
     def test_cr(self):
-        test_str = u"これは\rどう"
+        test_str = "これは\rどう"
         result = self.jumanpp.analysis(test_str)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
 
     # JUMAN 
     def test_normal_juman(self):
-        test_str = u"この文を解析してください。"
+        test_str = "この文を解析してください。"
         result = self.juman.analysis(test_str)
         self.assertEqual(len(result), 7)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
         self.assertGreaterEqual(len(result.spec().split("\n")), 7)
 
     def test_whitespace_juman(self):
-        test_str = u"半角 スペース"
+        test_str = "半角 スペース"
         result = self.juman.analysis(test_str)
         self.assertEqual(len(result), 4) # 半|角|\ |スペース
-        self.assertEqual((result[2].bunrui == u'空白'), True) 
-        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(u" ", u"\ "))
+        self.assertEqual((result[2].bunrui == '空白'), True) 
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(" ", "\ "))
         self.assertGreaterEqual(len(result.spec().split("\n")), 4)
 
 
