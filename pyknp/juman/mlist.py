@@ -1,6 +1,7 @@
 #-*- encoding: utf-8 -*-
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 from pyknp import Morpheme
 import unittest
 
@@ -59,7 +60,7 @@ class MList(object):
                 tmp_prev_mids.append(m.mrph_id)
             length += len(mrph.midasi)
             prev_mids = tmp_prev_mids
-        return u"".join(out)
+        return "".join(out)
 
     def mrph_list(self):
         """ 保持する全ての形態素のリストを返す．
@@ -79,29 +80,29 @@ class MList(object):
 class MListTest(unittest.TestCase):
 
     def setUp(self):
-        self.spec1 = u"""構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 "代表表記:構文/こうぶん カテゴリ:抽象物"\n"""
-        self.spec2 = u"""解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 "代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;科学・技術"\n"""
+        self.spec1 = """構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 "代表表記:構文/こうぶん カテゴリ:抽象物"\n"""
+        self.spec2 = """解析 かいせき 解析 名詞 6 サ変名詞 2 * 0 * 0 "代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;科学・技術"\n"""
         self.mlist = MList(self.spec1+self.spec2)
 
     def test_mrph(self):
         self.assertEqual(len(self.mlist), 2)
-        self.assertEqual(self.mlist[0].midasi, u'構文')
-        self.assertEqual(self.mlist[-1].midasi, u'解析')
+        self.assertEqual(self.mlist[0].midasi, '構文')
+        self.assertEqual(self.mlist[-1].midasi, '解析')
 
     def test_mrph_list(self):
-        self.assertEqual(''.join([x.midasi for x in self.mlist]), u'構文解析')
+        self.assertEqual(''.join([x.midasi for x in self.mlist]), '構文解析')
         self.assertEqual(self.mlist.spec(), self.spec1 + self.spec2)
-        new_spec = u"""-\t1\t0\t0\t1\t構文\t構文/こうぶん\tこうぶん\t構文\t名詞\t6\t普通名詞\t1\t*\t0\t*\t0\tカテゴリ:抽象物\n""" + \
-u"""-\t2\t1\t2\t3\t解析\t解析/かいせき\tかいせき\t解析\t名詞\t6\tサ変名詞\t2\t*\t0\t*\t0\tカテゴリ:抽象物|ドメイン:教育・学習;科学・技術\n"""
+        new_spec = """-\t1\t0\t0\t1\t構文\t構文/こうぶん\tこうぶん\t構文\t名詞\t6\t普通名詞\t1\t*\t0\t*\t0\tカテゴリ:抽象物\n""" + \
+"""-\t2\t1\t2\t3\t解析\t解析/かいせき\tかいせき\t解析\t名詞\t6\tサ変名詞\t2\t*\t0\t*\t0\tカテゴリ:抽象物|ドメイン:教育・学習;科学・技術\n"""
         self.assertEqual(self.mlist.new_spec(), new_spec)
 
 
     def test_doukei(self):
-        spec = u"""母 はは 母 名詞 6 普通名詞 1 * 0 * 0 "代表表記:母/はは 漢字読み:訓 カテゴリ:人 ドメイン:家庭・暮らし"
+        spec = """母 はは 母 名詞 6 普通名詞 1 * 0 * 0 "代表表記:母/はは 漢字読み:訓 カテゴリ:人 ドメイン:家庭・暮らし"
 @ 母 ぼ 母 名詞 6 普通名詞 1 * 0 * 0 "代表表記:母/ぼ 漢字読み:音 カテゴリ:人"
 です です だ 判定詞 4 * 0 判定詞 25 デス列基本形 27 NIL
 """
-        new_spec = u"""-\t1\t0\t0\t0\t母\t母/はは\tはは\t母\t名詞\t6\t普通名詞\t1\t*\t0\t*\t0\t漢字読み:訓|カテゴリ:人|ドメイン:家庭・暮らし
+        new_spec = """-\t1\t0\t0\t0\t母\t母/はは\tはは\t母\t名詞\t6\t普通名詞\t1\t*\t0\t*\t0\t漢字読み:訓|カテゴリ:人|ドメイン:家庭・暮らし
 -\t2\t0\t0\t0\t母\t母/ぼ\tぼ\t母\t名詞\t6\t普通名詞\t1\t*\t0\t*\t0\t漢字読み:音|カテゴリ:人
 -\t3\t1;2\t1\t2\tです\tだ/だ\tです\tだ\t判定詞\t4\t*\t0\t判定詞\t25\tデス列基本形\t27\t
 """

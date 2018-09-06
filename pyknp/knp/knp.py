@@ -1,5 +1,6 @@
 #-*- encoding: utf-8 -*-
 
+from __future__ import unicode_literals
 from __future__ import absolute_import
 from pyknp import Juman
 from pyknp import Socket, Subprocess  
@@ -96,7 +97,7 @@ class KNPTest(unittest.TestCase):
         self.knp = KNP()
 
     def test_dpnd(self):
-        result = self.knp.parse(u"赤い花が咲いた。")
+        result = self.knp.parse("赤い花が咲いた。")
         self.assertEqual(len(result), 3)
         self.assertEqual(result[0].parent.bnst_id, 1)
         self.assertEqual(len(result[1].children), 1)
@@ -105,22 +106,22 @@ class KNPTest(unittest.TestCase):
         self.assertEqual(result[2].parent, None)
 
     def test_mrph(self):
-        result = self.knp.parse(u"赤い花が咲いた。")
+        result = self.knp.parse("赤い花が咲いた。")
         self.assertEqual(
-            ''.join([mrph.midasi for mrph in result[0].mrph_list()]), u'赤い')
+            ''.join([mrph.midasi for mrph in result[0].mrph_list()]), '赤い')
         self.assertEqual(
-            ''.join([mrph.midasi for mrph in result[1].mrph_list()]), u'花が')
+            ''.join([mrph.midasi for mrph in result[1].mrph_list()]), '花が')
         self.assertEqual(
-            ''.join([mrph.midasi for mrph in result[2].mrph_list()]), u'咲いた。')
+            ''.join([mrph.midasi for mrph in result[2].mrph_list()]), '咲いた。')
 
     def test_mrph2(self):
-        result = self.knp.parse(u"エネルギーを素敵にENEOS")
+        result = self.knp.parse("エネルギーを素敵にENEOS")
         self.assertEqual(
-            ''.join([mrph.midasi for mrph in result[0].mrph_list()]), u'エネルギーを')
+            ''.join([mrph.midasi for mrph in result[0].mrph_list()]), 'エネルギーを')
         self.assertEqual(
-            ''.join([mrph.midasi for mrph in result[1].mrph_list()]), u'素敵に')
+            ''.join([mrph.midasi for mrph in result[1].mrph_list()]), '素敵に')
         self.assertEqual(
-            ''.join([mrph.midasi for mrph in result[2].mrph_list()]), u'ENEOS')
+            ''.join([mrph.midasi for mrph in result[2].mrph_list()]), 'ENEOS')
 
 if __name__ == '__main__':
     unittest.main()

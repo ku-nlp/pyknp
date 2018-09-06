@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from __future__ import absolute_import
 import collections
 import six
@@ -59,11 +60,11 @@ class Pas(object):
         self.tid = tid
         self.tag_list = result.tag_list()
 
-        pas_analysis = self.tag_list[self.tid].features.get(u"述語項構造") # -anaphoraの場合
+        pas_analysis = self.tag_list[self.tid].features.get("述語項構造") # -anaphoraの場合
         if pas_analysis is not None:
             self.__parse_case_analysis(pas_analysis, pasFlag=True)
 
-        case_analysis = self.tag_list[self.tid].features.get(u"格解析結果")
+        case_analysis = self.tag_list[self.tid].features.get("格解析結果")
         if(case_analysis is None):
             self.valid = False
             return
@@ -85,22 +86,22 @@ class Pas(object):
         return output
     
     def get_orig_result(self):
-        return self.tag_list[self.tid].features.get(u"格解析結果")
+        return self.tag_list[self.tid].features.get("格解析結果")
      
     def __parse_case_analysis(self, analysis_result, pasFlag=False):
         assert isinstance(analysis_result, six.text_type)
-        c0 = analysis_result.find(u':')
-        c1 = analysis_result.find(u':', c0 + 1)
-        self.cfid = analysis_result[:c0] + u":" + analysis_result[c0 + 1:c1]
+        c0 = analysis_result.find(':')
+        c1 = analysis_result.find(':', c0 + 1)
+        self.cfid = analysis_result[:c0] + ":" + analysis_result[c0 + 1:c1]
         
-        if analysis_result.count(u":") < 2:  # For copula
+        if analysis_result.count(":") < 2:  # For copula
             self.valid = False
             return
         
-        for k in analysis_result[c1 + 1:].split(u';'):
-            items = k.split(u"/")
+        for k in analysis_result[c1 + 1:].split(';'):
+            items = k.split("/")
             caseflag = items[1]
-            if caseflag == u"U" or caseflag == u"-":
+            if caseflag == "U" or caseflag == "-":
                 continue
             
             if pasFlag: # anaphora

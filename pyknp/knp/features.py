@@ -15,7 +15,7 @@ class Features(dict):
     ex. "<正規化代表表記:遅れる/おくれる>" --> {"正規化代表表記": "遅れる/おくれる"}
     """
 
-    def __init__(self, spec, splitter=u"><", ignore_first_character=True):
+    def __init__(self, spec, splitter="><", ignore_first_character=True):
         assert isinstance(spec, six.text_type)
 
         self.spec = spec.rstrip()
@@ -30,8 +30,8 @@ class Features(dict):
         tag_end = None
         while tag_end != -1:
             tag_end = self.spec.find(splitter, tag_start)
-            kv_splitter = self.spec.find(u':', tag_start, tag_end)
-            if self.spec[tag_start:].startswith(u'rel '):
+            kv_splitter = self.spec.find(':', tag_start, tag_end)
+            if self.spec[tag_start:].startswith('rel '):
                 rel = Rel(self.spec[tag_start:tag_end])
                 if rel.ignore == False:
                     if self.rels is None:
@@ -56,28 +56,28 @@ class Features(dict):
 class FeaturesTest(unittest.TestCase):
 
     def test(self):
-        tag_str1 = u"<BGH:構文/こうぶん><文節内><係:文節内><文頭><体言>" \
-            u"<名詞項候補><先行詞候補><正規化代表表記:構文/こうぶん>"
+        tag_str1 = "<BGH:構文/こうぶん><文節内><係:文節内><文頭><体言>" \
+            "<名詞項候補><先行詞候補><正規化代表表記:構文/こうぶん>"
         f1 = Features(tag_str1)
-        self.assertEqual(f1.get(u"BGH"), u"構文/こうぶん")
-        self.assertEqual(f1.get(u"係"), u"文節内")
-        self.assertEqual(f1.get(u"先行詞候補"), True)
-        self.assertEqual(f1.get(u"dummy"), None)
-        self.assertEqual(f1.get(u"正規化代表表記"), u"構文/こうぶん")
+        self.assertEqual(f1.get("BGH"), "構文/こうぶん")
+        self.assertEqual(f1.get("係"), "文節内")
+        self.assertEqual(f1.get("先行詞候補"), True)
+        self.assertEqual(f1.get("dummy"), None)
+        self.assertEqual(f1.get("正規化代表表記"), "構文/こうぶん")
 
     def testRels(self):
-        tag_str = u"""<rel type="時間" target="一九九五年" sid="950101003-002" id="1"/>""" +  \
-            u"""<rel type="ヲ" target="衆院" sid="950101003-002" id="3"/>""" +\
-            u"""<rel type="ガ" target="不特定:人1"/>""" +\
-            u"""<rel type="時間" target="国会前" sid="950101003-asd" id="16"/>"""
+        tag_str = """<rel type="時間" target="一九九五年" sid="950101003-002" id="1"/>""" +  \
+            """<rel type="ヲ" target="衆院" sid="950101003-002" id="3"/>""" +\
+            """<rel type="ガ" target="不特定:人1"/>""" +\
+            """<rel type="時間" target="国会前" sid="950101003-asd" id="16"/>"""
 
         f = Features(tag_str)
         self.assertEqual(len(f.rels), 4)
         self.assertEqual(f.rels[0].tid, 1)
-        self.assertEqual(f.rels[0].mode, u"")
-        self.assertEqual(f.rels[0].atype, u"時間")
-        self.assertEqual(f.rels[0].sid, u"950101003-002")
-        self.assertEqual(f.rels[0].target, u"一九九五年")
+        self.assertEqual(f.rels[0].mode, "")
+        self.assertEqual(f.rels[0].atype, "時間")
+        self.assertEqual(f.rels[0].sid, "950101003-002")
+        self.assertEqual(f.rels[0].target, "一九九五年")
 
 
 if __name__ == '__main__':

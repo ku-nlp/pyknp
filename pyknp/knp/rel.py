@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from __future__ import absolute_import
 import re
 
 REL_PAT = "rel type=\"([^\s]+?)\"(?: mode=\"([^>]+?)\")? target=\"([^\s]+?)\"(?: sid=\"(.+?)\" id=\"(.+?)\")?/"
-WRITER_READER_LIST = [u"著者", u"読者"]
-WRITER_READER_CONV_LIST = {u"一人称": u"著者", u"二人称": u"読者"}
+WRITER_READER_LIST = ["著者", "読者"]
+WRITER_READER_CONV_LIST = {"一人称": "著者", "二人称": "読者"}
 
 
 class Rel(object):
@@ -24,9 +25,9 @@ class Rel(object):
             self.ignore = True
             return
         atype, mode, target, sid, id = match[0]
-        if mode == u"？":
+        if mode == "？":
             self.ignore = True
-        if target == u"なし":
+        if target == "なし":
             self.ignore = True
 
         if len(sid) == 0:
