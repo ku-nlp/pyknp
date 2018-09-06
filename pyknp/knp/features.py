@@ -9,8 +9,10 @@ import six
 
 
 class Features(dict):
-    """
-    タグ(基本句)のfeatureを保持するオブジェクト
+    """ feature情報を保持するオブジェクト
+
+    feature情報に含まれるタグをパースし、辞書形式にする。
+    ex. "<正規化代表表記:遅れる/おくれる>" --> {"正規化代表表記": "遅れる/おくれる"}
     """
 
     def __init__(self, spec, splitter=u"><", ignore_first_character=True):

@@ -13,6 +13,11 @@ class Tag(object):
     """
     ある文に関する基本句列を保持するオブジェクト
 
+    Args:
+        spec (str): KNP出力
+        tag_id (int): 基本句ID
+        newstyle (bool): KNPフォーマットの種類 (公開版KNPの場合はFalse)
+
     Attributes:
         tag_id (int): 基本句ID
         midasi (str): 見出し
@@ -88,9 +93,11 @@ class Tag(object):
                 self.disambiguated_pred_repname = disambiguated_pred_repname
 
     def push_mrph(self, mrph):
+        """ 新しい形態素オブジェクトをセットする """
         self._mrph_list.push_mrph(mrph)
 
     def spec(self):
+        """ 基本句に対応するKNP出力 """
         return "+ %d%s %s\n%s" % (self.parent_id, self.dpndtype, self.fstring,
                                   self._mrph_list.spec())
 
@@ -103,6 +110,7 @@ class Tag(object):
         return self._mrph_list
 
     def pstring(self, string=None):
+        """ draw_treeしたときに右側に出力する文字列を返す """
         if string:
             self._pstring = string
         else:

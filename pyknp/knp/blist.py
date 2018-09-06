@@ -18,6 +18,11 @@ import bisect
 class BList(DrawTree):
     """ ある文に関する文節列を保持するオブジェクト
 
+    Args:
+        spec (str): KNP出力
+        pattern (str): KNP出力の終端記号
+        newstyle (bool): KNPフォーマットの種類 (公開版KNPの場合はFalse)
+
     Attributes:
         comment (str): KNP出力における、#から始まる行に書かれた文字列
         sid (str): 文ID (KNP出力中のS-ID)
@@ -198,7 +203,7 @@ class BList(DrawTree):
         return "%s\n%s%s\n" % (self.comment, ''.join(b.spec() for b in self._bnst), self.pattern)
 
     def all(self):
-        """ KNPの出力結果を表示する """
+        """ KNPの出力結果を返す """
         return self.spec()
 
     def __getitem__(self, index):
@@ -224,6 +229,7 @@ class BList(DrawTree):
 
     def get_clause_starts(self, concat_clause_in_paren=False, discourse_clause=False):
         """ 節の冒頭句の位置情報を返す
+
         Args:
             concat_clause_in_paren (bool):  括弧内では節を切らないかどうか
             discourse_clause (bool): 補文節、連体修飾節を切らないかどうか

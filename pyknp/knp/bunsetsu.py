@@ -16,6 +16,11 @@ class Bunsetsu(object):
     """
     KNP による係り受け解析の単位である文節の各種情報を保持するオブジェクト．
 
+    Args:
+        spec (str): KNP出力のうち文節に該当する箇所の文字列
+        bnst_id (int): 文節ID
+        newstyle (bool): KNPフォーマットの種類 (公開版KNPの場合はFalse)
+
     Attributes:
         bnst_id (int): 文節ID
         midasi (str): 見出し
@@ -90,6 +95,7 @@ class Bunsetsu(object):
         self._tag_list.push_tag(tag)
 
     def spec(self):
+        """ 文節に対応するKNP出力 """
         return "* %d%s %s\n%s" % (self.parent_id, self.dpndtype,
                                   self.fstring, self._tag_list.spec())
 
@@ -110,6 +116,7 @@ class Bunsetsu(object):
         return self._tag_list
 
     def pstring(self, string=None):
+        """ draw_treeしたときに右側に出力する文字列を返す """
         if string:
             self._pstring = string
         else:

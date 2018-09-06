@@ -20,6 +20,7 @@ class Juman(object):
         command (str): JUMANの実行コマンド
         option (str): JUMAN解析オプション
         rcfile (str): JUMAN設定ファイルへのパス
+        pattern (str): JUMAN出力の終端記号
         jumanpp (bool): JUMAN++を用いるかJUMANを用いるか。commandを指定した場合は無視される。
     """
 

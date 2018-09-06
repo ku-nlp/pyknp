@@ -9,9 +9,15 @@ from six import u
 
 class Morpheme(object):
     """ 形態素の各種情報を保持するオブジェクト．
+
+    Args:
+        spec (str): KNP出力
+        mrph_id (int): 形態素ID
+        newstyle (bool): KNPフォーマットの種類 (公開版KNPの場合はFalse)
     
     Attributes:
-        mrph_id (int): 形態素ID
+        mrph_id (int): 形態素ID 
+        mrph_index (int): mrph_idに同じ
         span (tuple): 形態素の位置 (開始位置, 終了位置)
         doukei (list): 
         midasi (str): 見出し
@@ -77,7 +83,7 @@ class Morpheme(object):
         self.katuyou2 = parts[15]
         self.katuyou2_id = int(parts[16])
         self.fstring = parts[17]
-        self.feature = self.parse_fstring(self.fstring)
+        self.feature = self._parse_fstring(self.fstring)
         self.repname = parts[6]
 
     def _parse_spec(self, spec):
@@ -207,7 +213,8 @@ class Morpheme(object):
         out.append(u"\n")
         return u"".join(out)
     
-    def parse_fstring(self, fstring):
+    def _parse_fstring(self, fstring):
+        """ 素性情報をパースする """
         rvalue = {}
         for feature in fstring.split(u"|"):
             fs = feature.rstrip().lstrip().split(u":")

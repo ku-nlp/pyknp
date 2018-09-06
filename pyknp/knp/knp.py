@@ -19,6 +19,7 @@ class KNP(object):
                         (詳細解析結果を出力する-tabは必須。 
                         省略・照応解析を行う -anaphora, 格解析を行わず構文解析のみを行う -dpnd など)
         rcfile (str): KNP設定ファイルへのパス
+        pattern (str): KNP出力の終端記号
         jumancommand (str): JUMANコマンド
         jumanrcfile (str): JUMAN設定ファイルへのパス
         jumanpp (bool): JUMAN++を用いるかJUMANを用いるか
