@@ -217,6 +217,14 @@ class BList(DrawTree):
         return self.bnst_list()
 
     def get_clause_starts(self, concat_clause_in_paren=False, discourse_clause=False):
+        """ 節の冒頭句の位置情報を返す
+        Args:
+            concat_clause_in_paren (bool):  括弧内では節を切らないかどうか
+            discourse_clause (bool): 補文節、連体修飾節を切らないかどうか
+
+        Returns:
+            list: 節の冒頭となる基本句idのリスト
+        """
         starts = [0]
         paren_level = 0
         tags = self.tag_list()
