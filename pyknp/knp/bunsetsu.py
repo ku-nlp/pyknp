@@ -5,6 +5,7 @@ from pyknp import Morpheme
 from pyknp import MList
 from pyknp import Tag
 from pyknp import TList
+from pyknp import Features
 import re
 import sys
 import unittest
@@ -20,6 +21,7 @@ class Bunsetsu(object):
         parent (Bunsetsu): 親の文節オブジェクト
         parent_id (int): 親の文節ID
         children (list): 子の文節オブジェクトのリスト
+        repname (str): 正規化代表表記
         fstring (str): feature情報
     """
 
@@ -31,6 +33,7 @@ class Bunsetsu(object):
         self.children = []
         self.dpndtype = ''
         self.fstring = ''
+        self.features = Features(self.fstring)
         self._pstring = ''
         self.bnst_id = bnst_id
         spec = spec.strip()
@@ -94,6 +97,36 @@ class Bunsetsu(object):
             self._pstring = string
         else:
             return self._pstring
+
+    def get_normalized_repname(self):
+        """ 正規化代表表記を返す
+        
+        Returns:
+            str: 正規化代表表記
+        """
+        return self.repname
+
+    def get_head_repname(self):
+        """ 基本句が用言の場合、主辞代表表記を返す
+        
+        Returns:
+            str: 主辞代表表記 or ""
+        """
+        head_repname = self.features.get(u"主辞代表表記")
+        if head_repname:
+            return head_repname
+        return ""
+
+    def get_head_prime_repname(self):
+        """ 基本句が用言の場合、主辞’代表表記を返す
+        
+        Returns:
+            str: 主辞’代表表記 or ""
+        """
+        head_prime_repname = self.features.get(u"主辞’代表表記")
+        if head_prime_repname:
+            return head_prime_repname
+        return ""
 
 
 class BunsetsuTest(unittest.TestCase):

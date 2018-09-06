@@ -20,6 +20,7 @@ class Tag(object):
         children (list): 子の基本句オブジェクトのリスト
         dpndtype (str): 係り受けタイプ
         fstring (str): feature情報
+        repname (str): 正規化代表表記
         features (Features): 基本句のfeatureを表すFeatureオブジェクト
         pas (Pas): 基本句が述語の場合は項の情報(Pasオブジェクト), そうでない場合None
     """
@@ -92,6 +93,48 @@ class Tag(object):
             str: 基本句の見出し
         """
         return ''.join([mrph.midasi for mrph in self.mrph_list()])
+
+    def get_head_repname(self):
+        """ 主辞の場合、主辞代表表記を返す
+        
+        Returns:
+            str: 主辞代表表記 or ""
+        """
+        head_repname = self.features.get(u"主辞代表表記")
+        if head_repname:
+            return head_repname
+        return ""
+
+    def get_normalized_repname(self):
+        """ 正規化代表表記を返す
+        
+        Returns:
+            str: 正規化代表表記
+        """
+        return self.repname
+
+    def get_pred_repname(self):
+        """ 基本句が用言の場合、用言代表表記を返す
+        
+        Returns:
+            str: 用言代表表記 or ""
+        """
+        pred_repname = self.features.get(u"用言代表表記")
+        if pred_repname:
+            return pred_repname
+        return ""
+
+    def get_disambiguated_pred_repname(self):
+        """ 基本句が用言の場合、標準用言代表表記を返す
+        
+        Returns:
+            str: 標準用言代表表記 or ""
+        """
+        disambiguated_pred_repname = self.features.get(u"標準用言代表表記")
+        if disambiguated_pred_repname:
+            return disambiguated_pred_repname
+        return ""
+
 
 
 class TagTest(unittest.TestCase):
