@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from __future__ import absolute_import
 from pyknp import Pas
 from pyknp import Rel
@@ -56,7 +57,7 @@ class Features(dict):
 class FeaturesTest(unittest.TestCase):
 
     def test(self):
-        tag_str1 = "<BGH:構文/こうぶん><文節内><係:文節内><文頭><体言>" \
+        tag_str1 = "<BGH:構文/こうぶん><文節内><係:文節内><文頭><体言>" +\
             "<名詞項候補><先行詞候補><正規化代表表記:構文/こうぶん>"
         f1 = Features(tag_str1)
         self.assertEqual(f1.get("BGH"), "構文/こうぶん")
