@@ -21,6 +21,7 @@ class Tag(object):
 
     Attributes:
         tag_id (int): 基本句ID
+        midasi (str): 見出し
         parent (Tag): 親の基本句オブジェクト
         parent_id (int): 親の基本句ID
         children (list): 子の基本句オブジェクトのリスト
@@ -37,6 +38,7 @@ class Tag(object):
 
     def __init__(self, spec, tag_id=0, newstyle=False):
         self._mrph_list = MList()
+        self.midasi = ''
         self.parent_id = -1
         self.parent = None
         self.children = []
@@ -94,6 +96,10 @@ class Tag(object):
     def push_mrph(self, mrph):
         """ 新しい形態素オブジェクトをセットする """
         self._mrph_list.push_mrph(mrph)
+
+    def set_midasi(self):
+        """ midasiをセットする """
+        self.midasi = self.get_surface()
 
     def spec(self):
         """ 基本句に対応するKNP出力 """

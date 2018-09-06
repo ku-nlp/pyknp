@@ -41,6 +41,9 @@ class BList(DrawTree):
         self._set_parent_child()
         self._set_positions()
         self._setPAS(newstyle)
+        # set midasi
+        for i in range(len(self._bnst)):
+            self._bnst[i].set_midasi()
 
     def _setPAS(self, newstyle):
         """ 各基本句にPASを設定 """

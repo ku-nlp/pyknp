@@ -23,6 +23,7 @@ class Bunsetsu(object):
 
     Attributes:
         bnst_id (int): 文節ID
+        midasi (str): 見出し
         parent (Bunsetsu): 親の文節オブジェクト
         parent_id (int): 親の文節ID
         children (list): 子の文節オブジェクトのリスト
@@ -36,6 +37,7 @@ class Bunsetsu(object):
     def __init__(self, spec, bnst_id=0, newstyle=False):
         self._mrph_list = MList()
         self._tag_list = TList()
+        self.midasi = ''
         self.parent_id = -1
         self.parent = None
         self.children = []
@@ -91,6 +93,12 @@ class Bunsetsu(object):
         if len(self._tag_list) == 0 and len(self._mrph_list) > 0:
             raise Exception("Unsafe addition of tags!")
         self._tag_list.push_tag(tag)
+
+    def set_midasi(self):
+        """ midasiをセットする """
+        for i in range(len(self._tag_list)):
+            self._tag_list[i].set_midasi()
+        self.midasi = ''.join(mrph.midasi for mrph in self.mrph_list())
 
     def spec(self):
         """ 文節に対応するKNP出力 """
