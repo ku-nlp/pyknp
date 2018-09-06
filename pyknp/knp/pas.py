@@ -17,17 +17,17 @@ class Argument(object):
         sid (str): 文ID
         tid (int): 基本句ID
         eid (int): Entity ID
-        rep (str): 表記
+        midasi (str): 表記
         flag (str): フラグ (C, N, O, D, E, U)
         sdist (int): 述語の何文前か
     """
-    def __init__(self, sid=None, tid=None, eid=None, rep='', flag=None, sdist=None):
+    def __init__(self, sid=None, tid=None, eid=None, midasi='', flag=None, sdist=None):
         assert isinstance(tid, int)
-        assert isinstance(rep, six.text_type)
+        assert isinstance(midasi, six.text_type)
         self.sid = sid
         self.tid = tid
         self.eid = eid
-        self.rep = rep
+        self.midasi = midasi
         self.flag = flag
         self.sdist = sdist 
 
@@ -35,9 +35,7 @@ ArgRepname = collections.namedtuple("ArgRepname", "repname,tid_list")
 
 
 class Pas(object):
-    """
-    述語項構造を扱うクラス
-    文をまたがる述語項構造は非対応
+    """ 述語項構造を扱うクラス
 
     Usage:
         result = knp.result(knp_result)
@@ -169,20 +167,20 @@ class Pas(object):
             
             if pasFlag: # anaphora
                 mycase = items[0]
-                rep = items[2]
+                midasi = items[2]
                 sdist = int(items[3])
                 tid = int(items[4])
                 eid = int(items[5])
-                arg = Argument(sdist=sdist, tid=tid, eid=eid, rep=rep, flag=caseflag)
+                arg = Argument(sdist=sdist, tid=tid, eid=eid, midasi=midasi, flag=caseflag)
                 self.arguments[mycase].append(arg)
             else:
                 mycase = items[0]
-                rep = items[2]
+                midasi = items[2]
                 tid = int(items[3])
                 sdist = int(items[4])
                 sid = items[5]
                
-                arg = Argument(sid=sid, tid=tid, rep=rep, flag=caseflag, sdist=sdist)
+                arg = Argument(sid=sid, tid=tid, midasi=midasi, flag=caseflag, sdist=sdist)
                 self.arguments[mycase].append(arg)
 
 
