@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 =========================================
-pyknp: Python Module for KNP/JUMAN++
+pyknp: Python Module for JUMAN++/KNP
 =========================================
 
 About
@@ -34,24 +34,42 @@ Install pyknp
 
 
 
+A Simple Explanation of JUMAN++/KNP
+================================================
+
+形態素解析器JUMAN++は文を形態素(Morpheme)単位に分割する。
+構文解析器KNPでは文を3つの粒度、文節(Bunsetsu)、基本句(Tag)、形態素(Morpheme) で扱い、
+文節および基本句間の係り受け関係・格関係・照応関係を出力する。
+
+文分割の例:
+
+.. code-block:: none
+
+  「下鴨神社の参道は暗かった。」
+   文節区切り:　 下鴨神社の|参道は|暗かった。
+   基本句区切り: 下鴨|神社の|参道は|暗かった。
+   形態素区切り: 下鴨|神社|の|参道|は|暗かった|。
+
+
+係り受け解析の例:
+
+.. code-block:: none
+
+    下鴨神社の参道は暗かった。
+    # S-ID:1 KNP:4.2-32bec061 DATE:2018/09/06 SCORE:-18.37446
+    下鴨──┐　　　　　　　　　<体言>
+          神社の──┐　　　　　<体言>
+                  参道は──┐　<体言>
+                      暗かった。<用言:形><格解析結果:ガ/参道;ト/->
+    EOS
+
+
 Usage
 ========================
 
-JUMAN++/KNPでは文を3つの粒度、文節(Bunsetsu)、基本句(Tag)、形態素(Morpheme) で扱う。
+**JUMAN++**
 
-
-
-例: 「下鴨神社の参道は暗かった。」
-  | 文節区切り:　 下鴨神社の|参道は|暗かった。
-  | 基本句区切り: 下鴨|神社の|参道は|暗かった。
-  | 形態素区切り: 下鴨|神社|の|参道|は|暗かった|。
-
-形態素解析器JUMAN++は文を形態素単位に分割する。
-構文解析器KNPはJUMAN++の解析結果を入力とし、
-文節および基本句間の係り受け関係・格関係・照応関係を出力する。
-
-
-JUMAN++
+JUMAN++の実行例
 
 .. code-block:: none
 
@@ -66,6 +84,8 @@ JUMAN++
     。 。 。 特殊 1 句点 1 * 0 * 0 NIL
     EOS
 
+pyknpを用いた解析プログラム
+
 .. code-block:: python
 
     --- example_juman.py ---
@@ -75,6 +95,8 @@ JUMAN++
     for mrph in result.mrph_list(): # 各形態素にアクセス
         print("見出し:%s, 読み:%s, 原形:%s, 品詞:%s, 品詞細分類:%s, 活用型:%s, 活用形:%s, 意味情報:%s, 代表表記:%s" \
                 % (mrph.midasi, mrph.yomi, mrph.genkei, mrph.hinsi, mrph.bunrui, mrph.katuyou1, mrph.katuyou2, mrph.imis, mrph.repname))
+
+プログラムの出力結果
 
 .. code-block:: none
 
@@ -87,7 +109,10 @@ JUMAN++
     見出し:暗かった, 読み:くらかった, 原形:暗い, 品詞:形容詞, 品詞細分類:*, 活用型:イ形容詞アウオ段, 活用形:タ形, 意味情報:代表表記:暗い/くらい, 代表表記:暗い/くらい
     見出し:。, 読み:。, 原形:。, 品詞:特殊, 品詞細分類:句点, 活用型:*, 活用形:*, 意味情報:NIL, 代表表記:
 
-KNP
+**KNP**
+
+KNPの実行例。出力の読み方は次のURLを参照。
+`<http://cr.fvcrc.i.nagoya-u.ac.jp/~sasano/knp/format.html>`_
 
 .. code-block:: none
 
@@ -110,6 +135,8 @@ KNP
     。 。 。 特殊 1 句点 1 * 0 * 0 NIL <文末><英記号><記号><付属>
     EOS
 
+pyknpを用いた解析プログラム
+
 .. code-block:: python
 
     --- example_knp.py ---
@@ -131,6 +158,9 @@ KNP
     for mrph in result.mrph_list(): # 各形態素へのアクセス
         print("\tID:%d, 見出し:%s, 読み:%s, 原形:%s, 品詞:%s, 品詞細分類:%s, 活用型:%s, 活用形:%s, 意味情報:%s, 代表表記:%s" \
                 % (mrph.mrph_id, mrph.midasi, mrph.yomi, mrph.genkei, mrph.hinsi, mrph.bunrui, mrph.katuyou1, mrph.katuyou2, mrph.imis, mrph.repname))
+
+
+プログラムの出力結果
 
 .. code-block:: none
 
