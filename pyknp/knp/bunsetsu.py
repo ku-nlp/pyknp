@@ -23,7 +23,6 @@ class Bunsetsu(object):
 
     Attributes:
         bnst_id (int): 文節ID
-        midasi (str): 見出し
         parent (Bunsetsu): 親の文節オブジェクト
         parent_id (int): 親の文節ID
         children (list): 子の文節オブジェクトのリスト
@@ -37,7 +36,6 @@ class Bunsetsu(object):
     def __init__(self, spec, bnst_id=0, newstyle=False):
         self._mrph_list = MList()
         self._tag_list = TList()
-        self.midasi = ''.join([mrph.midasi for mrph in self._mrph_list])
         self.parent_id = -1
         self.parent = None
         self.children = []
