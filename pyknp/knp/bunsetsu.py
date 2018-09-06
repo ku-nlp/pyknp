@@ -21,7 +21,10 @@ class Bunsetsu(object):
         parent (Bunsetsu): 親の文節オブジェクト
         parent_id (int): 親の文節ID
         children (list): 子の文節オブジェクトのリスト
-        repname (str): 正規化代表表記
+        repname (str): 正規化代表表記 (normalized_repnameに同じ)
+        normalized_repname (str): 正規化代表表記
+        head_repname (str): 主辞代表表記
+        head_prime_repname (str): 主辞’代表表記
         fstring (str): feature情報
     """
 
@@ -56,9 +59,21 @@ class Bunsetsu(object):
         # Extract 正規化代表表記
         if not newstyle:
             self.repname = ''
-            match = re.search(r"<正規化代表表記:([^\"\s]+?)>", self.fstring)
-            if match:
-                self.repname = match.group(1)
+            self.normalized_repname = ''
+            self.head_repname = ''
+            self.head_prime_repname = ''
+
+            normalized_repname = self.features.get(u"正規化代表表記")
+            if normalized_repname:
+                self.repname = normalized_repname
+                self.normalized_repname = normalized_repname
+            head_repname = self.features.get(u"主辞代表表記")
+            if head_repname:
+                self.head_repname = head_repname
+            head_prime_repname = self.features.get(u"主辞’代表表記")
+            if head_prime_repname:
+                self.head_prime_repname = head_prime_repname
+
 
     def push_mrph(self, mrph):
         """ 新しい形態素オブジェクトをセットする """
