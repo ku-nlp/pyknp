@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 from pyknp import Juman
-from pyknp import Socket, Subprocess  # TODO(john): move to separate file
+from pyknp import Socket, Subprocess  
 from pyknp import BList
 import os
 import sys
@@ -11,19 +11,22 @@ import six
 
 
 class KNP(object):
-    """
-    KNPを用いて構文解析を行う/KNPの解析結果を読み取るモジュール
+    """ KNPを用いて構文解析を行う/KNPの解析結果を読み取るモジュール
+
+    Args:
+        command (str): KNPコマンド
+        option (str): KNP解析オプション 
+                        (詳細解析結果を出力する-tabは必須。 
+                        省略・照応解析を行う -anaphora, 格解析を行わず構文解析のみを行う -dpnd など)
+        rcfile (str): KNP設定ファイルへのパス
+        jumancommand (str): JUMANコマンド
+        jumanrcfile (str): JUMAN設定ファイルへのパス
+        jumanpp (bool): JUMAN++を用いるかJUMANを用いるか
     """
 
     def __init__(self, command='knp', server=None, port=31000, timeout=60,
                  option='-tab', rcfile='', pattern=r'EOS',
                  jumancommand='jumanpp', jumanrcfile='', jumanpp=True):
-        """
-        Args:
-            command (str): KNPコマンド
-            option (str): KNPオプション (-tab, -ne など)
-            jumancommand (str): JUMANコマンド
-        """
         self.command = command
         self.server = server
         self.port = port
@@ -68,9 +71,9 @@ class KNP(object):
                 self.subprocess = Subprocess(command)
 
         if self.socket:
-            knp_lines = self.socket.query(juman_str, pattern=self.pattern)
+            knp_lines = self.socket.query(juman_str, pattern=r'^%s$'%(self.pattern))
         else:
-            knp_lines = self.subprocess.query(juman_str, pattern=self.pattern)
+            knp_lines = self.subprocess.query(juman_str, pattern=r'^%s$'%(self.pattern))
         return BList(knp_lines, self.pattern)
 
     def result(self, input_str):
@@ -108,6 +111,15 @@ class KNPTest(unittest.TestCase):
             ''.join([mrph.midasi for mrph in result[1].mrph_list()]), u'花が')
         self.assertEqual(
             ''.join([mrph.midasi for mrph in result[2].mrph_list()]), u'咲いた。')
+
+    def test_mrph2(self):
+        result = self.knp.parse(u"エネルギーを素敵にENEOS")
+        self.assertEqual(
+            ''.join([mrph.midasi for mrph in result[0].mrph_list()]), u'エネルギーを')
+        self.assertEqual(
+            ''.join([mrph.midasi for mrph in result[1].mrph_list()]), u'素敵に')
+        self.assertEqual(
+            ''.join([mrph.midasi for mrph in result[2].mrph_list()]), u'ENEOS')
 
 if __name__ == '__main__':
     unittest.main()

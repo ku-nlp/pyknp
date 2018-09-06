@@ -4,103 +4,34 @@ from __future__ import absolute_import
 from __future__ import print_function
 from pyknp import MList
 from pyknp import Morpheme
+from pyknp import Socket, Subprocess
 import os
 import sys
 import re
-import socket
-import subprocess
 import unittest
 import six
 
 
-class Socket(object):
-
-    def __init__(self, hostname, port, option=None):
-        try:
-            self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.sock.connect((hostname, port))
-        except:
-            raise
-        if option is not None:
-            self.sock.send(option)
-        data = ""
-        while "OK" not in data:
-            data = self.sock.recv(1024)
-
-    def __del__(self):
-        if self.sock:
-            self.sock.close()
-
-    def query(self, sentence, pattern):
-        assert(isinstance(sentence, six.text_type))
-        self.sock.sendall("%s\n" % sentence.encode('utf-8').strip())
-        data = self.sock.recv(1024)
-        recv = data
-        while not re.search(pattern, recv):
-            data = self.sock.recv(1024)
-            recv = "%s%s" % (recv, data)
-        return recv.strip().decode('utf-8')
-
-
-class Subprocess(object):
-
-    def __init__(self, command):
-        subproc_args = {'stdin': subprocess.PIPE, 'stdout': subprocess.PIPE,
-                'stderr': subprocess.STDOUT, 'cwd': '.',
-                'close_fds': sys.platform != "win32"}
-        try:
-            env = os.environ.copy()
-            self.process = subprocess.Popen('bash -c "%s"' % command, env=env,
-                                            shell=True, **subproc_args)
-        except OSError:
-            raise
-        (self.stdouterr, self.stdin) = (self.process.stdout, self.process.stdin)
-
-    def __del__(self):
-        self.process.stdin.close()
-        try:
-            self.process.kill()
-            self.process.wait()
-        except OSError:
-            pass
-        except TypeError:
-            pass
-        except AttributeError:
-            pass
-
-
-    def query(self, sentence, pattern):
-        assert(isinstance(sentence, six.text_type))
-        self.process.stdin.write(sentence.encode('utf-8')+six.b('\n'))
-        self.process.stdin.flush()
-        result = ""
-        while True:
-            line = self.stdouterr.readline()[:-1].decode('utf-8')
-            if re.search(pattern, line):
-                break
-            result = "%s%s\n" % (result, line)
-        return result
-        
 
 class Juman(object):
-    """
-    形態素解析器 JUMAN を Python から利用するためのモジュール
+    """形態素解析器 JUMAN を Python から利用するためのモジュール
+
+    Args:
+        command (str): JUMANの実行コマンド
+        option (str): JUMAN解析オプション
+        rcfile (str): JUMAN設定ファイルへのパス
+        jumanpp (bool): JUMAN++を用いるかJUMANを用いるか。commandを指定した場合は無視される。
     """
 
     def __init__(self, command='jumanpp', server=None, port=32000, timeout=30,
                  option='', rcfile='', ignorepattern='',
-                 pattern=r'EOS', jumanpp=True):
-        """
-        Args:
-            command (str): Jumanコマンド
-            option (str): Jumanオプション (-e2, -B など)
-        """
+                 pattern=r'^EOS$', jumanpp=True):
         if jumanpp or command != 'jumanpp':
             self.command = command
             self.option = option
         else:
             self.command = 'juman'
-            self.option = option+' -e2 -B' 
+            self.option = option+' -e2 -B'
         self.server = server
         self.port = port
         self.timeout = timeout
@@ -194,8 +125,33 @@ class JumanTest(unittest.TestCase):
         result = self.jumanpp.analysis(test_str)
         self.assertEqual(len(result), 3)
         self.assertEqual((result[1].bunrui == u'空白'), True) 
-        self.assertEqual(''.join(mrph.midasi for mrph in result), u"半角\ スペース")
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(u" ", u"\ "))
         self.assertGreaterEqual(len(result.spec().split("\n")), 3)
+
+    def test_eos(self):
+        test_str = u"エネルギーを素敵にENEOS"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
+
+    def test_eos2(self):
+        test_str = u"Canon EOS 80D買った"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(u" ", u"\ "))
+
+    def test_dquo(self):
+        test_str = u"\"最高\"の気分"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
+
+    def test_escape(self):
+        test_str = u"&lt;tag&gt;\\エス\'ケープ"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
+
+    def test_cr(self):
+        test_str = u"これは\rどう"
+        result = self.jumanpp.analysis(test_str)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
 
     # JUMAN 
     def test_normal_juman(self):
@@ -210,8 +166,9 @@ class JumanTest(unittest.TestCase):
         result = self.juman.analysis(test_str)
         self.assertEqual(len(result), 4) # 半|角|\ |スペース
         self.assertEqual((result[2].bunrui == u'空白'), True) 
-        self.assertEqual(''.join(mrph.midasi for mrph in result), u"半角\ スペース")
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(u" ", u"\ "))
         self.assertGreaterEqual(len(result.spec().split("\n")), 4)
+
 
 if __name__ == '__main__':
     unittest.main()

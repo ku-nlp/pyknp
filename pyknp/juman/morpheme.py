@@ -26,8 +26,8 @@ class Morpheme(object):
         katuyou2 (str): 活用形
         katuyou2_id (int): 活用形ID
         imis (str): 意味情報
-        fstring (str): 代表表記
-        repname (str): その他の素性情報
+        fstring (str): 素性情報
+        repname (str): 代表表記
     """
 
     def __init__(self, spec, mrph_id=None, newstyle=False):
@@ -84,6 +84,8 @@ class Morpheme(object):
         parts = []
         part = ''
         inside_quotes = False
+        if spec.startswith(u' '):
+            spec = '\\%s' % spec
         if(spec.startswith(u'\  \  \  特殊 1 空白 6 * 0 * 0')):
             parts = [u'\ ',u'\ ',u'\ ',u'特殊',u'1',u'空白','6',u'*',u'0',u'*',u'0',u'NIL']
         else:
@@ -93,8 +95,11 @@ class Morpheme(object):
                         inside_quotes = True
                     else:
                         inside_quotes = False
-                if char == u' ' and not inside_quotes:
-                    if part.startswith(u'"') and part.endswith(u'"'):
+                # If "\"" proceeds " ", it would be not inside_quotes, but "\"".
+                if inside_quotes and char == u' ' and part == u'"':
+                    inside_quotes = False
+                if part != "" and char == u' ' and not inside_quotes:
+                    if part.startswith(u'"') and part.endswith(u'"') and len(part) > 1:
                         parts.append(part[1:-1])
                     else:
                         parts.append(part)

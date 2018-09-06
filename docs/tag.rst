@@ -26,6 +26,13 @@ PAS module
     :undoc-members:
     :show-inheritance:
 
+.. module:: pyknp.knp.pas
+.. autoclass:: Argument
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 Feature module
 ----------------------------------------
 .. module:: pyknp.knp.features

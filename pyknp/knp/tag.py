@@ -15,17 +15,24 @@ class Tag(object):
 
     Attributes:
         tag_id (int): 基本句ID
+        midasi (str): 見出し
         parent (Tag): 親の基本句オブジェクト
         parent_id (int): 親の基本句ID
         children (list): 子の基本句オブジェクトのリスト
         dpndtype (str): 係り受けタイプ
         fstring (str): feature情報
+        repname (str): 正規化代表表記 (normalized_repnameに同じ)
+        normalized_repname (str): 正規化代表表記
+        head_repname (str): 主辞代表表記
+        pred_repname (str): 用言代表表記
+        disambiguated_pred_repname (str): 標準用言代表表記
         features (Features): 基本句のfeatureを表すFeatureオブジェクト
         pas (Pas): 基本句が述語の場合は項の情報(Pasオブジェクト), そうでない場合None
     """
 
     def __init__(self, spec, tag_id=0, newstyle=False):
         self._mrph_list = MList()
+        self.midasi = ''.join([mrph.midasi for mrph in self._mrph_list])
         self.parent_id = -1
         self.parent = None
         self.children = []
@@ -58,11 +65,27 @@ class Tag(object):
         # Extract 正規化代表表記
         if not newstyle:
             self.repname = ''
+            self.normalized_repname = ''
+            self.head_repname = ''
+            self.pred_repname = ''
+            self.disambiguated_pred_repname = ''
+
             self.features = Features(self.fstring)
             self.features._tag = self
-            rep = self.features.get(u"正規化代表表記")
-            if rep is not None:
-                self.repname = rep
+
+            normalized_repname = self.features.get(u"正規化代表表記")
+            if normalized_repname is not None:
+                self.repname = normalized_repname
+                self.normalized_repname = normalized_repname
+            head_repname = self.features.get(u"主辞代表表記")
+            if head_repname is not None:
+                self.head_repname = head_repname
+            pred_repname = self.features.get(u"用言代表表記")
+            if pred_repname is not None:
+                self.pred_repname = pred_repname
+            disambiguated_pred_repname = self.features.get(u"標準用言代表表記")
+            if disambiguated_pred_repname is not None:
+                self.disambiguated_pred_repname = disambiguated_pred_repname
 
     def push_mrph(self, mrph):
         self._mrph_list.push_mrph(mrph)
@@ -91,7 +114,8 @@ class Tag(object):
         Returns:
             str: 基本句の見出し
         """
-        return ''.join([mrph.midasi for mrph in self.mrph_list()])
+        return self.midasi
+
 
 
 class TagTest(unittest.TestCase):

@@ -5,6 +5,7 @@
     - [John Richardson](john@nlp.ist.i.kyoto-u.ac.jp)
     - [Tomohide Shibata](shibata@i.kyoto-u.ac.jp)
     - [Yuta Hayashibe](yuta-h@i.kyoto-u.ac.jp)
+    - [Tomohiro Sakaguchi](sakaguchi@nlp.ist.i.kyoto-u.ac.jp)
 
 ## INSTALLATION
 
