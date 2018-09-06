@@ -5,6 +5,7 @@ from pyknp import Morpheme
 from pyknp import MList
 from pyknp import Tag
 from pyknp import TList
+from pyknp import Features
 import re
 import sys
 import unittest
@@ -17,15 +18,21 @@ class Bunsetsu(object):
 
     Attributes:
         bnst_id (int): 文節ID
+        midasi (str): 見出し
         parent (Bunsetsu): 親の文節オブジェクト
         parent_id (int): 親の文節ID
         children (list): 子の文節オブジェクトのリスト
+        repname (str): 正規化代表表記 (normalized_repnameに同じ)
+        normalized_repname (str): 正規化代表表記
+        head_repname (str): 主辞代表表記
+        head_prime_repname (str): 主辞’代表表記
         fstring (str): feature情報
     """
 
     def __init__(self, spec, bnst_id=0, newstyle=False):
         self._mrph_list = MList()
         self._tag_list = TList()
+        self.midasi = ''.join([mrph.midasi for mrph in self._mrph_list])
         self.parent_id = -1
         self.parent = None
         self.children = []
@@ -49,13 +56,26 @@ class Bunsetsu(object):
             self.fstring = match.group(3).strip()
         else:
             raise Exception("Illegal bunsetsu spec: %s" % spec)
+        self.features = Features(self.fstring)
 
         # Extract 正規化代表表記
         if not newstyle:
             self.repname = ''
-            match = re.search(r"<正規化代表表記:([^\"\s]+?)>", self.fstring)
-            if match:
-                self.repname = match.group(1)
+            self.normalized_repname = ''
+            self.head_repname = ''
+            self.head_prime_repname = ''
+
+            normalized_repname = self.features.get(u"正規化代表表記")
+            if normalized_repname:
+                self.repname = normalized_repname
+                self.normalized_repname = normalized_repname
+            head_repname = self.features.get(u"主辞代表表記")
+            if head_repname:
+                self.head_repname = head_repname
+            head_prime_repname = self.features.get(u"主辞’代表表記")
+            if head_prime_repname:
+                self.head_prime_repname = head_prime_repname
+
 
     def push_mrph(self, mrph):
         """ 新しい形態素オブジェクトをセットする """
@@ -94,6 +114,36 @@ class Bunsetsu(object):
             self._pstring = string
         else:
             return self._pstring
+
+    def get_normalized_repname(self):
+        """ 正規化代表表記を返す
+        
+        Returns:
+            str: 正規化代表表記
+        """
+        return self.repname
+
+    def get_head_repname(self):
+        """ 主辞代表表記を返す
+        
+        Returns:
+            str: 主辞代表表記 or ""
+        """
+        head_repname = self.features.get(u"主辞代表表記")
+        if head_repname:
+            return head_repname
+        return ""
+
+    def get_head_prime_repname(self):
+        """ 主辞’代表表記を返す
+        
+        Returns:
+            str: 主辞’代表表記 or ""
+        """
+        head_prime_repname = self.features.get(u"主辞’代表表記")
+        if head_prime_repname:
+            return head_prime_repname
+        return ""
 
 
 class BunsetsuTest(unittest.TestCase):
