@@ -33,7 +33,6 @@ class Bunsetsu(object):
         self.children = []
         self.dpndtype = ''
         self.fstring = ''
-        self.features = Features(self.fstring)
         self._pstring = ''
         self.bnst_id = bnst_id
         spec = spec.strip()
@@ -52,6 +51,7 @@ class Bunsetsu(object):
             self.fstring = match.group(3).strip()
         else:
             raise Exception("Illegal bunsetsu spec: %s" % spec)
+        self.features = Features(self.fstring)
 
         # Extract 正規化代表表記
         if not newstyle:
@@ -107,7 +107,7 @@ class Bunsetsu(object):
         return self.repname
 
     def get_head_repname(self):
-        """ 基本句が用言の場合、主辞代表表記を返す
+        """ 主辞代表表記を返す
         
         Returns:
             str: 主辞代表表記 or ""
@@ -118,7 +118,7 @@ class Bunsetsu(object):
         return ""
 
     def get_head_prime_repname(self):
-        """ 基本句が用言の場合、主辞’代表表記を返す
+        """ 主辞’代表表記を返す
         
         Returns:
             str: 主辞’代表表記 or ""
