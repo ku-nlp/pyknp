@@ -21,7 +21,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'pyknp'
-copyright = '2018, Author'
+copyright = '2018, Kurohashi-Kawahara Lab, Kyoto University'
 author = 'Kurohashi-Kawahara Lab'
 
 # The short X.Y version

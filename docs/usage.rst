@@ -124,13 +124,13 @@ Pas, Argument クラスの詳細は下記ドキュメントの `Pas module` の�
             print('述語: %s' % ''.join(mrph.midasi for mrph in tag.mrph_list()))
             for case, args in tag.pas.arguments.items(): # case: str, args: list of Argument class
                 for arg in args: # arg: Argument class
-                    print('\t格: %s,  項: %s' % (case, arg.midasi))
+                    print('\t格: %s,  項: %s  (項の基本句ID: %d)' % (case, arg.midasi, arg.tid))
 
 .. code-block:: none
 
     % python3 get_pas.py 
     述語: 泳いでいる
-        格: ガ,  項: 少女
+        格: ガ,  項: 少女  (項の基本句ID: 3)
     述語: 見た。
-        格: ヲ,  項: 少女
-        格: デ,  項: 鏡
+        格: ヲ,  項: 少女  (項の基本句ID: 3)
+        格: デ,  項: 鏡  (項の基本句ID: 1)
