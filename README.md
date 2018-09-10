@@ -1,4 +1,4 @@
-# pyknp: Python Module for KNP/JUMAN++
+# pyknp: Python Module for JUMAN++/KNP
 
 形態素解析器JUMAN++(JUMAN)と構文解析器KNPのPythonバインディング (Python2系と3系の両方に対応)。
 
