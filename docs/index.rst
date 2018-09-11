@@ -30,7 +30,15 @@ Install pyknp
 
 .. code-block:: none
 
-   python setup.py install [--prefix=path]
+    % pip install pyknp
+
+or
+
+.. code-block:: none
+
+    % git clone https://github.com/ku-nlp/pyknp
+    % cd pyknp
+    % python setup.py install [--prefix=path]
 
 
 
