@@ -11,7 +11,15 @@
 
 ## Installation
 ```
-python setup.py install [--prefix=path]
+% pip install pyknp
+```
+
+or 
+
+```
+% git clone https://github.com/ku-nlp/pyknp
+% cd pyknp
+% python setup.py install [--prefix=path]
 ```
 
 ## Documents
