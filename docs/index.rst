@@ -150,7 +150,7 @@ pyknpを用いた解析プログラム
 
     --- example_knp.py ---
     from pyknp import KNP
-    knp = KNP()
+    knp = KNP()     # Default is JUMAN++. If you use JUMAN, use KNP(jumanpp=False)
     result = knp.parse("下鴨神社の参道は暗かった。")
 
     print("文節")
