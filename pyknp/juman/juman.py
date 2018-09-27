@@ -11,6 +11,7 @@ import sys
 import re
 import unittest
 import six
+import distutils.spawn
 
 
 
@@ -44,6 +45,8 @@ class Juman(object):
         self.subprocess = None
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
             raise Exception("Can't read rcfile (%s)!" % self.rcfile)
+        if distutils.spawn.find_executable(command) is None:
+            raise Exception("Can't find JUMAN command: %s" % command)
 
     def juman_lines(self, input_str):
         """ 入力文字列に対して形態素解析を行い、そのJuman出力結果を返す

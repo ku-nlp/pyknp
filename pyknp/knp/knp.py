@@ -9,6 +9,7 @@ import os
 import sys
 import unittest
 import six
+import distutils.spawn
 
 
 class KNP(object):
@@ -42,6 +43,8 @@ class KNP(object):
 
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
             raise Exception("Can't read rcfile (%s)!" % self.rcfile)
+        if distutils.spawn.find_executable(command) is None:
+            raise Exception("Can't find KNP command: %s" % command)
 
         self.juman = Juman(command=jumancommand, rcfile=jumanrcfile, jumanpp=self.jumanpp)
 
