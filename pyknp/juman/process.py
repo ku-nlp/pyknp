@@ -67,7 +67,7 @@ class Subprocess(object):
         self.process.stdin.flush()
         result = ""
         while True:
-            line = self.stdouterr.readline()[:-1].decode('utf-8')
+            line = self.stdouterr.readline().rstrip().decode('utf-8')
             if re.search(pattern, line):
                 break
             result = "%s%s\n" % (result, line)
