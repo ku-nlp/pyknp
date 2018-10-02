@@ -43,8 +43,8 @@ class KNP(object):
 
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
             raise Exception("Can't read rcfile (%s)!" % self.rcfile)
-        if distutils.spawn.find_executable(command) is None:
-            raise Exception("Can't find KNP command: %s" % command)
+        if distutils.spawn.find_executable(self.command) is None:
+            raise Exception("Can't find KNP command: %s" % self.command)
 
         self.juman = Juman(command=jumancommand, rcfile=jumanrcfile, jumanpp=self.jumanpp)
 
