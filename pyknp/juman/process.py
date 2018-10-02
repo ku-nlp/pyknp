@@ -42,8 +42,7 @@ class Subprocess(object):
                 'close_fds': sys.platform != "win32"}
         try:
             env = os.environ.copy()
-            self.process = subprocess.Popen('bash -c "%s"' % command, env=env,
-                                            shell=True, **subproc_args)
+            self.process = subprocess.Popen(command, env=env, **subproc_args)
         except OSError:
             raise
         (self.stdouterr, self.stdin) = (self.process.stdout, self.process.stdin)

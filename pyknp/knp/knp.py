@@ -34,7 +34,7 @@ class KNP(object):
         self.server = server
         self.port = port
         self.timeout = timeout
-        self.option = option
+        self.option = option.split()
         self.rcfile = rcfile
         self.pattern = pattern
         self.socket = None
@@ -70,9 +70,9 @@ class KNP(object):
                 self.socket = Socket(
                     self.server, self.port, "RUN -tab -normal\n")
             else:
-                command = "%s %s" % (self.command, self.option)
+                command = [self.command] + self.option
                 if self.rcfile:
-                    command += " -r %s" % self.rcfile
+                    command.extend(['-r', self.rcfile])
                 self.subprocess = Subprocess(command)
 
         if self.socket:
