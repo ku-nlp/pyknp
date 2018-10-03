@@ -31,7 +31,7 @@ class Juman(object):
                  pattern=r'^EOS$', jumanpp=True):
         if jumanpp or command != 'jumanpp':
             self.command = command
-            self.option = option
+            self.option = option.split()
         else:
             self.command = 'juman'
             self.option = option.split() + ['-e2', '-B']
