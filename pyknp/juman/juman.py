@@ -34,7 +34,7 @@ class Juman(object):
             self.option = option
         else:
             self.command = 'juman'
-            self.option = option+' -e2 -B'
+            self.option = option.split() + ['-e2', '-B']
         self.server = server
         self.port = port
         self.timeout = timeout
@@ -45,8 +45,8 @@ class Juman(object):
         self.subprocess = None
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
             raise Exception("Can't read rcfile (%s)!" % self.rcfile)
-        if distutils.spawn.find_executable(command) is None:
-            raise Exception("Can't find JUMAN command: %s" % command)
+        if distutils.spawn.find_executable(self.command) is None:
+            raise Exception("Can't find JUMAN command: %s" % self.command)
 
     def juman_lines(self, input_str):
         """ 入力文字列に対して形態素解析を行い、そのJuman出力結果を返す
@@ -64,9 +64,9 @@ class Juman(object):
             if self.server is not None:
                 self.socket = Socket(self.server, self.port, "RUN -e2\n")
             else:
-                command = "%s %s" % (self.command, self.option)
+                command = [self.command] + self.option
                 if 'jumanpp' not in self.command and self.rcfile:
-                    command += " -r %s" % self.rcfile
+                    command.extend(['-r', self.rcfile])
                 self.subprocess = Subprocess(command)
         if self.socket:
             return self.socket.query(input_str, pattern=self.pattern)

@@ -42,8 +42,7 @@ class Subprocess(object):
                 'close_fds': sys.platform != "win32"}
         try:
             env = os.environ.copy()
-            self.process = subprocess.Popen('bash -c "%s"' % command, env=env,
-                                            shell=True, **subproc_args)
+            self.process = subprocess.Popen(command, env=env, **subproc_args)
         except OSError:
             raise
         (self.stdouterr, self.stdin) = (self.process.stdout, self.process.stdin)
@@ -68,7 +67,7 @@ class Subprocess(object):
         self.process.stdin.flush()
         result = ""
         while True:
-            line = self.stdouterr.readline()[:-1].decode('utf-8')
+            line = self.stdouterr.readline().rstrip().decode('utf-8')
             if re.search(pattern, line):
                 break
             result = "%s%s\n" % (result, line)
