@@ -59,17 +59,31 @@ class Pas(object):
             
         self.tid = tid
         self.tag_list = result.tag_list()
+        self.eid2tid = {}
+        self.tid2sdist = {}
+        self.sid = result.sid
+        tag_predicate = self.tag_list[self.tid]
+        if "項構造" in tag_predicate.features:
+            # (eid, tid, sdist) の対を記録し、dictに保持(eid2tid, tid2sdist)
+            for tag in self.tag_list:
+                if 'EID' in tag.features:
+                    eid = int(tag.features['EID'])
+                    self.eid2tid[eid] = tag.tag_id
+            # (tid, sdist) を記録するため、"格解析結果"の値をパース
+            case_analysis = self.tag_list[self.tid].features.get("格解析結果")
+            for items in self.__parse_case_analysis_items(case_analysis):
+                (mycase, caseflag, midasi, tid, sdist, sid) = items
+                self.tid2sdist[tid] = sdist
 
-        pas_analysis = self.tag_list[self.tid].features.get("述語項構造") # -anaphoraの場合
-        if pas_analysis is not None:
-            self.__parse_case_analysis(pas_analysis, pasFlag=True)
-
-        case_analysis = self.tag_list[self.tid].features.get("格解析結果")
-        if(case_analysis is None):
-            self.valid = False
-            return
-        self.__parse_case_analysis(case_analysis)
-        return
+            pas_analysis = self.tag_list[self.tid].features.get("項構造") # -anaphoraの場合
+            if pas_analysis is not None:
+                self.__parse_case_analysis(pas_analysis, pasFlag=True)
+        else:
+            case_analysis = self.tag_list[self.tid].features.get("格解析結果")
+            if(case_analysis is None):
+                self.valid = False
+                return
+            self.__parse_case_analysis(case_analysis)
     
     def is_valid(self):
         return self.valid
@@ -87,39 +101,53 @@ class Pas(object):
     
     def get_orig_result(self):
         return self.tag_list[self.tid].features.get("格解析結果")
-     
-    def __parse_case_analysis(self, analysis_result, pasFlag=False):
+
+    def __anaphora_analysis_format(self, items):
+        mycase = items[0]
+        caseflag = items[1]
+        midasi = items[2]
+        eid = int(items[3])
+        tid = self.eid2tid[eid]
+        sdist = self.tid2sdist[tid] if tid in self.tid2sdist else None
+        sid = self.sid
+        return (mycase, caseflag, midasi, eid, tid, sdist, sid)
+
+    def __case_analysis_format(self, items):
+        mycase = items[0]
+        caseflag = items[1]
+        midasi = items[2]
+        tid = int(items[3])
+        sdist = int(items[4])
+        sid = items[5]
+        return (mycase, caseflag, midasi, tid, sdist, sid)
+
+    def __parse_case_analysis_items(self, analysis_result, pasFlag=False):
         assert isinstance(analysis_result, six.text_type)
         c0 = analysis_result.find(':')
         c1 = analysis_result.find(':', c0 + 1)
         self.cfid = analysis_result[:c0] + ":" + analysis_result[c0 + 1:c1]
-        
+
         if analysis_result.count(":") < 2:  # For copula
             self.valid = False
             return
-        
+
         for k in analysis_result[c1 + 1:].split(';'):
             items = k.split("/")
             caseflag = items[1]
             if caseflag == "U" or caseflag == "-":
                 continue
-            
-            if pasFlag: # anaphora
-                mycase = items[0]
-                midasi = items[2]
-                sdist = int(items[3])
-                tid = int(items[4])
-                eid = int(items[5])
-                arg = Argument(sdist=sdist, tid=tid, eid=eid, midasi=midasi, flag=caseflag)
-                self.arguments[mycase].append(arg)
+
+            if pasFlag:
+                yield self.__anaphora_analysis_format(items)
             else:
-                mycase = items[0]
-                midasi = items[2]
-                tid = int(items[3])
-                sdist = int(items[4])
-                sid = items[5]
-               
+                yield self.__case_analysis_format(items)
+
+    def __parse_case_analysis(self, analysis_result, pasFlag=False):
+        for items in self.__parse_case_analysis_items(analysis_result, pasFlag):
+            if pasFlag:
+                (mycase, caseflag, midasi, eid, tid, sdist, sid) = items
+                arg = Argument(sid=sid, tid=tid, eid=eid, midasi=midasi, flag=caseflag, sdist=sdist)
+            else:
+                (mycase, caseflag, midasi, tid, sdist, sid) = items
                 arg = Argument(sid=sid, tid=tid, midasi=midasi, flag=caseflag, sdist=sdist)
-                self.arguments[mycase].append(arg)
-
-
+            self.arguments[mycase].append(arg)
