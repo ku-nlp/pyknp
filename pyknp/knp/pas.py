@@ -107,9 +107,17 @@ class Pas(object):
         caseflag = items[1]
         midasi = items[2]
         eid = int(items[3])
-        tid = self.eid2tid[eid]
-        sdist = self.tid2sdist[tid] if tid in self.tid2sdist else None
-        sid = self.sid
+        # 文内にエンティティがある場合
+        if eid in self.eid2tid:
+            tid = self.eid2tid[eid]
+            sdist = self.tid2sdist[tid] if tid in self.tid2sdist else None
+            sid = self.sid
+        else:
+            # FIXME: 文外にある場合、エンティティが初出の文(sid)を辿る必要がある
+            tid = -1
+            sid = -1
+            sdist = None
+
         return (mycase, caseflag, midasi, eid, tid, sdist, sid)
 
     def __case_analysis_format(self, items):
