@@ -11,9 +11,9 @@ class Morpheme(object):
     """ 形態素の各種情報を保持するオブジェクト．
 
     Args:
-        spec (str): KNP出力
+        spec (str): JUMAN/KNP出力
         mrph_id (int): 形態素ID
-        newstyle (bool): KNPフォーマットの種類 (公開版KNPの場合はFalse)
+        lattice_format (bool): Juman/KNP出力形式がlattice formatか否か
     
     Attributes:
         mrph_id (int): 形態素ID 
@@ -36,10 +36,10 @@ class Morpheme(object):
         repname (str): 代表表記
     """
 
-    def __init__(self, spec, mrph_id=None, newstyle=False):
+    def __init__(self, spec, mrph_id=None, lattice_format=False):
         assert isinstance(spec, six.text_type)
         assert mrph_id is None or isinstance(mrph_id, int)
-        if newstyle and mrph_id is None:
+        if lattice_format and mrph_id is None:
             raise KeyError
         self.mrph_index = mrph_id
         self.mrph_id = mrph_id
@@ -60,7 +60,7 @@ class Morpheme(object):
         self.imis = ''
         self.fstring = ''
         self.repname = ''
-        if newstyle:
+        if lattice_format:
             self._parse_new_spec(spec.strip("\n"))
         else:
             self._parse_spec(spec.strip("\n"))
@@ -284,7 +284,7 @@ class MorphemeTest2(unittest.TestCase):
     def test_simple(self):
         spec = """-	36	2	2	4	貰った	貰う/もらう	もらった	もらう	動詞	2	*	0	子音動詞ワ行	12	タ形	10	付属動詞候補（タ系）\n"""
 
-        mrph = Morpheme(spec, 36, newstyle=True)
+        mrph = Morpheme(spec, 36, lattice_format=True)
         self.assertEqual(mrph.midasi, '貰った')
         self.assertEqual(mrph.yomi, 'もらった')
         self.assertEqual(mrph.genkei, 'もらう')
@@ -304,8 +304,8 @@ class MorphemeTest2(unittest.TestCase):
     def test_doukei(self):
         spec1 = """-	1	0	0	0	母	母/ぼ	ぼ	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:音|漢字\n"""
         spec2 = """-	2	0	0	0	母	母/はは	はは	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:訓|カテゴリ:人|漢字\n"""
-        m1 = Morpheme(spec1, 1, newstyle=True)
-        m2 = Morpheme(spec2, 1, newstyle=True)
+        m1 = Morpheme(spec1, 1, lattice_format=True)
+        m2 = Morpheme(spec2, 1, lattice_format=True)
         m1.push_doukei(m2)
         self.assertEqual(m1.repnames(), "母/ぼ?母/はは")
 

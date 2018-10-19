@@ -72,33 +72,35 @@ class Juman(object):
             return self.socket.query(input_str, pattern=self.pattern)
         return self.subprocess.query(input_str, pattern=self.pattern)
 
-    def juman(self, input_str):
+    def juman(self, input_str, lattice_format=False):
         """ analysis関数と同じ """
         assert(isinstance(input_str, six.text_type))
-        result = MList(self.juman_lines(input_str))
+        result = MList(self.juman_lines(input_str), lattice_format)
         return result
 
-    def analysis(self, input_str):
+    def analysis(self, input_str, lattice_format=False):
         """ 入力文字列に対して形態素解析し、その結果を MList オブジェクトとして返す
         
         Args:
             input_str (str): 文を表す文字列
+            lattice_format (bool): Juman出力形式がlattice formatか否か
 
         Returns:
             MList: 形態素列オブジェクト
         """
-        return self.juman(input_str)
+        return self.juman(input_str, lattice_format)
 
-    def result(self, input_str):
+    def result(self, input_str, lattice_format=False):
         """ Juman出力結果に対して、その結果を MList オブジェクトとして返す
         
         Args:
             input_str (str): Juman出力結果
+            lattice_format (bool): Juman出力形式がlattice formatか否か
 
         Returns:
             MList: 形態素列オブジェクト
         """
-        return MList(input_str)
+        return MList(input_str, lattice_format)
 
 
 class JumanTest(unittest.TestCase):

@@ -11,7 +11,7 @@ class MList(object):
     ある文に関する形態素列を保持するオブジェクト．
     """
 
-    def __init__(self, spec=""):
+    def __init__(self, spec="", lattice_format=False):
         self._mrph = []
         self._readonly = False
         self.comment = ""
@@ -23,10 +23,10 @@ class MList(object):
                 elif line.startswith('#'):
                     self.comment += line
                 elif line.startswith('@') and not line.startswith('@ @'):
-                    self._mrph[-1].push_doukei(Morpheme(line[2:], mid))
+                    self._mrph[-1].push_doukei(Morpheme(line[2:], mid, lattice_format))
                     mid += 1
                 else:
-                    self.push_mrph(Morpheme(line, mid))
+                    self.push_mrph(Morpheme(line, mid, lattice_format))
                     mid += 1
 
     def push_mrph(self, mrph):

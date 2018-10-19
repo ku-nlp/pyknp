@@ -17,7 +17,7 @@ class Tag(object):
     Args:
         spec (str): KNP出力
         tag_id (int): 基本句ID
-        newstyle (bool): KNPフォーマットの種類 (公開版KNPの場合はFalse)
+        lattice_format (bool): KNP出力形式がlattice formatか否か
 
     Attributes:
         tag_id (int): 基本句ID
@@ -36,7 +36,7 @@ class Tag(object):
         pas (Pas): 基本句が述語の場合は項の情報(Pasオブジェクト), そうでない場合None
     """
 
-    def __init__(self, spec, tag_id=0, newstyle=False):
+    def __init__(self, spec, tag_id=0, lattice_format=False):
         self._mrph_list = MList()
         self.midasi = ''
         self.parent_id = -1
@@ -52,7 +52,7 @@ class Tag(object):
         spec = spec.strip()
         if spec == '+':
             pass
-        elif newstyle:
+        elif lattice_format:
             items = spec.split("\t")
             self.parent_id = int(items[2])
             self.dpndtype = items[3]
@@ -69,7 +69,7 @@ class Tag(object):
             raise Exception("Illegal tag spec: %s" % spec)
 
         # Extract 正規化代表表記
-        if not newstyle:
+        if not lattice_format:
             self.repname = ''
             self.normalized_repname = ''
             self.head_repname = ''

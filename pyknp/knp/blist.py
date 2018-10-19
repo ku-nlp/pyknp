@@ -22,33 +22,33 @@ class BList(DrawTree):
     Args:
         spec (str): KNP出力
         pattern (str): KNP出力の終端記号
-        newstyle (bool): KNPフォーマットの種類 (公開版KNPの場合はFalse)
+        lattice_format (bool): KNP出力形式がlattice formatか否か
 
     Attributes:
         comment (str): KNP出力における、#から始まる行に書かれた文字列
         sid (str): 文ID (KNP出力中のS-ID)
     """
 
-    def __init__(self, spec='', pattern='EOS', newstyle=False):
+    def __init__(self, spec='', pattern='EOS', lattice_format=False):
         self._bnst = []
         self._readonly = False
         self.pattern = pattern
-        self.newstyle = newstyle
+        self.lattice_format = lattice_format
         self.comment = ''
         self.sid = ''
         self._pinfos = []
         self.parse(spec)
         self._set_parent_child()
         self._set_positions()
-        self._setPAS(newstyle)
+        self._setPAS(lattice_format)
         # set midasi
         for i in range(len(self._bnst)):
             self._bnst[i].set_midasi()
 
-    def _setPAS(self, newstyle):
+    def _setPAS(self, lattice_format):
         """ 各基本句にPASを設定 """
         tag_list = self.tag_list()
-        if(newstyle):
+        if(lattice_format):
             for pinfo in self._pinfos:
                 pinfo = json.loads(pinfo)
 
@@ -99,7 +99,7 @@ class BList(DrawTree):
                 if match:
                     self.sid = match.group(1)
                 if 'KNP++' in string and 'output:KNP' not in string:
-                    self.newstyle = True
+                    self.lattice_format = True
             elif re.match(self.pattern, string):
                 break
             elif string.startswith(';;'):
@@ -108,11 +108,11 @@ class BList(DrawTree):
                 bnst = Bunsetsu(string, len(self._bnst))
                 self._bnst.append(bnst)
             elif string.startswith('+'):
-                if self.newstyle:
-                    bnst = Bunsetsu(string, len(self._bnst), self.newstyle)
+                if self.lattice_format:
+                    bnst = Bunsetsu(string, len(self._bnst), self.lattice_format)
                     self._bnst.append(bnst)
                 self._bnst[-1].push_tag(
-                    Tag(string, len(self.tag_list()), self.newstyle))
+                    Tag(string, len(self.tag_list()), self.lattice_format))
             elif string.startswith('!!'):
                 synnodes = SynNodes(string)
                 self._bnst[-1].tag_list().push_synnodes(synnodes)
@@ -122,7 +122,7 @@ class BList(DrawTree):
             elif string.startswith('EOS'):
                 pass
             else:
-                mrph = Morpheme(string, len(self.mrph_list()), self.newstyle)
+                mrph = Morpheme(string, len(self.mrph_list()), self.lattice_format)
                 if(len(self._bnst)==0):
                     bnst = Bunsetsu("*", len(self._bnst))
                     self._bnst.append(bnst)
@@ -325,7 +325,7 @@ class BList2Test(unittest.TestCase):
 EOS"""
 
     def test(self):
-        blist = BList(self.result, newstyle=True)
+        blist = BList(self.result, lattice_format=True)
         self.assertEqual(len(blist), 4)
         self.assertEqual(len(blist.tag_list()), 4)
         self.assertEqual(len(blist.mrph_list()), 7)

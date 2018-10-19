@@ -19,7 +19,7 @@ class Bunsetsu(object):
     Args:
         spec (str): KNP出力のうち文節に該当する箇所の文字列
         bnst_id (int): 文節ID
-        newstyle (bool): KNPフォーマットの種類 (公開版KNPの場合はFalse)
+        lattice_format (bool): KNP出力形式がlattice formatか否か
 
     Attributes:
         bnst_id (int): 文節ID
@@ -34,7 +34,7 @@ class Bunsetsu(object):
         fstring (str): feature情報
     """
 
-    def __init__(self, spec, bnst_id=0, newstyle=False):
+    def __init__(self, spec, bnst_id=0, lattice_format=False):
         self._mrph_list = MList()
         self._tag_list = TList()
         self.midasi = ''
@@ -48,7 +48,7 @@ class Bunsetsu(object):
         spec = spec.strip()
         if spec == '*':
             pass
-        elif newstyle:
+        elif lattice_format:
             items = spec.split("\t")
             self.parent_id = int(items[2])
             self.dpndtype = items[3]
@@ -64,7 +64,7 @@ class Bunsetsu(object):
         self.features = Features(self.fstring)
 
         # Extract 正規化代表表記
-        if not newstyle:
+        if not lattice_format:
             self.repname = ''
             self.normalized_repname = ''
             self.head_repname = ''
