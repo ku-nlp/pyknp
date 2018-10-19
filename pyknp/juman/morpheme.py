@@ -66,25 +66,27 @@ class Morpheme(object):
             self._parse_spec(spec.strip("\n"))
     
     def _parse_new_spec(self, spec):
-        parts = spec.split("\t")
-        assert parts[0] == "-"
-        self.mrph_id = int(parts[1])
-        self.prev_mrph_id = [int(mid) for mid in parts[2].split(";")]
-        self.span = (int(parts[3]), int(parts[4]))
-        self.midasi = parts[5]
-        self.yomi = parts[7]
-        self.genkei = parts[8]
-        self.hinsi = parts[9]
-        self.hinsi_id = int(parts[10])
-        self.bunrui = parts[11]
-        self.bunrui_id = int(parts[12])
-        self.katuyou1 = parts[13]
-        self.katuyou1_id = int(parts[14])
-        self.katuyou2 = parts[15]
-        self.katuyou2_id = int(parts[16])
-        self.fstring = parts[17]
-        self.feature = self._parse_fstring(self.fstring)
-        self.repname = parts[6]
+        try: # FIXME KNPの場合と同様、EOSをきちんと判定する
+            parts = spec.split("\t")
+            self.mrph_id = int(parts[1])
+            self.prev_mrph_id = [int(mid) for mid in parts[2].split(";")]
+            self.span = (int(parts[3]), int(parts[4]))
+            self.midasi = parts[5]
+            self.yomi = parts[7]
+            self.genkei = parts[8]
+            self.hinsi = parts[9]
+            self.hinsi_id = int(parts[10])
+            self.bunrui = parts[11]
+            self.bunrui_id = int(parts[12])
+            self.katuyou1 = parts[13]
+            self.katuyou1_id = int(parts[14])
+            self.katuyou2 = parts[15]
+            self.katuyou2_id = int(parts[16])
+            self.fstring = parts[17]
+            self.feature = self._parse_fstring(self.fstring)
+            self.repname = parts[6]
+        except IndexError:
+            pass
 
     def _parse_spec(self, spec):
         parts = []
@@ -114,7 +116,7 @@ class Morpheme(object):
                     part += char
             parts.append(part)
 
-        try:
+        try: # FIXME KNPの場合と同様、EOSをきちんと判定する
             self.midasi = parts[0]
             self.yomi = parts[1]
             self.genkei = parts[2]
