@@ -34,6 +34,7 @@ class Morpheme(object):
         imis (str): 意味情報
         fstring (str): 素性情報
         repname (str): 代表表記
+        ranks (set[int]): ラティスでのランク
     """
 
     def __init__(self, spec, mrph_id=None, lattice_format=False):
@@ -60,6 +61,7 @@ class Morpheme(object):
         self.imis = ''
         self.fstring = ''
         self.repname = ''
+        self.ranks = {1}
         if lattice_format:
             self._parse_new_spec(spec.strip("\n"))
         else:
@@ -85,6 +87,9 @@ class Morpheme(object):
             self.fstring = parts[17]
             self.feature = self._parse_fstring(self.fstring)
             self.repname = parts[6]
+            ranks = self.feature.get('ランク', None)            
+            if ranks is not None:
+                self.ranks = set(int(x) for x in ranks[0].split(','))
         except IndexError:
             pass
 
@@ -310,6 +315,20 @@ class MorphemeTest2(unittest.TestCase):
         m2 = Morpheme(spec2, 1, lattice_format=True)
         m1.push_doukei(m2)
         self.assertEqual(m1.repnames(), "母/ぼ?母/はは")
+
+    def test_ranks(self):
+        spec1 = """-	1	0	0	0	母	母/ぼ	ぼ	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:音|漢字\n"""
+        spec2 = """-	2	0	0	0	母	母/はは	はは	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:訓|カテゴリ:人|漢字|ランク:1,2,3\n"""
+        m1 = Morpheme(spec1, 1, lattice_format=True)
+        m2 = Morpheme(spec2, 1, lattice_format=True)
+        self.assertEqual(1, len(m1.ranks))
+        self.assertIn(1, m1.ranks)
+        self.assertNotIn(2, m1.ranks)
+        self.assertEqual(3, len(m2.ranks))
+        self.assertIn(1, m2.ranks)
+        self.assertIn(2, m2.ranks)
+        self.assertIn(3, m2.ranks)
+        self.assertNotIn(4, m2.ranks)        
 
 
 if __name__ == '__main__':
