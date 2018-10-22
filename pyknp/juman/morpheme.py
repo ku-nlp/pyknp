@@ -87,9 +87,9 @@ class Morpheme(object):
             self.fstring = parts[17]
             self.feature = self._parse_fstring(self.fstring)
             self.repname = parts[6]
-            ranks = self.feature.get('ランク', None)            
+            ranks = self.feature.get('ランク', None)                 
             if ranks is not None:
-                self.ranks = set(int(x) for x in ranks[0].split(','))
+                self.ranks = set(int(x) for x in ranks)
         except IndexError:
             pass
 
@@ -318,7 +318,7 @@ class MorphemeTest2(unittest.TestCase):
 
     def test_ranks(self):
         spec1 = """-	1	0	0	0	母	母/ぼ	ぼ	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:音|漢字\n"""
-        spec2 = """-	2	0	0	0	母	母/はは	はは	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:訓|カテゴリ:人|漢字|ランク:1,2,3\n"""
+        spec2 = """-	2	0	0	0	母	母/はは	はは	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:訓|カテゴリ:人|漢字|ランク:1;2;3\n"""
         m1 = Morpheme(spec1, 1, lattice_format=True)
         m2 = Morpheme(spec2, 1, lattice_format=True)
         self.assertEqual(1, len(m1.ranks))
