@@ -7,18 +7,31 @@ import six
 from six import u
 
 
+class LATTICE_FORMAT(object):
+    """ JUMANのラティスオプション
+
+    Attributes:
+        JUMAN : 通常のJUMAN出力形式 (ラティスオプションなし)
+        TOP_ONE: ラティス出力形式から、TOP1のビームだけを読む
+        ALL: ラティス出力形式から、すべてのビームを読む 
+    """
+
+    JUMAN = 0 # default
+    TOP_ONE = 1
+    ALL = 2
+
+
 class Morpheme(object):
     """ 形態素の各種情報を保持するオブジェクト．
 
     Args:
         spec (str): JUMAN/KNP出力
         mrph_id (int): 形態素ID
-        lattice_format (bool): Juman/KNP出力形式がlattice formatか否か
+        lattice_format (LATTICE_FORMAT): Jumanのlattice出力形式
     
     Attributes:
         mrph_id (int): 形態素ID 
         mrph_index (int): mrph_idに同じ
-        span (tuple): 形態素の位置 (開始位置, 終了位置)
         doukei (list): 
         midasi (str): 見出し
         yomi (str): 読み
@@ -35,12 +48,13 @@ class Morpheme(object):
         fstring (str): 素性情報
         repname (str): 代表表記
         ranks (set[int]): ラティスでのランク
+        span (tuple): 形態素の位置 (開始位置, 終了位置), JUMAN出力形式がラティス形式の場合のみ
     """
 
-    def __init__(self, spec, mrph_id=None, lattice_format=False):
+    def __init__(self, spec, mrph_id=None, lattice_format=LATTICE_FORMAT.JUMAN):
         assert isinstance(spec, six.text_type)
         assert mrph_id is None or isinstance(mrph_id, int)
-        if lattice_format and mrph_id is None:
+        if lattice_format != LATTICE_FORMAT.JUMAN and mrph_id is None:
             raise KeyError
         self.mrph_index = mrph_id
         self.mrph_id = mrph_id
@@ -291,7 +305,7 @@ class MorphemeTest2(unittest.TestCase):
     def test_simple(self):
         spec = """-	36	2	2	4	貰った	貰う/もらう	もらった	もらう	動詞	2	*	0	子音動詞ワ行	12	タ形	10	付属動詞候補（タ系）\n"""
 
-        mrph = Morpheme(spec, 36, lattice_format=True)
+        mrph = Morpheme(spec, 36, lattice_format=LATTICE_FORMAT.ALL)
         self.assertEqual(mrph.midasi, '貰った')
         self.assertEqual(mrph.yomi, 'もらった')
         self.assertEqual(mrph.genkei, 'もらう')
@@ -311,16 +325,16 @@ class MorphemeTest2(unittest.TestCase):
     def test_doukei(self):
         spec1 = """-	1	0	0	0	母	母/ぼ	ぼ	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:音|漢字\n"""
         spec2 = """-	2	0	0	0	母	母/はは	はは	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:訓|カテゴリ:人|漢字\n"""
-        m1 = Morpheme(spec1, 1, lattice_format=True)
-        m2 = Morpheme(spec2, 1, lattice_format=True)
+        m1 = Morpheme(spec1, 1, lattice_format=LATTICE_FORMAT.ALL)
+        m2 = Morpheme(spec2, 1, lattice_format=LATTICE_FORMAT.ALL)
         m1.push_doukei(m2)
         self.assertEqual(m1.repnames(), "母/ぼ?母/はは")
 
     def test_ranks(self):
         spec1 = """-	1	0	0	0	母	母/ぼ	ぼ	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:音|漢字\n"""
         spec2 = """-	2	0	0	0	母	母/はは	はは	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:訓|カテゴリ:人|漢字|ランク:1;2;3\n"""
-        m1 = Morpheme(spec1, 1, lattice_format=True)
-        m2 = Morpheme(spec2, 1, lattice_format=True)
+        m1 = Morpheme(spec1, 1, lattice_format=LATTICE_FORMAT.ALL)
+        m2 = Morpheme(spec2, 1, lattice_format=LATTICE_FORMAT.ALL)
         self.assertEqual(1, len(m1.ranks))
         self.assertIn(1, m1.ranks)
         self.assertNotIn(2, m1.ranks)

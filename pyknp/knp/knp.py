@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from pyknp import Juman
+from pyknp import Juman, LATTICE_FORMAT
 from pyknp import Socket, Subprocess  
 from pyknp import BList
 import os
@@ -52,13 +52,13 @@ class KNP(object):
         """ parse関数と同じ """
         self.parse(sentence)
 
-    def parse(self, sentence, lattice_format=False):
+    def parse(self, sentence, lattice_format=LATTICE_FORMAT.JUMAN):
         """
         文字列を入力として構文解析を行い、文節列オブジェクトを返す
 
         Args:
             sentence (str): 文を表す文字列
-            lattice_format (bool): KNP出力形式がlattice formatか否か
+            lattice_format (LATTICE_FORMAT): Jumanのlattice出力形式
 
         Returns:
             BList: 文節列オブジェクト
@@ -82,13 +82,13 @@ class KNP(object):
             knp_lines = self.subprocess.query(juman_str, pattern=r'^%s$'%(self.pattern))
         return BList(knp_lines, self.pattern, lattice_format)
 
-    def result(self, input_str, lattice_format=False):
+    def result(self, input_str, lattice_format=LATTICE_FORMAT.JUMAN):
         """
         ある文に関するKNP解析結果を文節列オブジェクトに変換する
 
         Args:
             input_str (str): ある文に関するKNPの出力結果
-            lattice_format (bool): KNP出力形式がlattice formatか否か
+            lattice_format (LATTICE_FORMAT): Jumanのlattice出力形式
 
         Returns:
             BList: 文節列オブジェクト

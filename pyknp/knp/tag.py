@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 from pyknp import MList
-from pyknp import Morpheme
+from pyknp import Morpheme, LATTICE_FORMAT
 from pyknp import Features
 import re
 import sys
@@ -17,7 +17,7 @@ class Tag(object):
     Args:
         spec (str): KNP出力
         tag_id (int): 基本句ID
-        lattice_format (bool): KNP出力形式がlattice formatか否か
+        lattice_format (LATTICE_FORMAT): Jumanのlattice出力形式
 
     Attributes:
         tag_id (int): 基本句ID
@@ -36,7 +36,7 @@ class Tag(object):
         pas (Pas): 基本句が述語の場合は項の情報(Pasオブジェクト), そうでない場合None
     """
 
-    def __init__(self, spec, tag_id=0, lattice_format=False):
+    def __init__(self, spec, tag_id=0, lattice_format=LATTICE_FORMAT.JUMAN):
         self._mrph_list = MList()
         self.midasi = ''
         self.parent_id = -1

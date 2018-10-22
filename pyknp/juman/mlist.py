@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from pyknp import Morpheme
+from pyknp import Morpheme, LATTICE_FORMAT
 import unittest
 
 
@@ -11,7 +11,7 @@ class MList(object):
     ある文に関する形態素列を保持するオブジェクト．
     """
 
-    def __init__(self, spec="", lattice_format=False):
+    def __init__(self, spec="", lattice_format=LATTICE_FORMAT.JUMAN):
         self._mrph = []
         self._readonly = False
         self.comment = ""
@@ -26,7 +26,10 @@ class MList(object):
                     self._mrph[-1].push_doukei(Morpheme(line[2:], mid, lattice_format))
                     mid += 1
                 else:
-                    self.push_mrph(Morpheme(line, mid, lattice_format))
+                    mrph = Morpheme(line, mid, lattice_format)
+                    if lattice_format == LATTICE_FORMAT.TOP_ONE and 1 not in mrph.ranks:
+                        continue
+                    self.push_mrph(mrph)
                     mid += 1
 
     def push_mrph(self, mrph):

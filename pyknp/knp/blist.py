@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 from pyknp import Argument, Pas
 from pyknp import Bunsetsu
-from pyknp import Morpheme
+from pyknp import Morpheme, LATTICE_FORMAT
 from pyknp import Tag
 from pyknp import TList
 from pyknp import SynNodes, SynNode
@@ -22,14 +22,14 @@ class BList(DrawTree):
     Args:
         spec (str): KNP出力
         pattern (str): KNP出力の終端記号
-        lattice_format (bool): KNP出力形式がlattice formatか否か
+        lattice_format (LATTICE_FORMAT): Jumanのlattice出力形式
 
     Attributes:
         comment (str): KNP出力における、#から始まる行に書かれた文字列
         sid (str): 文ID (KNP出力中のS-ID)
     """
 
-    def __init__(self, spec='', pattern='EOS', lattice_format=False):
+    def __init__(self, spec='', pattern='EOS', lattice_format=LATTICE_FORMAT.JUMAN):
         self._bnst = []
         self._readonly = False
         self.pattern = pattern
@@ -99,7 +99,7 @@ class BList(DrawTree):
                 if match:
                     self.sid = match.group(1)
                 if 'KNP++' in string and 'output:KNP' not in string:
-                    self.lattice_format = True
+                    self.lattice_format = LATTICE_FORMAT.TOP_ONE # TODO
             elif re.match(self.pattern, string):
                 break
             elif string.startswith(';;'):
@@ -325,7 +325,7 @@ class BList2Test(unittest.TestCase):
 EOS"""
 
     def test(self):
-        blist = BList(self.result, lattice_format=True)
+        blist = BList(self.result, lattice_format=LATTICE_FORMAT.TOP_ONE)
         self.assertEqual(len(blist), 4)
         self.assertEqual(len(blist.tag_list()), 4)
         self.assertEqual(len(blist.mrph_list()), 7)

@@ -1,7 +1,7 @@
 #-*- encoding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from pyknp import Morpheme
+from pyknp import Morpheme, LATTICE_FORMAT
 from pyknp import MList
 from pyknp import Tag
 from pyknp import TList
@@ -19,7 +19,7 @@ class Bunsetsu(object):
     Args:
         spec (str): KNP出力のうち文節に該当する箇所の文字列
         bnst_id (int): 文節ID
-        lattice_format (bool): KNP出力形式がlattice formatか否か
+        lattice_format (LATTICE_FORMAT): Jumanのlattice出力形式
 
     Attributes:
         bnst_id (int): 文節ID
@@ -34,7 +34,7 @@ class Bunsetsu(object):
         fstring (str): feature情報
     """
 
-    def __init__(self, spec, bnst_id=0, lattice_format=False):
+    def __init__(self, spec, bnst_id=0, lattice_format=LATTICE_FORMAT.JUMAN):
         self._mrph_list = MList()
         self._tag_list = TList()
         self.midasi = ''
