@@ -30,6 +30,7 @@ class Tag(object):
         repname (str): 正規化代表表記 (normalized_repnameに同じ)
         normalized_repname (str): 正規化代表表記
         head_repname (str): 主辞代表表記
+        head_prime_repname (str): 主辞’代表表記
         pred_repname (str): 用言代表表記
         disambiguated_pred_repname (str): 標準用言代表表記
         features (Features): 基本句のfeatureを表すFeatureオブジェクト
@@ -73,6 +74,7 @@ class Tag(object):
             self.repname = ''
             self.normalized_repname = ''
             self.head_repname = ''
+            self.head_prime_repname = ''
             self.pred_repname = ''
             self.disambiguated_pred_repname = ''
 
@@ -86,6 +88,9 @@ class Tag(object):
             head_repname = self.features.get("主辞代表表記")
             if head_repname is not None:
                 self.head_repname = head_repname
+            head_prime_repname = self.features.get("主辞’代表表記")
+            if head_prime_repname:
+                self.head_prime_repname = head_prime_repname
             pred_repname = self.features.get("用言代表表記")
             if pred_repname is not None:
                 self.pred_repname = pred_repname
