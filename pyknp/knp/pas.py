@@ -98,15 +98,31 @@ class Pas(object):
     def is_valid(self):
         return self.valid
    
-    def get_arguments(self,case):
+    def get_arguments(self, case):
         """
         指定した格の各項ごとに代表表記の配列を返す
+
+        Usage:
+            result = knp.parse("研究者になる")
+            print(result.tag_list()[2].midasi)
+            >> なる
+            print(result.tag_list()[2].pas.get_arguments("ニ"))
+            >> [ArgRepname(repname='者/しゃ', tid_list=1)]
+
+        Args:
+            case (str): 格の文字列
+        
+        Returns:
+            list: 項の代表表記を格納したnamedtupleである ArgRepname のリスト
         """
         output = []
         for arg in self.arguments[case]:
             tid = arg.tid
-            rep = self.tag_list[tid].repname
-            output.append(ArgRepname("+".join(rep), tid)) 
+            if self.tag_list[tid].head_prime_repname:
+                rep = self.tag_list[tid].head_prime_repname 
+            else:
+                rep = self.tag_list[tid].repname
+            output.append(ArgRepname(rep, tid)) 
         return output
     
     def get_orig_result(self):
