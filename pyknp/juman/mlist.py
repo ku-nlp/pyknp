@@ -27,8 +27,12 @@ class MList(object):
                     mid += 1
                 else:
                     mrph = Morpheme(line, mid, juman_format)
-                    if juman_format == JUMAN_FORMAT.LATTICE_TOP_ONE and 1 not in mrph.ranks:
-                        continue
+                    if juman_format == JUMAN_FORMAT.LATTICE_TOP_ONE:
+                        if 1 not in mrph.ranks:
+                            continue
+                        elif self._mrph and self._mrph[-1].mrph_id == mrph.mrph_id:
+                            self._mrph[-1].push_doukei(mrph)
+                            continue
                     self.push_mrph(mrph)
                     mid += 1
 
