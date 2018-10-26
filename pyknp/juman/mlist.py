@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from pyknp import Morpheme, LATTICE_FORMAT
+from pyknp import Morpheme, JUMAN_FORMAT
 import unittest
 
 
@@ -11,7 +11,7 @@ class MList(object):
     ある文に関する形態素列を保持するオブジェクト．
     """
 
-    def __init__(self, spec="", lattice_format=LATTICE_FORMAT.JUMAN):
+    def __init__(self, spec="", juman_format=JUMAN_FORMAT.DEFAULT):
         self._mrph = []
         self._readonly = False
         self.comment = ""
@@ -23,11 +23,11 @@ class MList(object):
                 elif line.startswith('#'):
                     self.comment += line
                 elif line.startswith('@') and not line.startswith('@ @'):
-                    self._mrph[-1].push_doukei(Morpheme(line[2:], mid, lattice_format))
+                    self._mrph[-1].push_doukei(Morpheme(line[2:], mid, juman_format))
                     mid += 1
                 else:
-                    mrph = Morpheme(line, mid, lattice_format)
-                    if lattice_format == LATTICE_FORMAT.TOP_ONE and 1 not in mrph.ranks:
+                    mrph = Morpheme(line, mid, juman_format)
+                    if juman_format == JUMAN_FORMAT.LATTICE_TOP_ONE and 1 not in mrph.ranks:
                         continue
                     self.push_mrph(mrph)
                     mid += 1

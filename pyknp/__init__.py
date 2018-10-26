@@ -1,5 +1,5 @@
 from pyknp.juman.process import Socket, Subprocess
-from pyknp.juman.morpheme import LATTICE_FORMAT, Morpheme
+from pyknp.juman.morpheme import JUMAN_FORMAT, Morpheme
 from pyknp.juman.mlist import MList
 from pyknp.juman.juman import Juman
 from pyknp.knp.rel import Rel
