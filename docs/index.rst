@@ -16,7 +16,7 @@ Requirements
 ========================
 
 - Python 
-    --  Supported Versions: 2.7.15,  3.5.6,  3.6.6.
+    --  Verified Versions: 2.7.15,  3.5.6,  3.6.6.
 - 形態素解析器 `JUMAN++`_ (JUMAN_)
     -- JUMAN++はJUMANの後継となる形態素解析器
 - 構文解析器 KNP_
