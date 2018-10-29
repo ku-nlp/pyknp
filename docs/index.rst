@@ -99,6 +99,8 @@ pyknpを用いた解析プログラム
 .. code-block:: python
 
     --- example_juman.py ---
+    # coding: utf-8
+    from __future__ import unicode_literals # It is not necessary when you use python3.
     from pyknp import Juman
     jumanpp = Juman()   # default is JUMAN++: Juman(jumanpp=True). if you use JUMAN, use Juman(jumanpp=False)
     result = jumanpp.analysis("下鴨神社の参道は暗かった。")  
@@ -149,6 +151,8 @@ pyknpを用いた解析プログラム
 .. code-block:: python
 
     --- example_knp.py ---
+    # coding: utf-8
+    from __future__ import unicode_literals # It is not necessary when you use python3.
     from pyknp import KNP
     knp = KNP()     # Default is JUMAN++. If you use JUMAN, use KNP(jumanpp=False)
     result = knp.parse("下鴨神社の参道は暗かった。")
@@ -195,7 +199,7 @@ pyknpを用いた解析プログラム
 **Python2系の場合**
 
 pyknpではすべての入出力でUnicodeを想定しており、それ以外の文字コードによる入力はエラーとなる。
-そのためPython2系では、上記のプログラム冒頭に下記の2行を加える必要がある。
+そのためPython2系では、上記のプログラム冒頭の下記の2行が必要である。
 
 .. code-block:: python
 
