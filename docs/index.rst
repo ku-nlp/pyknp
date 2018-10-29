@@ -16,14 +16,19 @@ Requirements
 ========================
 
 - Python 
-    --  Verified Versions: 2.7.15,  3.5.6,  3.6.6.
+    -  Verified Versions: 2.7.15,  3.5.6,  3.6.6.
 - 形態素解析器 `JUMAN++`_ (JUMAN_)
-    -- JUMAN++はJUMANの後継となる形態素解析器
-- 構文解析器 KNP_
+    - JUMAN++はJUMANの後継となる形態素解析器  
+    - English pages of JUMAN++ (Japanese Morphological Analyzer): `EN_JUMAN++`_ (EN_JUMAN_)
+- 構文解析器 KNP_ 
+    - English page of KNP (Japanese Dependency and Case Structure Analyzer): EN_KNP_
 
 .. _JUMAN++: http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN++
 .. _JUMAN: http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN
 .. _KNP: http://nlp.ist.i.kyoto-u.ac.jp/index.php?KNP
+.. _EN_JUMAN++: http://nlp.ist.i.kyoto-u.ac.jp/EN/index.php?JUMAN++
+.. _EN_JUMAN: http://nlp.ist.i.kyoto-u.ac.jp/EN/index.php?JUMAN
+.. _EN_KNP: http://nlp.ist.i.kyoto-u.ac.jp/EN/index.php?KNP
 
 Install pyknp
 ========================
