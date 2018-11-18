@@ -4,7 +4,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 from pyknp import MList
-from pyknp import Morpheme
+from pyknp import Morpheme, JUMAN_FORMAT
 from pyknp import Socket, Subprocess
 import os
 import sys
@@ -20,7 +20,7 @@ class Juman(object):
 
     Args:
         command (str): JUMANの実行コマンド
-        option (str): JUMAN解析オプション
+        option (str): JUMAN解析オプション (ラティス形式 -s, ビーム幅 --beam <int>)
         rcfile (str): JUMAN設定ファイルへのパス
         pattern (str): JUMAN出力の終端記号
         jumanpp (bool): JUMAN++を用いるかJUMANを用いるか。commandを指定した場合は無視される。
@@ -72,33 +72,35 @@ class Juman(object):
             return self.socket.query(input_str, pattern=self.pattern)
         return self.subprocess.query(input_str, pattern=self.pattern)
 
-    def juman(self, input_str):
+    def juman(self, input_str, juman_format=JUMAN_FORMAT.DEFAULT):
         """ analysis関数と同じ """
         assert(isinstance(input_str, six.text_type))
-        result = MList(self.juman_lines(input_str))
+        result = MList(self.juman_lines(input_str), juman_format)
         return result
 
-    def analysis(self, input_str):
+    def analysis(self, input_str, juman_format=JUMAN_FORMAT.DEFAULT):
         """ 入力文字列に対して形態素解析し、その結果を MList オブジェクトとして返す
         
         Args:
             input_str (str): 文を表す文字列
+            juman_format (JUMAN_FORMAT): Jumanのlattice出力形式
 
         Returns:
             MList: 形態素列オブジェクト
         """
-        return self.juman(input_str)
+        return self.juman(input_str, juman_format)
 
-    def result(self, input_str):
+    def result(self, input_str, juman_format=JUMAN_FORMAT.DEFAULT):
         """ Juman出力結果に対して、その結果を MList オブジェクトとして返す
         
         Args:
             input_str (str): Juman出力結果
+            juman_format (JUMAN_FORMAT): Jumanのlattice出力形式
 
         Returns:
             MList: 形態素列オブジェクト
         """
-        return MList(input_str)
+        return MList(input_str, juman_format)
 
 
 class JumanTest(unittest.TestCase):

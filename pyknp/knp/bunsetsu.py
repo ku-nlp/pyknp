@@ -1,7 +1,7 @@
 #-*- encoding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
-from pyknp import Morpheme
+from pyknp import Morpheme, JUMAN_FORMAT
 from pyknp import MList
 from pyknp import Tag
 from pyknp import TList
@@ -19,7 +19,7 @@ class Bunsetsu(object):
     Args:
         spec (str): KNP出力のうち文節に該当する箇所の文字列
         bnst_id (int): 文節ID
-        newstyle (bool): KNPフォーマットの種類 (公開版KNPの場合はFalse)
+        juman_format (JUMAN_FORMAT): Jumanのlattice出力形式
 
     Attributes:
         bnst_id (int): 文節ID
@@ -34,7 +34,7 @@ class Bunsetsu(object):
         fstring (str): feature情報
     """
 
-    def __init__(self, spec, bnst_id=0, newstyle=False):
+    def __init__(self, spec, bnst_id=0, juman_format=JUMAN_FORMAT.DEFAULT):
         self._mrph_list = MList()
         self._tag_list = TList()
         self.midasi = ''
@@ -48,7 +48,7 @@ class Bunsetsu(object):
         spec = spec.strip()
         if spec == '*':
             pass
-        elif newstyle:
+        elif juman_format != JUMAN_FORMAT.DEFAULT: # TODO
             items = spec.split("\t")
             self.parent_id = int(items[2])
             self.dpndtype = items[3]
@@ -64,7 +64,7 @@ class Bunsetsu(object):
         self.features = Features(self.fstring)
 
         # Extract 正規化代表表記
-        if not newstyle:
+        if juman_format == JUMAN_FORMAT.DEFAULT:
             self.repname = ''
             self.normalized_repname = ''
             self.head_repname = ''

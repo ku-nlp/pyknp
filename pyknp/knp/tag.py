@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 from pyknp import MList
-from pyknp import Morpheme
+from pyknp import Morpheme, JUMAN_FORMAT
 from pyknp import Features
 import re
 import sys
@@ -17,7 +17,7 @@ class Tag(object):
     Args:
         spec (str): KNP出力
         tag_id (int): 基本句ID
-        newstyle (bool): KNPフォーマットの種類 (公開版KNPの場合はFalse)
+        juman_format (JUMAN_FORMAT): Jumanのlattice出力形式
 
     Attributes:
         tag_id (int): 基本句ID
@@ -37,7 +37,7 @@ class Tag(object):
         pas (Pas): 基本句が述語の場合は項の情報(Pasオブジェクト), そうでない場合None
     """
 
-    def __init__(self, spec, tag_id=0, newstyle=False):
+    def __init__(self, spec, tag_id=0, juman_format=JUMAN_FORMAT.DEFAULT):
         self._mrph_list = MList()
         self.midasi = ''
         self.parent_id = -1
@@ -53,7 +53,7 @@ class Tag(object):
         spec = spec.strip()
         if spec == '+':
             pass
-        elif newstyle:
+        elif juman_format != JUMAN_FORMAT.DEFAULT:
             items = spec.split("\t")
             self.parent_id = int(items[2])
             self.dpndtype = items[3]
@@ -70,7 +70,7 @@ class Tag(object):
             raise Exception("Illegal tag spec: %s" % spec)
 
         # Extract 正規化代表表記
-        if not newstyle:
+        if juman_format == JUMAN_FORMAT.DEFAULT:
             self.repname = ''
             self.normalized_repname = ''
             self.head_repname = ''

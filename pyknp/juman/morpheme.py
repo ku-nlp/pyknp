@@ -7,18 +7,31 @@ import six
 from six import u
 
 
+class JUMAN_FORMAT(object):
+    """ JUMANのラティスオプション
+
+    Attributes:
+        DEFAULT : 通常のJUMAN出力形式 (ラティスオプションなし)
+        LATTICE_TOP_ONE: ラティス出力形式から、TOP1のビームだけを読む
+        LATTICE_ALL: ラティス出力形式から、すべてのビームを読む 
+    """
+
+    DEFAULT = 0 # default
+    LATTICE_TOP_ONE = 1
+    LATTICE_ALL = 2
+
+
 class Morpheme(object):
     """ 形態素の各種情報を保持するオブジェクト．
 
     Args:
-        spec (str): KNP出力
+        spec (str): JUMAN/KNP出力
         mrph_id (int): 形態素ID
-        newstyle (bool): KNPフォーマットの種類 (公開版KNPの場合はFalse)
+        juman_format (JUMAN_FORMAT): Jumanのlattice出力形式
     
     Attributes:
         mrph_id (int): 形態素ID 
         mrph_index (int): mrph_idに同じ
-        span (tuple): 形態素の位置 (開始位置, 終了位置)
         doukei (list): 
         midasi (str): 見出し
         yomi (str): 読み
@@ -34,12 +47,14 @@ class Morpheme(object):
         imis (str): 意味情報
         fstring (str): 素性情報
         repname (str): 代表表記
+        ranks (set[int]): ラティスでのランク
+        span (tuple): 形態素の位置 (開始位置, 終了位置), JUMAN出力形式がラティス形式の場合のみ
     """
 
-    def __init__(self, spec, mrph_id=None, newstyle=False):
+    def __init__(self, spec, mrph_id=None, juman_format=JUMAN_FORMAT.DEFAULT):
         assert isinstance(spec, six.text_type)
         assert mrph_id is None or isinstance(mrph_id, int)
-        if newstyle and mrph_id is None:
+        if juman_format != JUMAN_FORMAT.DEFAULT and mrph_id is None:
             raise KeyError
         self.mrph_index = mrph_id
         self.mrph_id = mrph_id
@@ -60,31 +75,37 @@ class Morpheme(object):
         self.imis = ''
         self.fstring = ''
         self.repname = ''
-        if newstyle:
-            self._parse_new_spec(spec.strip("\n"))
-        else:
+        self.ranks = {1}
+        if juman_format == JUMAN_FORMAT.DEFAULT:
             self._parse_spec(spec.strip("\n"))
+        else:
+            self._parse_new_spec(spec.strip("\n"))
     
     def _parse_new_spec(self, spec):
-        parts = spec.split("\t")
-        assert parts[0] == "-"
-        self.mrph_id = int(parts[1])
-        self.prev_mrph_id = [int(mid) for mid in parts[2].split(";")]
-        self.span = (int(parts[3]), int(parts[4]))
-        self.midasi = parts[5]
-        self.yomi = parts[7]
-        self.genkei = parts[8]
-        self.hinsi = parts[9]
-        self.hinsi_id = int(parts[10])
-        self.bunrui = parts[11]
-        self.bunrui_id = int(parts[12])
-        self.katuyou1 = parts[13]
-        self.katuyou1_id = int(parts[14])
-        self.katuyou2 = parts[15]
-        self.katuyou2_id = int(parts[16])
-        self.fstring = parts[17]
-        self.feature = self._parse_fstring(self.fstring)
-        self.repname = parts[6]
+        try: # FIXME KNPの場合と同様、EOSをきちんと判定する
+            parts = spec.split("\t")
+            self.mrph_id = int(parts[1])
+            self.prev_mrph_id = [int(mid) for mid in parts[2].split(";")]
+            self.span = (int(parts[3]), int(parts[4]))
+            self.midasi = parts[5]
+            self.yomi = parts[7]
+            self.genkei = parts[8]
+            self.hinsi = parts[9]
+            self.hinsi_id = int(parts[10])
+            self.bunrui = parts[11]
+            self.bunrui_id = int(parts[12])
+            self.katuyou1 = parts[13]
+            self.katuyou1_id = int(parts[14])
+            self.katuyou2 = parts[15]
+            self.katuyou2_id = int(parts[16])
+            self.fstring = parts[17]
+            self.feature = self._parse_fstring(self.fstring)
+            self.repname = parts[6]
+            ranks = self.feature.get('ランク', None)                 
+            if ranks is not None:
+                self.ranks = set(int(x) for x in ranks)
+        except IndexError:
+            pass
 
     def _parse_spec(self, spec):
         parts = []
@@ -114,7 +135,7 @@ class Morpheme(object):
                     part += char
             parts.append(part)
 
-        try:
+        try: # FIXME KNPの場合と同様、EOSをきちんと判定する
             self.midasi = parts[0]
             self.yomi = parts[1]
             self.genkei = parts[2]
@@ -284,7 +305,7 @@ class MorphemeTest2(unittest.TestCase):
     def test_simple(self):
         spec = """-	36	2	2	4	貰った	貰う/もらう	もらった	もらう	動詞	2	*	0	子音動詞ワ行	12	タ形	10	付属動詞候補（タ系）\n"""
 
-        mrph = Morpheme(spec, 36, newstyle=True)
+        mrph = Morpheme(spec, 36, juman_format=JUMAN_FORMAT.LATTICE_ALL)
         self.assertEqual(mrph.midasi, '貰った')
         self.assertEqual(mrph.yomi, 'もらった')
         self.assertEqual(mrph.genkei, 'もらう')
@@ -304,10 +325,24 @@ class MorphemeTest2(unittest.TestCase):
     def test_doukei(self):
         spec1 = """-	1	0	0	0	母	母/ぼ	ぼ	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:音|漢字\n"""
         spec2 = """-	2	0	0	0	母	母/はは	はは	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:訓|カテゴリ:人|漢字\n"""
-        m1 = Morpheme(spec1, 1, newstyle=True)
-        m2 = Morpheme(spec2, 1, newstyle=True)
+        m1 = Morpheme(spec1, 1, juman_format=JUMAN_FORMAT.LATTICE_ALL)
+        m2 = Morpheme(spec2, 1, juman_format=JUMAN_FORMAT.LATTICE_ALL)
         m1.push_doukei(m2)
         self.assertEqual(m1.repnames(), "母/ぼ?母/はは")
+
+    def test_ranks(self):
+        spec1 = """-	1	0	0	0	母	母/ぼ	ぼ	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:音|漢字\n"""
+        spec2 = """-	2	0	0	0	母	母/はは	はは	母	名詞	6	普通名詞	1	*	0	*	0	漢字読み:訓|カテゴリ:人|漢字|ランク:1;2;3\n"""
+        m1 = Morpheme(spec1, 1, juman_format=JUMAN_FORMAT.LATTICE_ALL)
+        m2 = Morpheme(spec2, 1, juman_format=JUMAN_FORMAT.LATTICE_ALL)
+        self.assertEqual(1, len(m1.ranks))
+        self.assertIn(1, m1.ranks)
+        self.assertNotIn(2, m1.ranks)
+        self.assertEqual(3, len(m2.ranks))
+        self.assertIn(1, m2.ranks)
+        self.assertIn(2, m2.ranks)
+        self.assertIn(3, m2.ranks)
+        self.assertNotIn(4, m2.ranks)        
 
 
 if __name__ == '__main__':
