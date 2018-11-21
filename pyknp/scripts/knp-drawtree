@@ -34,7 +34,14 @@ def draw_tree(bl, outf):
             outf.write(u"\t")
             for casename, arglist in sorted(pas.arguments.items()):
                 for arg in arglist:
-                    rep = u"<sid=%s,tid=%s>" % (arg.sid, arg.tid)
+                    if arg.sid == bl.sid:
+                        if hasattr(tags[arg.tid], 'head_prime_repname') \
+                                and tags[arg.tid].head_prime_repname:
+                            rep = tags[arg.tid].head_prime_repname
+                        else:
+                            rep = tags[arg.tid].repname
+                    else:
+                        rep = u"<sid=%s,tid=%s>" % (arg.sid, arg.tid)
                     outf.write(u"%s:%s " % (casename, rep))
 
         outf.write(u"/ ")
