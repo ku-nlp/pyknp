@@ -54,7 +54,7 @@ class KNP(object):
 
     def parse(self, sentence, juman_format=JUMAN_FORMAT.DEFAULT):
         """
-        文字列を入力として構文解析を行い、文節列オブジェクトを返す
+        入力された文字列に対して形態素解析と構文解析を行い、文節列オブジェクトを返す
 
         Args:
             sentence (str): 文を表す文字列
@@ -66,6 +66,19 @@ class KNP(object):
         assert(isinstance(sentence, six.text_type))
         juman_lines = self.juman.juman_lines(sentence)
         juman_str = "%s%s" % (juman_lines, self.pattern)
+        return self.parse_juman_result(juman_str, juman_format)
+
+    def parse_juman_result(self, juman_str, juman_format=JUMAN_FORMAT.DEFAULT):
+        """
+        JUMAN出力結果に対して構文解析を行い、文節列オブジェクトを返す
+
+        Args:
+            juman_str (str): ある文に関するJUMANの出力結果
+            juman_format (JUMAN_FORMAT): Jumanのlattice出力形式
+
+        Returns:
+            BList: 文節列オブジェクト
+        """
         if not self.socket and not self.subprocess:
             if self.server is not None:
                 self.socket = Socket(
@@ -81,6 +94,22 @@ class KNP(object):
         else:
             knp_lines = self.subprocess.query(juman_str, pattern=r'^%s$'%(self.pattern))
         return BList(knp_lines, self.pattern, juman_format)
+
+
+    def reparse_knp_result(self, knp_str, juman_format=JUMAN_FORMAT.DEFAULT):
+        """
+        KNP出力結果に対してもう一度構文解析を行い、文節列オブジェクトを返す。
+        KNPのfeatureを再付与する場合などに用いる。中身はparse_juman_result関数と同じ。
+
+        Args:
+            knp_str (str): ある文に関するKNPの出力結果
+            juman_format (JUMAN_FORMAT): Jumanのlattice出力形式
+
+        Returns:
+            BList: 文節列オブジェクト
+        """
+        return self.parse_juman_result(knp_str)
+
 
     def result(self, input_str, juman_format=JUMAN_FORMAT.DEFAULT):
         """
