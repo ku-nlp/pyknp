@@ -1,24 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-"""
-__author__ = 'Yuta Hayashibe'
-__version__ = ""
-__copyright__ = ""
-__license__ = "GPL v3"
-
-
-import optparse
 import codecs
-import sys
-sys.stdin = codecs.getreader('UTF-8')(sys.stdin)
-sys.stdout = codecs.getwriter('UTF-8')(sys.stdout)
-sys.stderr = codecs.getwriter('UTF-8')(sys.stderr)
-
-
+import optparse
 import pyknp
-import json
+import six
+import sys
+
+if six.PY2:
+    sys.stdin = codecs.getreader('UTF-8')(sys.stdin)
+    sys.stdout = codecs.getwriter('UTF-8')(sys.stdout)
+    sys.stderr = codecs.getwriter('UTF-8')(sys.stderr)
 
 
 def draw_tree(bl, outf):
@@ -32,7 +24,6 @@ def draw_tree(bl, outf):
 
     outf.write(u"# S-ID: %s\n" % bl.sid)
 
-    max_width = 0
     for i, nl in enumerate(nodelines):
         outf.write(nl)
         outf.write(u"\t")
@@ -43,8 +34,13 @@ def draw_tree(bl, outf):
             outf.write(u"\t")
             for casename, arglist in sorted(pas.arguments.items()):
                 for arg in arglist:
-                    rep = arg.rep
-                    if len(rep) == 0:
+                    if arg.sid == bl.sid:
+                        if hasattr(tags[arg.tid], 'head_prime_repname') \
+                                and tags[arg.tid].head_prime_repname:
+                            rep = tags[arg.tid].head_prime_repname
+                        else:
+                            rep = tags[arg.tid].repname
+                    else:
                         rep = u"<sid=%s,tid=%s>" % (arg.sid, arg.tid)
                     outf.write(u"%s:%s " % (casename, rep))
 
@@ -58,12 +54,15 @@ def draw_tree(bl, outf):
     outf.write(u"\n\n")
 
 
-def draw_trees(inf, outf, newstyle):
+def draw_trees(inf, outf, lattice_format):
+    juman_format = pyknp.JUMAN_FORMAT.DEFAULT
+    if lattice_format:
+        juman_format = pyknp.JUMAN_FORMAT.LATTICE_TOP_ONE
     lines = []
     for line in inf:
         lines.append(line)
         if line == u"EOS\n":
-            bl = pyknp.BList(u"".join(lines), newstyle=newstyle)
+            bl = pyknp.BList(u"".join(lines), juman_format=juman_format)
             draw_tree(bl, outf)
             lines = []
 
@@ -72,7 +71,8 @@ def main():
     oparser = optparse.OptionParser()
     oparser.add_option("-i", "--input", dest="input", default="-")
     oparser.add_option("-o", "--output", dest="output", default="-")
-    oparser.add_option("--newstyle", dest="newstyle", action="store_true", default=False)
+    oparser.add_option("--lattice_format", dest="lattice_format",
+                       action="store_true", default=False)
     (opts, args) = oparser.parse_args()
 
     if opts.input == "-":
@@ -84,7 +84,7 @@ def main():
         outf = sys.stdout
     else:
         outf = codecs.open(opts.output, "w", "utf8")
-    draw_trees(inf, outf, opts.newstyle)
+    draw_trees(inf, outf, opts.lattice_format)
 
 
 if __name__ == '__main__':
