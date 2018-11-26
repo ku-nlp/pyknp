@@ -40,7 +40,7 @@ class BList(DrawTree):
         self.parse(spec)
         self._set_parent_child()
         self._set_positions()
-        self._setPAS(juman_format)
+        self._setPAS(self.juman_format)
         # set midasi
         for i in range(len(self._bnst)):
             self._bnst[i].set_midasi()
