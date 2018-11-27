@@ -2,6 +2,7 @@ import sys
 import os
 import six
 import re
+import signal
 import socket
 import subprocess
 
@@ -36,16 +37,17 @@ class Socket(object):
 
 class Subprocess(object):
 
-    def __init__(self, command):
+    def __init__(self, command, timeout=60):
         subproc_args = {'stdin': subprocess.PIPE, 'stdout': subprocess.PIPE,
                 'stderr': subprocess.STDOUT, 'cwd': '.',
                 'close_fds': sys.platform != "win32"}
         try:
             env = os.environ.copy()
             self.process = subprocess.Popen(command, env=env, **subproc_args)
+            self.process_command = command
+            self.process_timeout = timeout
         except OSError:
             raise
-        (self.stdouterr, self.stdin) = (self.process.stdout, self.process.stdin)
 
     def __del__(self):
         self.process.stdin.close()
@@ -63,13 +65,21 @@ class Subprocess(object):
 
     def query(self, sentence, pattern):
         assert(isinstance(sentence, six.text_type))
+        def alarm_handler(signum, frame):
+            raise subprocess.TimeoutExpired(self.process_command, self.process_timeout)
         self.process.stdin.write(sentence.encode('utf-8')+six.b('\n'))
         self.process.stdin.flush()
         result = ""
         while True:
-            line = self.stdouterr.readline().rstrip().decode('utf-8')
-            if re.search(pattern, line):
-                break
-            result = "%s%s\n" % (result, line)
+            signal.signal(signal.SIGALRM, alarm_handler)
+            signal.alarm(self.process_timeout)
+            line = None
+            try:
+                line = self.process.stdout.readline().rstrip().decode('utf-8')
+            finally:
+                signal.alarm(0)
+            if line:
+                if re.search(pattern, line):
+                    break
+                result = "%s%s\n" % (result, line)
         return result
-        
