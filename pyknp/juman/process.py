@@ -37,7 +37,7 @@ class Socket(object):
 
 class Subprocess(object):
 
-    def __init__(self, command, timeout=60):
+    def __init__(self, command, timeout=180):
         subproc_args = {'stdin': subprocess.PIPE, 'stdout': subprocess.PIPE,
                 'stderr': subprocess.STDOUT, 'cwd': '.',
                 'close_fds': sys.platform != "win32"}
@@ -67,19 +67,17 @@ class Subprocess(object):
         assert(isinstance(sentence, six.text_type))
         def alarm_handler(signum, frame):
             raise subprocess.TimeoutExpired(self.process_command, self.process_timeout)
-        self.process.stdin.write(sentence.encode('utf-8')+six.b('\n'))
-        self.process.stdin.flush()
+        signal.signal(signal.SIGALRM, alarm_handler)
+        signal.alarm(self.process_timeout)
         result = ""
-        while True:
-            signal.signal(signal.SIGALRM, alarm_handler)
-            signal.alarm(self.process_timeout)
-            line = None
-            try:
+        try:
+            self.process.stdin.write(sentence.encode('utf-8')+six.b('\n'))
+            self.process.stdin.flush()
+            while True:
                 line = self.process.stdout.readline().rstrip().decode('utf-8')
-            finally:
-                signal.alarm(0)
-            if line:
                 if re.search(pattern, line):
                     break
                 result = "%s%s\n" % (result, line)
+        finally:
+            signal.alarm(0)
         return result
