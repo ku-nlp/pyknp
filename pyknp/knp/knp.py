@@ -29,7 +29,8 @@ class KNP(object):
 
     def __init__(self, command='knp', server=None, port=31000, timeout=60,
                  option='-tab', rcfile='', pattern=r'EOS',
-                 jumancommand='jumanpp', jumanrcfile='', jumanpp=True):
+                 jumancommand='jumanpp', jumanrcfile='',
+                 jumanoption='', jumanpp=True):
         self.command = command
         self.server = server
         self.port = port
@@ -46,7 +47,8 @@ class KNP(object):
         if distutils.spawn.find_executable(self.command) is None:
             raise Exception("Can't find KNP command: %s" % self.command)
 
-        self.juman = Juman(command=jumancommand, rcfile=jumanrcfile, jumanpp=self.jumanpp)
+        self.juman = Juman(command=jumancommand, rcfile=jumanrcfile,
+                           option=jumanoption, jumanpp=self.jumanpp)
 
     def knp(self, sentence):
         """ parse関数と同じ """
