@@ -13,3 +13,4 @@ from pyknp.knp.syngraph import SynNodes, SynNode
 from pyknp.knp.blist import BList
 from pyknp.knp.knp import KNP
 import pyknp.evaluate
+import pyknp.utils
