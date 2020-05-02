@@ -173,12 +173,25 @@ class Pas(object):
             self.valid = False
             return
 
-        for k in analysis_result[c1 + 1:].split(';'):
-            items = k.split("/")
+        separate_str = ';'
+        cases = analysis_result[c1 + 1:].split(separate_str)
+        i = 0
+
+        while i < len(cases):
+            items = cases[i].split("/")
             caseflag = items[1]
+
             if caseflag == "U" or caseflag == "-":
+                i += 1
                 continue
+
+            # 表記が「;」の場合、次の格要素を結合して処理し直す
+            if len(items) == 3:
+                cases[i] += separate_str + cases.pop(i + 1)
+                continue
+
             yield self.__parse_case_info_format(items, case_info_format)
+            i += 1
 
 
     def __set_args(self, analysis_result, case_info_format):
