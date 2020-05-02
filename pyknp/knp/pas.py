@@ -185,7 +185,8 @@ class Pas(object):
                 i += 1
                 continue
 
-            # 表記が「;」の場合、次の格要素を結合して処理し直す
+            # 表記が「;」の格要素は表記部を境に2つの格要素に分割されてしまう
+            # 従って、このような格要素については次の格要素を結合した上でもう一度処理し直す
             if len(items) == 3:
                 cases[i] += separate_str + cases.pop(i + 1)
                 continue
