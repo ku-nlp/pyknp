@@ -187,11 +187,9 @@ class Pas(object):
                 cases[i] += separate_str + cases.pop(i + 1)
                 continue
 
-            if caseflag == "U" or caseflag == "-":
-                i += 1
-                continue
+            if caseflag != "U" and caseflag != "-":
+                yield self.__parse_case_info_format(items, case_info_format)
 
-            yield self.__parse_case_info_format(items, case_info_format)
             i += 1
 
 
