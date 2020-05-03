@@ -181,14 +181,14 @@ class Pas(object):
             items = cases[i].split("/")
             caseflag = items[1]
 
-            if caseflag == "U" or caseflag == "-":
-                i += 1
-                continue
-
             # 表記が「;」の格要素は表記部を境に2つの格要素に分割されてしまう
             # 従って、このような格要素については次の格要素を結合した上でもう一度処理し直す
             if len(items) == 3:
                 cases[i] += separate_str + cases.pop(i + 1)
+                continue
+
+            if caseflag == "U" or caseflag == "-":
+                i += 1
                 continue
 
             yield self.__parse_case_info_format(items, case_info_format)
