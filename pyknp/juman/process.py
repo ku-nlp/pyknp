@@ -38,7 +38,7 @@ class Socket(object):
 class Subprocess(object):
 
     def __init__(self, command, timeout=180):
-        self.subproc_args = {'stdout': subprocess.PIPE, 'stderr': subprocess.STDOUT }
+        self.subproc_args = {'stdout': subprocess.PIPE, 'stderr': subprocess.STDOUT, 'timeout': timeout}
         self.command=command
 
     def query(self, sentence, pattern):
