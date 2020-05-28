@@ -43,7 +43,7 @@ class Subprocess(object):
 
     def query(self, sentence, pattern):
         assert(isinstance(sentence, six.text_type))
-        proc = subprocess.run(self.command, input=sentence.encode(), check=True, **self.subproc_args)
+        proc = subprocess.run(self.command, input=(sentence+"\n").encode(), check=True, **self.subproc_args)
         result = ""
         for line in proc.stdout.decode().split("\n"):
             if re.search(pattern, line):
