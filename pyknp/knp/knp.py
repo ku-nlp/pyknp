@@ -96,7 +96,6 @@ class KNP(object):
             knp_lines = self.subprocess.query(juman_str, pattern=r'^%s$' % self.pattern)
         return BList(knp_lines, self.pattern, juman_format)
 
-
     def reparse_knp_result(self, knp_str, juman_format=JUMAN_FORMAT.DEFAULT):
         """
         KNP出力結果に対してもう一度構文解析を行い、文節列オブジェクトを返す。
@@ -110,7 +109,6 @@ class KNP(object):
             BList: 文節列オブジェクト
         """
         return self.parse_juman_result(knp_str, juman_format=juman_format)
-
 
     def result(self, input_str, juman_format=JUMAN_FORMAT.DEFAULT):
         """
