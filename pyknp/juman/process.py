@@ -6,6 +6,7 @@ import signal
 import socket
 import subprocess
 
+
 class Socket(object):
 
     def __init__(self, hostname, port, option=None):
@@ -71,7 +72,7 @@ class Subprocess(object):
         signal.alarm(self.process_timeout)
         result = ""
         try:
-            self.process.stdin.write(sentence.encode('utf-8')+six.b('\n'))
+            self.process.stdin.write(sentence.encode('utf-8') + six.b('\n'))
             self.process.stdin.flush()
             while True:
                 line = self.process.stdout.readline().rstrip().decode('utf-8')

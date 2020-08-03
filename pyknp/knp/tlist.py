@@ -1,11 +1,10 @@
-#-*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
 from pyknp import Morpheme
 from pyknp import Tag
 from pyknp import DrawTree
-import sys
 import unittest
 
 
@@ -97,6 +96,7 @@ class TListTest(unittest.TestCase):
         self.assertEqual(len(tlist), 2)
         self.assertEqual(len(tlist[0].mrph_list()), 1)
         self.assertEqual(len(tlist[1].mrph_list()), 1)
+
 
 if __name__ == '__main__':
     unittest.main()

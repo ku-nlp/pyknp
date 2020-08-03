@@ -1,4 +1,4 @@
-#-*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
 from pyknp import Morpheme, JUMAN_FORMAT
@@ -7,9 +7,7 @@ from pyknp import Tag
 from pyknp import TList
 from pyknp import Features
 import re
-import sys
 import unittest
-from six import u
 
 
 class Bunsetsu(object):
@@ -179,6 +177,7 @@ class BunsetsuTest(unittest.TestCase):
         tag2.push_mrph(mrph2)
         bnst.push_tag(tag2)
         self.assertEqual(bnst.spec(), self.spec)
+
 
 if __name__ == '__main__':
     unittest.main()

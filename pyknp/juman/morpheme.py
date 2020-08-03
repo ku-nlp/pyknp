@@ -1,10 +1,9 @@
-#-*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
 import re
 import unittest
 import six
-from six import u
 
 
 class JUMAN_FORMAT(object):
@@ -113,7 +112,7 @@ class Morpheme(object):
         inside_quotes = False
         if spec.startswith(' '):
             spec = '\\%s' % spec
-        if(spec.startswith('\  \  \  特殊 1 空白 6 * 0 * 0')):
+        if spec.startswith('\  \  \  特殊 1 空白 6 * 0 * 0'):
             parts = ['\ ','\ ','\ ','特殊','1','空白','6','*','0','*','0','NIL']
         else:
             for char in spec:
@@ -187,18 +186,18 @@ class Morpheme(object):
 
     def new_spec(self, prev_mrph_id=None, span=None):
         assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, six.text_type) or isinstance(prev_mrph_id, list) or prev_mrph_id is None
-        if(prev_mrph_id is None):
+        if prev_mrph_id is None:
             prev_mrph_id = self.prev_mrph_id
         
         # This method accepts character position instead of morpheme span for backward comatibility.
         assert isinstance(span, tuple) or isinstance(span, list) or isinstance(span, int) or isinstance(span, six.text_type) or span is None
-        if(span is None):
+        if span is None:
             span = self.span
-        elif(isinstance(span, tuple) or isinstance(span, list)):
+        elif isinstance(span, tuple) or isinstance(span, list):
             span = (span[0], span[1])
-        elif(span is six.text_type):
+        elif span is six.text_type:
             span = (int(span), int(span) + len(self.midasi) -1)
-        elif(isinstance(span, int)):
+        elif isinstance(span, int):
             span = (span, span + len(self.midasi) -1)
         
         if self.mrph_id is None:
@@ -233,7 +232,7 @@ class Morpheme(object):
             out.append(self.fstring)
         out.append("\n")
         return "".join(out)
-    
+
     def _parse_fstring(self, fstring):
         """ 素性情報をパースする """
         rvalue = {}

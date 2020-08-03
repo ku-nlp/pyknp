@@ -1,18 +1,16 @@
-#-*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
 from pyknp import MList
-from pyknp import Morpheme, JUMAN_FORMAT
+from pyknp import JUMAN_FORMAT
 from pyknp import Socket, Subprocess
 import os
 import sys
-import re
 import unittest
 import six
 import distutils.spawn
-
 
 
 class Juman(object):
@@ -58,7 +56,7 @@ class Juman(object):
             str: Juman出力結果
         """
         if '\n' in input_str:
-            input_str = input_str.replace('\n','')
+            input_str = input_str.replace('\n', '')
             print('Analysis is done ignoring "\\n".', file=sys.stderr)
         if not self.socket and not self.subprocess:
             if self.server is not None:
@@ -92,7 +90,7 @@ class Juman(object):
 
     def result(self, input_str, juman_format=JUMAN_FORMAT.DEFAULT):
         """ Juman出力結果に対して、その結果を MList オブジェクトとして返す
-        
+
         Args:
             input_str (str): Juman出力結果
             juman_format (JUMAN_FORMAT): Jumanのlattice出力形式
@@ -109,7 +107,6 @@ class JumanTest(unittest.TestCase):
         self.jumanpp = Juman()
         self.juman = Juman(jumanpp=False)
 
-    
     # JUMANPP
     def test_normal_jumanpp(self):
         test_str = "この文を解析してください。"
@@ -171,7 +168,7 @@ class JumanTest(unittest.TestCase):
     def test_whitespace_juman(self):
         test_str = "半角 スペース"
         result = self.juman.analysis(test_str)
-        self.assertEqual(len(result), 4) # 半|角|\ |スペース
+        self.assertEqual(len(result), 4)  # 半|角|\ |スペース
         self.assertEqual((result[2].bunrui == '空白'), True) 
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(" ", "\ "))
         self.assertGreaterEqual(len(result.spec().split("\n")), 4)

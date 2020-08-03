@@ -1,4 +1,4 @@
-#-*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
@@ -44,7 +44,7 @@ class DrawTree(object):
         """ 構文木を文字列で返す． """
         leaves = self.draw_tree_leaves()
         limit = len(leaves)
-        item = [[0 for j in range(limit)] for i in range(limit)]
+        item = [[''] * limit for _ in range(limit)]
         active_column = [0] * limit
         limit -= 1
 

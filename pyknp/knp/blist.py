@@ -1,4 +1,4 @@
-#-*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
@@ -10,7 +10,6 @@ from pyknp import TList
 from pyknp import SynNodes, SynNode
 from pyknp import DrawTree
 import re
-import sys
 import unittest
 import json
 import bisect
@@ -123,20 +122,19 @@ class BList(DrawTree):
                 pass
             else:
                 mrph = Morpheme(string, len(self.mrph_list()), self.juman_format)
-                if(len(self._bnst)==0):
+                if len(self._bnst) == 0:
                     bnst = Bunsetsu("*", len(self._bnst))
                     self._bnst.append(bnst)
                 self._bnst[-1].push_mrph(mrph)
 
     def _set_positions(self):
         mrphs = self.mrph_list()
-        if(len(mrphs)==0):
+        if len(mrphs) == 0 :
             return
         begin_position = mrphs[0].span[0] 
         
         self.mrph_positions = [begin_position]
         self.tag_positions = [begin_position]
-        mrph_positions_map = {}
         for mrph in self.mrph_list():
             self.mrph_positions.append(self.mrph_positions[-1] + len(mrph.midasi))
         for tag in self.tag_list():
@@ -149,12 +147,12 @@ class BList(DrawTree):
         """ 基本句の位置情報を返す
 
         Args:
-            tid (int): 基本句ID
+            tag_id (int): 基本句ID
 
         Returns:
             tuple: (基本句の開始位置, 終了位置)
         """
-        return (self.tag_positions[tag_id], self.tag_positions[tag_id + 1] - 1)
+        return self.tag_positions[tag_id], self.tag_positions[tag_id + 1] - 1
 
     def _set_parent_child(self):
         for bnst in self._bnst:
