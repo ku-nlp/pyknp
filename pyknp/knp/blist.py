@@ -360,7 +360,7 @@ EOS"""
         self.assertEqual(args["ヲ"][0].tid, 2)
 
 
-class PasTest42(unittest.TestCase):  # KNP v4.2
+class PasTest42(unittest.TestCase):  # KNP v4.20
 
     def setUp(self):
         self.spec = """
