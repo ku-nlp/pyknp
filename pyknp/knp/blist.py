@@ -94,7 +94,7 @@ class BList(DrawTree):
                 if self.comment:
                     self.comment += "\n"
                 self.comment += string
-                match = re.match(r'# S-ID:(.*?)[ $\n]', self.comment)
+                match = re.match(r'# S-ID: ?(\S*)( .+)?$', self.comment)
                 if match:
                     self.sid = match.group(1)
                 if 'KNP++' in string and 'output:KNP' not in string:
