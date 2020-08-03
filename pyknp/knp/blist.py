@@ -39,12 +39,12 @@ class BList(DrawTree):
         self.parse(spec)
         self._set_parent_child()
         self._set_positions()
-        self._setPAS(self.juman_format)
+        self._set_pas(self.juman_format)
         # set midasi
         for i in range(len(self._bnst)):
             self._bnst[i].set_midasi()
 
-    def _setPAS(self, juman_format):
+    def _set_pas(self, juman_format):
         """ 各基本句にPASを設定 """
         tag_list = self.tag_list()
         if juman_format != JUMAN_FORMAT.DEFAULT:
@@ -98,7 +98,7 @@ class BList(DrawTree):
                 if match:
                     self.sid = match.group(1)
                 if 'KNP++' in string and 'output:KNP' not in string:
-                    self.juman_format = JUMAN_FORMAT.LATTICE_TOP_ONE # TODO
+                    self.juman_format = JUMAN_FORMAT.LATTICE_TOP_ONE  # TODO
             elif re.match(self.pattern, string):
                 break
             elif string.startswith(';;'):
@@ -107,7 +107,7 @@ class BList(DrawTree):
                 bnst = Bunsetsu(string, len(self._bnst))
                 self._bnst.append(bnst)
             elif string.startswith('+'):
-                if self.juman_format != JUMAN_FORMAT.DEFAULT: # TODO
+                if self.juman_format != JUMAN_FORMAT.DEFAULT:  # TODO
                     bnst = Bunsetsu(string, len(self._bnst), self.juman_format)
                     self._bnst.append(bnst)
                 self._bnst[-1].push_tag(
@@ -129,7 +129,7 @@ class BList(DrawTree):
 
     def _set_positions(self):
         mrphs = self.mrph_list()
-        if len(mrphs) == 0 :
+        if len(mrphs) == 0:
             return
         begin_position = mrphs[0].span[0] 
         
@@ -161,7 +161,7 @@ class BList(DrawTree):
             else:
                 bnst.parent = self._bnst[bnst.parent_id]
                 self._bnst[bnst.parent_id].children.append(bnst)
-            for tag in bnst._tag_list:
+            for tag in bnst.tag_list():
                 if tag.parent_id == -1:
                     tag.parent = None
                 else:
@@ -252,7 +252,7 @@ class BList(DrawTree):
 
             if (not concat_clause_in_paren or paren_level == 0) and idx != len(tags) - 1:
                 if features.get("節-区切"):
-                    if discourse_clause == True and (features.get("節-区切") == "連体修飾" or features.get("節-区切") == "補文"):
+                    if discourse_clause is True and (features.get("節-区切") == "連体修飾" or features.get("節-区切") == "補文"):
                         continue
                     else:
                         starts.append(idx + 1)
@@ -360,7 +360,8 @@ EOS"""
         self.assertEqual(args["ヲ"][0].tid, 2)
 
 
-class PasTest42(unittest.TestCase): # KNP v4.2
+class PasTest42(unittest.TestCase):  # KNP v4.2
+
     def setUp(self):
         self.spec = """
 # S-ID:1 KNP:4.2-a01607a1 DATE:2018/10/19 SCORE:-25.47925
@@ -386,11 +387,10 @@ class PasTest42(unittest.TestCase): # KNP v4.2
 EOS
 """
 
-
     def test(self):
         result = BList(self.spec)
         
-        pas = Pas(tid=4, result=result) #<EID:9><述語項構造:行く/いく:動12:ガ/N/彼/0/0/5;ニ/E/著者/2/-1/0;ト/-/-/-/-/-;デ/-/-/-/-/-;カラ/-/-/-/-/-;ヨリ/-/-/-/-/-;マデ/-/-/-/-/-;ヘ/C/大学/0/3/8;時間/-/-/-/-/-;外の関係/-/-/-/-/-;修飾/-/-/-/-/-;ノ/-/-/-/-/->
+        pas = Pas(tid=4, result=result)  # <EID:9><述語項構造:行く/いく:動12:ガ/N/彼/0/0/5;ニ/E/著者/2/-1/0;ト/-/-/-/-/-;デ/-/-/-/-/-;カラ/-/-/-/-/-;ヨリ/-/-/-/-/-;マデ/-/-/-/-/-;ヘ/C/大学/0/3/8;時間/-/-/-/-/-;外の関係/-/-/-/-/-;修飾/-/-/-/-/-;ノ/-/-/-/-/->
 
         self.assertEqual(pas.cfid, "行く/いく:動12")
 
@@ -402,7 +402,7 @@ EOS
         self.assertEqual(pas.arguments["ガ"][0].sdist, 0)
 
 
-class PasTest41(unittest.TestCase): # KNP v4.19
+class PasTest41(unittest.TestCase):  # KNP v4.19
     def setUp(self):
         self.spec = """
 # S-ID:1 KNP:4.19-CF1.1 DATE:2018/10/19 SCORE:-22.05720
