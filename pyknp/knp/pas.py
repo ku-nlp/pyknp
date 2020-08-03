@@ -34,11 +34,12 @@ class Argument(object):
 
 ArgRepname = collections.namedtuple("ArgRepname", "repname,tid_list")
 
+
 class CaseInfoFormat(object): 
     """ 格/述語項構造のフォーマットを管理する名前空間 """
-    CASE = 0   # 格解析フォーマット
-    PASv41 = 1 # KNP v4.1 での述語項構造フォーマット
-    PASv42 = 2 # KNP v4.2 での述語項構造フォーマット
+    CASE = 0  # 格解析フォーマット
+    PASv41 = 1  # KNP v4.1 での述語項構造フォーマット
+    PASv42 = 2  # KNP v4.2 での述語項構造フォーマット
 
 
 class Pas(object):
@@ -70,7 +71,7 @@ class Pas(object):
         self.sid = result.sid
         tag_predicate = self.tag_list[self.tid]
 
-        if "項構造" in tag_predicate.features: # KNP v4.1 で -anaphora
+        if "項構造" in tag_predicate.features:  # KNP v4.1 で -anaphora
             # (eid, tid, sdist) の対を記録し、dictに保持(eid2tid, tid2sdist)
             # eid2tidはeidのエンティティが初出のTag位置(tid)を保持
             self.eid2tid = {}
@@ -85,7 +86,7 @@ class Pas(object):
                 self.tid2sdist[tid] = sdist
             self.__set_args(tag_predicate.features.get("項構造"), CaseInfoFormat.PASv41)
 
-        elif "述語項構造" in tag_predicate.features: # KNP v4.2 (unpublished) で -anaphora
+        elif "述語項構造" in tag_predicate.features:  # KNP v4.2 (unpublished) で -anaphora
             self.__set_args(tag_predicate.features.get("述語項構造"), CaseInfoFormat.PASv42)
 
         elif "格解析結果" in tag_predicate.features: 
@@ -150,7 +151,7 @@ class Pas(object):
                 tid = -1  # FIXME: EIDが登録された文内のTag位置
                 sdist = None
                 sid = "-1"  # FIXME: EIDが登録された文のsid (複数文を辿れる必要がある)
-        elif case_info_format == CaseInfoFormat.PASv42: # FIXME tid,sidについてv4.1と同じ問題がある
+        elif case_info_format == CaseInfoFormat.PASv42:  # FIXME: tid,sidについてv4.1と同じ問題がある
             mycase = items[0]
             caseflag = items[1]
             midasi = items[2]
@@ -159,7 +160,6 @@ class Pas(object):
             eid = int(items[5])
             sid = self.sid
         return (mycase, caseflag, midasi, eid, tid, sdist, sid)
-
 
     def __parse_case_analysis_items(self, analysis_result, case_info_format):
         """ 述語情報の設定・格情報の抽出 """
@@ -178,7 +178,6 @@ class Pas(object):
             if caseflag == "U" or caseflag == "-":
                 continue
             yield self.__parse_case_info_format(items, case_info_format)
-
 
     def __set_args(self, analysis_result, case_info_format):
         """ 述語項構造情報をself.argumentsに設定 """
