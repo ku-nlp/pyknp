@@ -29,10 +29,10 @@ class Juman(object):
                  pattern=r'^EOS$', jumanpp=True):
         if jumanpp or command != 'jumanpp':
             self.command = command
-            self.option = option.split()
+            self.options = option.split()
         else:
             self.command = 'juman'
-            self.option = option.split() + ['-e2', '-B']
+            self.options = option.split() + ['-e2', '-B']
         self.server = server
         self.port = port
         self.timeout = timeout
@@ -62,7 +62,7 @@ class Juman(object):
             if self.server is not None:
                 self.socket = Socket(self.server, self.port, "RUN -e2\n")
             else:
-                command = [self.command] + self.option
+                command = [self.command] + self.options
                 if 'jumanpp' not in self.command and self.rcfile:
                     command.extend(['-r', self.rcfile])
                 self.subprocess = Subprocess(command)

@@ -100,9 +100,8 @@ class MListTest(unittest.TestCase):
         self.assertEqual(''.join([x.midasi for x in self.mlist]), '構文解析')
         self.assertEqual(self.mlist.spec(), self.spec1 + self.spec2)
         new_spec = """-\t1\t0\t0\t1\t構文\t構文/こうぶん\tこうぶん\t構文\t名詞\t6\t普通名詞\t1\t*\t0\t*\t0\tカテゴリ:抽象物\n""" + \
-"""-\t2\t1\t2\t3\t解析\t解析/かいせき\tかいせき\t解析\t名詞\t6\tサ変名詞\t2\t*\t0\t*\t0\tカテゴリ:抽象物|ドメイン:教育・学習;科学・技術\n"""
+                   """-\t2\t1\t2\t3\t解析\t解析/かいせき\tかいせき\t解析\t名詞\t6\tサ変名詞\t2\t*\t0\t*\t0\tカテゴリ:抽象物|ドメイン:教育・学習;科学・技術\n"""
         self.assertEqual(self.mlist.new_spec(), new_spec)
-
 
     def test_doukei(self):
         spec = """母 はは 母 名詞 6 普通名詞 1 * 0 * 0 "代表表記:母/はは 漢字読み:訓 カテゴリ:人 ドメイン:家庭・暮らし"

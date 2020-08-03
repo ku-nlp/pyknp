@@ -40,8 +40,8 @@ class Subprocess(object):
 
     def __init__(self, command, timeout=180):
         subproc_args = {'stdin': subprocess.PIPE, 'stdout': subprocess.PIPE,
-                'stderr': subprocess.STDOUT, 'cwd': '.',
-                'close_fds': sys.platform != "win32"}
+                        'stderr': subprocess.STDOUT, 'cwd': '.',
+                        'close_fds': sys.platform != "win32"}
         try:
             env = os.environ.copy()
             self.process = subprocess.Popen(command, env=env, **subproc_args)
@@ -63,9 +63,9 @@ class Subprocess(object):
         except AttributeError:
             pass
 
-
     def query(self, sentence, pattern):
         assert(isinstance(sentence, six.text_type))
+
         def alarm_handler(signum, frame):
             raise subprocess.TimeoutExpired(self.process_command, self.process_timeout)
         signal.signal(signal.SIGALRM, alarm_handler)

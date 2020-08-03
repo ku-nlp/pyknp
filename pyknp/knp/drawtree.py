@@ -87,17 +87,17 @@ class DrawTree(object):
                     else:
                         item[i][j] = "　"
 
-        line = [self.leaf_string(leaf) for leaf in self.draw_tree_leaves()]
+        lines = [self.leaf_string(leaf) for leaf in self.draw_tree_leaves()]
         for i in range(limit):
             for j in range(i + 1, limit + 1):
-                line[i] += item[i][j]
+                lines[i] += item[i][j]
 
-        max_length = max([self._str_real_length(l) for l in line])
+        max_length = max([self._str_real_length(line) for line in lines])
         buf = ""
         for i in range(limit + 1):
-            diff = max_length - self._str_real_length(line[i])
+            diff = max_length - self._str_real_length(lines[i])
             buf += " " * diff
-            buf += line[i] + leaves[i].pstring() + "\n"
+            buf += lines[i] + leaves[i].pstring() + "\n"
 
         return buf
 
@@ -116,7 +116,7 @@ class DrawTree(object):
     def _str_real_length(self, string):
         length = 0
         for char in string:
-            if re.search("^[a-zA-Z\*\!\?]$", char):
+            if re.search(r"^[a-zA-Z*!?]$", char):
                 # 品詞情報は長さ1
                 length += 1
             else:

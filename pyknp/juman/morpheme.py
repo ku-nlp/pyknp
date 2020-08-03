@@ -15,7 +15,7 @@ class JUMAN_FORMAT(object):
         LATTICE_ALL: ラティス出力形式から、すべてのビームを読む 
     """
 
-    DEFAULT = 0 # default
+    DEFAULT = 0  # default
     LATTICE_TOP_ONE = 1
     LATTICE_ALL = 2
 
@@ -81,7 +81,7 @@ class Morpheme(object):
             self._parse_new_spec(spec.strip("\n"))
     
     def _parse_new_spec(self, spec):
-        try: # FIXME KNPの場合と同様、EOSをきちんと判定する
+        try:  # FIXME KNPの場合と同様、EOSをきちんと判定する
             parts = spec.split("\t")
             self.mrph_id = int(parts[1])
             self.prev_mrph_id = [int(mid) for mid in parts[2].split(";")]
@@ -113,7 +113,7 @@ class Morpheme(object):
         if spec.startswith(' '):
             spec = '\\%s' % spec
         if spec.startswith('\  \  \  特殊 1 空白 6 * 0 * 0'):
-            parts = ['\ ','\ ','\ ','特殊','1','空白','6','*','0','*','0','NIL']
+            parts = ['\ ', '\ ', '\ ', '特殊', '1', '空白', '6', '*', '0', '*', '0', 'NIL']
         else:
             for char in spec:
                 if char == '"':
@@ -134,7 +134,7 @@ class Morpheme(object):
                     part += char
             parts.append(part)
 
-        try: # FIXME KNPの場合と同様、EOSをきちんと判定する
+        try:  # FIXME KNPの場合と同様、EOSをきちんと判定する
             self.midasi = parts[0]
             self.yomi = parts[1]
             self.genkei = parts[2]
@@ -196,9 +196,9 @@ class Morpheme(object):
         elif isinstance(span, tuple) or isinstance(span, list):
             span = (span[0], span[1])
         elif span is six.text_type:
-            span = (int(span), int(span) + len(self.midasi) -1)
+            span = (int(span), int(span) + len(self.midasi) - 1)
         elif isinstance(span, int):
-            span = (span, span + len(self.midasi) -1)
+            span = (span, span + len(self.midasi) - 1)
         
         if self.mrph_id is None:
             raise NotImplementedError
@@ -242,6 +242,7 @@ class Morpheme(object):
             val = fs[-1]
             rvalue[key]=val.split(";")
         return rvalue
+
 
 class MorphemeTest(unittest.TestCase):
 
