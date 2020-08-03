@@ -129,7 +129,7 @@ class JumanTest(unittest.TestCase):
         result = self.jumanpp.analysis(test_str)
         self.assertEqual(len(result), 3)
         self.assertEqual((result[1].bunrui == '空白'), True) 
-        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(" ", "\ "))
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(" ", "　"))
         self.assertGreaterEqual(len(result.spec().split("\n")), 3)
 
     def test_eos(self):
@@ -140,12 +140,12 @@ class JumanTest(unittest.TestCase):
     def test_eos2(self):
         test_str = "Canon EOS 80D買った"
         result = self.jumanpp.analysis(test_str)
-        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(" ", "\ "))
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(" ", "　"))
 
     def test_dquo(self):
-        test_str = "\"最高\"の気分"
+        test_str = '"最高"の気分'
         result = self.jumanpp.analysis(test_str)
-        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
+        self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace("\"", "”"))
 
     def test_escape(self):
         test_str = "&lt;tag&gt;\\エス\'ケープ"
