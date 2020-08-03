@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 import collections
 import six
+import re
 
 
 class Argument(object):
@@ -151,7 +152,8 @@ class Pas(object):
                 tid = -1  # FIXME: EIDが登録された文内のTag位置
                 sdist = None
                 sid = "-1"  # FIXME: EIDが登録された文のsid (複数文を辿れる必要がある)
-        elif case_info_format == CaseInfoFormat.PASv42:  # FIXME: tid,sidについてv4.1と同じ問題がある
+        else:  # FIXME: tid,sidについてv4.1と同じ問題がある
+            assert case_info_format == CaseInfoFormat.PASv42
             mycase = items[0]
             caseflag = items[1]
             midasi = items[2]
@@ -159,23 +161,42 @@ class Pas(object):
             tid = int(items[4])
             eid = int(items[5])
             sid = self.sid
-        return (mycase, caseflag, midasi, eid, tid, sdist, sid)
+        return mycase, caseflag, midasi, eid, tid, sdist, sid
 
     def __parse_case_analysis_items(self, analysis_result, case_info_format):
         """ 述語情報の設定・格情報の抽出 """
         assert isinstance(analysis_result, six.text_type)
-        c0 = analysis_result.find(':')
-        c1 = analysis_result.find(':', c0 + 1)
-        self.cfid = analysis_result[:c0] + ":" + analysis_result[c0 + 1:c1]
 
         if analysis_result.count(":") < 2:  # For copula
             self.valid = False
             return
 
-        for k in analysis_result[c1 + 1:].split(';'):
-            items = k.split("/")
+        if case_info_format == CaseInfoFormat.CASE:
+            cf_pat = re.compile(r'(.+/.+):(.+):(.+?/[CNODEU]/.+?(?:/(?:-|\d+)){2}/[^;/]+)')
+            arg_pat = re.compile(r';(.+?/[CNODEU]/.+?(?:/(?:-|\d+)){2}/[^;/]+)')
+        elif case_info_format == CaseInfoFormat.PASv41:
+            cf_pat = re.compile(r'(.+/.+):(.+):(.+?/[CNODEU]/.+?/(?:-|\d+))')
+            arg_pat = re.compile(r';(.+?/[CNODEU]/.+?/(?:-|\d+))')
+        else:
+            assert case_info_format == CaseInfoFormat.PASv42
+            cf_pat = re.compile(r'(.+/.+):(.+):(.+?/[CNODEU]/.+?(?:/(?:-?\d*)){3})')
+            arg_pat = re.compile(r';(.+?/[CNODEU]/.+?(?:/(?:-?\d*)){3})')
+
+        match = cf_pat.match(analysis_result)
+        self.cfid = match.group(1) + ':' + match.group(2)
+        cases = [match.group(3)]
+        pos = match.end(3)
+        while True:
+            match = arg_pat.match(analysis_result, pos=pos)
+            if match is None:
+                break
+            cases.append(match.group(1))
+            pos = match.end(1)
+
+        for k in cases:
+            items = k.split('/')
             caseflag = items[1]
-            if caseflag == "U" or caseflag == "-":
+            if caseflag == 'U' or caseflag == '-':
                 continue
             yield self.__parse_case_info_format(items, case_info_format)
 
