@@ -185,12 +185,19 @@ class Morpheme(object):
         return "%s\n" % spec.rstrip()
 
     def new_spec(self, prev_mrph_id=None, span=None):
-        assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, six.text_type) or isinstance(prev_mrph_id, list) or prev_mrph_id is None
+        assert isinstance(prev_mrph_id, int) or \
+               isinstance(prev_mrph_id, six.text_type) or \
+               isinstance(prev_mrph_id, list) or \
+               prev_mrph_id is None
         if prev_mrph_id is None:
             prev_mrph_id = self.prev_mrph_id
         
         # This method accepts character position instead of morpheme span for backward comatibility.
-        assert isinstance(span, tuple) or isinstance(span, list) or isinstance(span, int) or isinstance(span, six.text_type) or span is None
+        assert isinstance(span, tuple) or \
+               isinstance(span, list) or \
+               isinstance(span, int) or \
+               isinstance(span, six.text_type) or \
+               span is None
         if span is None:
             span = self.span
         elif isinstance(span, tuple) or isinstance(span, list):
@@ -203,8 +210,7 @@ class Morpheme(object):
         if self.mrph_id is None:
             raise NotImplementedError
         
-        out = []
-        out.append("-\t%s" % self.mrph_id)
+        out = ["-\t%s" % self.mrph_id]
         if isinstance(prev_mrph_id, list):
             out.append("\t%s" % ";".join(["%s" % pm for pm in prev_mrph_id]))
         else:
@@ -217,7 +223,8 @@ class Morpheme(object):
         else:
             out.append("\t%s" % self.repname)
         out.append("\t%s\t%s\t%s\t%s" % (self.yomi, self.genkei, self.hinsi, self.hinsi_id))
-        out.append("\t%s\t%s\t%s\t%s\t%s\t%s" % (self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id, self.katuyou2, self.katuyou2_id))
+        out.append("\t%s\t%s\t%s\t%s\t%s\t%s" %
+                   (self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id, self.katuyou2, self.katuyou2_id))
         out.append("\t")
         if len(self.fstring) == 0:
             fs = []
@@ -240,7 +247,7 @@ class Morpheme(object):
             fs = feature.rstrip().lstrip().split(":")
             key = ":".join(fs[:-1])
             val = fs[-1]
-            rvalue[key]=val.split(";")
+            rvalue[key] = val.split(";")
         return rvalue
 
 
