@@ -8,14 +8,14 @@ from pyknp import Morpheme, JUMAN_FORMAT
 from pyknp import Tag
 from pyknp import TList
 from pyknp import SynNodes, SynNode
-from pyknp import DrawTree
+from pyknp import draw_tree, sprint_tree
 import re
 import unittest
 import json
 import bisect
 
 
-class BList(DrawTree):
+class BList(object):
     """ ある文に関する文節列を保持するオブジェクト
 
     Args:
@@ -214,9 +214,12 @@ class BList(DrawTree):
     def __len__(self):
         return len(self._bnst)
 
+    def draw_tree(self, fh=None):
+        self.draw_bnst_tree(fh=fh)
+
     def draw_bnst_tree(self, fh=None):
         """ 文節列の依存関係を木構造として表現して出力する． """
-        self.draw_tree(fh=fh)
+        draw_tree(self._bnst, fh=fh)
 
     def draw_tag_tree(self, fh=None):
         """ タグ列の依存関係を木構造として表現して出力する． """
@@ -225,9 +228,8 @@ class BList(DrawTree):
             tlist.push_tag(tag)
         tlist.draw_tree(fh=fh)
 
-    def draw_tree_leaves(self):
-        """ draw_tree メソッドとの通信用のメソッド． """
-        return self.bnst_list()
+    def sprint_tree(self):
+        return sprint_tree(self._bnst)
 
     def get_clause_starts(self, concat_clause_in_paren=False, discourse_clause=False):
         """ 節の冒頭句の位置情報を返す

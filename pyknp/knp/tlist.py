@@ -4,11 +4,11 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 from pyknp import Morpheme
 from pyknp import Tag
-from pyknp import DrawTree
+from pyknp import draw_tree, sprint_tree
 import unittest
 
 
-class TList(DrawTree):
+class TList(object):
     """ ある文に関する基本句列を保持するオブジェクト """
 
     def __init__(self):
@@ -45,13 +45,15 @@ class TList(DrawTree):
             tag.set_readonly()
         self._readonly = True
 
-    def draw_tag_tree(self):
-        """ タグ列の依存関係を木構造として表現して出力する． """
-        self.draw_tree()
+    def draw_tree(self, fh=None):
+        self.draw_tag_tree(fh=fh)
 
-    def draw_tree_leaves(self):
-        """ draw_tree メソッドとの通信用のメソッド． """
-        return self.tag_list()
+    def draw_tag_tree(self, fh=None):
+        """ タグ列の依存関係を木構造として表現して出力する． """
+        draw_tree(self._tag, fh=fh)
+
+    def sprint_tree(self):
+        return sprint_tree(self._tag)
 
     def tag_list(self):
         """ 基本句列を構成する全基本句オブジェクトを返す
