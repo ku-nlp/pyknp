@@ -1,4 +1,4 @@
-#-*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
@@ -6,7 +6,6 @@ from pyknp import Juman, JUMAN_FORMAT
 from pyknp import Socket, Subprocess  
 from pyknp import BList
 import os
-import sys
 import unittest
 import six
 import distutils.spawn
@@ -35,7 +34,7 @@ class KNP(object):
         self.server = server
         self.port = port
         self.timeout = timeout
-        self.option = option.split()
+        self.options = option.split()
         self.rcfile = rcfile
         self.pattern = pattern
         self.socket = None
@@ -86,17 +85,16 @@ class KNP(object):
                 self.socket = Socket(
                     self.server, self.port, "RUN -tab -normal\n")
             else:
-                command = [self.command] + self.option
+                command = [self.command] + self.options
                 if self.rcfile:
                     command.extend(['-r', self.rcfile])
                 self.subprocess = Subprocess(command)
 
         if self.socket:
-            knp_lines = self.socket.query(juman_str, pattern=r'^%s$'%(self.pattern))
+            knp_lines = self.socket.query(juman_str, pattern=r'^%s$' % self.pattern)
         else:
-            knp_lines = self.subprocess.query(juman_str, pattern=r'^%s$'%(self.pattern))
+            knp_lines = self.subprocess.query(juman_str, pattern=r'^%s$' % self.pattern)
         return BList(knp_lines, self.pattern, juman_format)
-
 
     def reparse_knp_result(self, knp_str, juman_format=JUMAN_FORMAT.DEFAULT):
         """
@@ -110,8 +108,7 @@ class KNP(object):
         Returns:
             BList: 文節列オブジェクト
         """
-        return self.parse_juman_result(knp_str)
-
+        return self.parse_juman_result(knp_str, juman_format=juman_format)
 
     def result(self, input_str, juman_format=JUMAN_FORMAT.DEFAULT):
         """
@@ -158,6 +155,7 @@ class KNPTest(unittest.TestCase):
             ''.join([mrph.midasi for mrph in result[1].mrph_list()]), '素敵に')
         self.assertEqual(
             ''.join([mrph.midasi for mrph in result[2].mrph_list()]), 'ENEOS')
+
 
 if __name__ == '__main__':
     unittest.main()

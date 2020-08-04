@@ -1,4 +1,4 @@
-#-*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
 from pyknp import Morpheme, JUMAN_FORMAT
@@ -7,9 +7,7 @@ from pyknp import Tag
 from pyknp import TList
 from pyknp import Features
 import re
-import sys
 import unittest
-from six import u
 
 
 class Bunsetsu(object):
@@ -48,7 +46,7 @@ class Bunsetsu(object):
         spec = spec.strip()
         if spec == '*':
             pass
-        elif juman_format != JUMAN_FORMAT.DEFAULT: # TODO
+        elif juman_format != JUMAN_FORMAT.DEFAULT:  # TODO
             items = spec.split("\t")
             self.parent_id = int(items[2])
             self.dpndtype = items[3]
@@ -80,7 +78,6 @@ class Bunsetsu(object):
             head_prime_repname = self.features.get("主辞’代表表記")
             if head_prime_repname:
                 self.head_prime_repname = head_prime_repname
-
 
     def push_mrph(self, mrph):
         """ 新しい形態素オブジェクトをセットする """
@@ -146,8 +143,8 @@ class BunsetsuTest(unittest.TestCase):
             "代表表記:解析/かいせき カテゴリ:抽象物 ドメイン:教育・学習;" \
             "科学・技術\" <代表表記:解析/かいせき>"
         self.spec = "%s\n%s\n%s\n%s\n%s\n" % (self.bunsetsu_str, self.tag1_str,
-                                               self.mrph1_str, self.tag2_str,
-                                               self.mrph2_str)
+                                              self.mrph1_str, self.tag2_str,
+                                              self.mrph2_str)
 
     def test_simple(self):
         bnst = Bunsetsu(self.bunsetsu_str, 3)
@@ -179,6 +176,7 @@ class BunsetsuTest(unittest.TestCase):
         tag2.push_mrph(mrph2)
         bnst.push_tag(tag2)
         self.assertEqual(bnst.spec(), self.spec)
+
 
 if __name__ == '__main__':
     unittest.main()

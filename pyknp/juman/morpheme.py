@@ -1,10 +1,9 @@
-#-*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 from __future__ import absolute_import, unicode_literals
 import re
 import unittest
 import six
-from six import u
 
 
 class JUMAN_FORMAT(object):
@@ -16,7 +15,7 @@ class JUMAN_FORMAT(object):
         LATTICE_ALL: ラティス出力形式から、すべてのビームを読む 
     """
 
-    DEFAULT = 0 # default
+    DEFAULT = 0  # default
     LATTICE_TOP_ONE = 1
     LATTICE_ALL = 2
 
@@ -82,7 +81,7 @@ class Morpheme(object):
             self._parse_new_spec(spec.strip("\n"))
     
     def _parse_new_spec(self, spec):
-        try: # FIXME KNPの場合と同様、EOSをきちんと判定する
+        try:  # FIXME KNPの場合と同様、EOSをきちんと判定する
             parts = spec.split("\t")
             self.mrph_id = int(parts[1])
             self.prev_mrph_id = [int(mid) for mid in parts[2].split(";")]
@@ -113,8 +112,8 @@ class Morpheme(object):
         inside_quotes = False
         if spec.startswith(' '):
             spec = '\\%s' % spec
-        if(spec.startswith('\  \  \  特殊 1 空白 6 * 0 * 0')):
-            parts = ['\ ','\ ','\ ','特殊','1','空白','6','*','0','*','0','NIL']
+        if spec.startswith('\  \  \  特殊 1 空白 6 * 0 * 0'):
+            parts = ['\ ', '\ ', '\ ', '特殊', '1', '空白', '6', '*', '0', '*', '0', 'NIL']
         else:
             for char in spec:
                 if char == '"':
@@ -135,7 +134,7 @@ class Morpheme(object):
                     part += char
             parts.append(part)
 
-        try: # FIXME KNPの場合と同様、EOSをきちんと判定する
+        try:  # FIXME KNPの場合と同様、EOSをきちんと判定する
             self.midasi = parts[0]
             self.yomi = parts[1]
             self.genkei = parts[2]
@@ -186,26 +185,32 @@ class Morpheme(object):
         return "%s\n" % spec.rstrip()
 
     def new_spec(self, prev_mrph_id=None, span=None):
-        assert isinstance(prev_mrph_id, int) or isinstance(prev_mrph_id, six.text_type) or isinstance(prev_mrph_id, list) or prev_mrph_id is None
-        if(prev_mrph_id is None):
+        assert isinstance(prev_mrph_id, int) or \
+               isinstance(prev_mrph_id, six.text_type) or \
+               isinstance(prev_mrph_id, list) or \
+               prev_mrph_id is None
+        if prev_mrph_id is None:
             prev_mrph_id = self.prev_mrph_id
         
         # This method accepts character position instead of morpheme span for backward comatibility.
-        assert isinstance(span, tuple) or isinstance(span, list) or isinstance(span, int) or isinstance(span, six.text_type) or span is None
-        if(span is None):
+        assert isinstance(span, tuple) or \
+               isinstance(span, list) or \
+               isinstance(span, int) or \
+               isinstance(span, six.text_type) or \
+               span is None
+        if span is None:
             span = self.span
-        elif(isinstance(span, tuple) or isinstance(span, list)):
+        elif isinstance(span, tuple) or isinstance(span, list):
             span = (span[0], span[1])
-        elif(span is six.text_type):
-            span = (int(span), int(span) + len(self.midasi) -1)
-        elif(isinstance(span, int)):
-            span = (span, span + len(self.midasi) -1)
+        elif span is six.text_type:
+            span = (int(span), int(span) + len(self.midasi) - 1)
+        elif isinstance(span, int):
+            span = (span, span + len(self.midasi) - 1)
         
         if self.mrph_id is None:
             raise NotImplementedError
         
-        out = []
-        out.append("-\t%s" % self.mrph_id)
+        out = ["-\t%s" % self.mrph_id]
         if isinstance(prev_mrph_id, list):
             out.append("\t%s" % ";".join(["%s" % pm for pm in prev_mrph_id]))
         else:
@@ -218,7 +223,8 @@ class Morpheme(object):
         else:
             out.append("\t%s" % self.repname)
         out.append("\t%s\t%s\t%s\t%s" % (self.yomi, self.genkei, self.hinsi, self.hinsi_id))
-        out.append("\t%s\t%s\t%s\t%s\t%s\t%s" % (self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id, self.katuyou2, self.katuyou2_id))
+        out.append("\t%s\t%s\t%s\t%s\t%s\t%s" %
+                   (self.bunrui, self.bunrui_id, self.katuyou1, self.katuyou1_id, self.katuyou2, self.katuyou2_id))
         out.append("\t")
         if len(self.fstring) == 0:
             fs = []
@@ -233,7 +239,7 @@ class Morpheme(object):
             out.append(self.fstring)
         out.append("\n")
         return "".join(out)
-    
+
     def _parse_fstring(self, fstring):
         """ 素性情報をパースする """
         rvalue = {}
@@ -241,8 +247,9 @@ class Morpheme(object):
             fs = feature.rstrip().lstrip().split(":")
             key = ":".join(fs[:-1])
             val = fs[-1]
-            rvalue[key]=val.split(";")
+            rvalue[key] = val.split(";")
         return rvalue
+
 
 class MorphemeTest(unittest.TestCase):
 

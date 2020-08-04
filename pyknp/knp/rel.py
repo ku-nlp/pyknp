@@ -24,7 +24,7 @@ class Rel(object):
         if len(match) == 0:
             self.ignore = True
             return
-        atype, mode, target, sid, id = match[0]
+        atype, mode, target, sid, id_ = match[0]
         if mode == "？":
             self.ignore = True
         if target == "なし":
@@ -34,13 +34,13 @@ class Rel(object):
             sid = None  # dummy
             if target in WRITER_READER_CONV_LIST:
                 target = WRITER_READER_CONV_LIST[target]
-        if len(id) == 0:
-            id = None  # dummy
-        if id is not None:
-            id = int(id)
+        if len(id_) == 0:
+            id_ = None  # dummy
+        if id_ is not None:
+            id_ = int(id_)
 
         self.atype = atype
         self.target = target
         self.sid = sid
-        self.tid = id
+        self.tid = id_
         self.mode = mode

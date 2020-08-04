@@ -3,7 +3,6 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from pyknp import Pas
 from pyknp import Rel
 import unittest
 import six
@@ -34,7 +33,7 @@ class Features(dict):
             kv_splitter = self.spec.find(':', tag_start, tag_end)
             if self.spec[tag_start:].startswith('rel '):
                 rel = Rel(self.spec[tag_start:tag_end])
-                if rel.ignore == False:
+                if rel.ignore is False:
                     if self.rels is None:
                         self.rels = []
                     self.rels.append(rel)

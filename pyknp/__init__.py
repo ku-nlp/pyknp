@@ -6,7 +6,7 @@ from pyknp.knp.rel import Rel
 from pyknp.knp.pas import Argument, Pas
 from pyknp.knp.features import Features
 from pyknp.knp.tag import Tag
-from pyknp.knp.drawtree import DrawTree
+from pyknp.knp.drawtree import draw_tree, sprint_tree
 from pyknp.knp.tlist import TList
 from pyknp.knp.bunsetsu import Bunsetsu
 from pyknp.knp.syngraph import SynNodes, SynNode
