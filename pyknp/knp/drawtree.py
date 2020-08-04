@@ -28,17 +28,17 @@ POS_MARK = {
 }
 
 
-def draw_tree(leaves, fh=None):
+def draw_tree(leaves, fh=None, show_pos=True):
     """ 構文木を指定された fh に出力する．指定を省略した場合は，標準出力に出力される． """
 
     if fh:
-        fh.write(sprint_tree(leaves))
+        fh.write(sprint_tree(leaves, show_pos=show_pos))
     # 指定なしの場合は標準出力を用いる．
     else:
-        print(sprint_tree(leaves), end=' ')
+        print(sprint_tree(leaves, show_pos=show_pos), end=' ')
 
 
-def sprint_tree(leaves):
+def sprint_tree(leaves, show_pos=True):
     """ 構文木を文字列で返す． """
     limit = len(leaves)
     item = [[''] * limit for _ in range(limit)]
@@ -84,7 +84,7 @@ def sprint_tree(leaves):
                 else:
                     item[i][j] = "　"
 
-    lines = [_leaf_string(leaf) for leaf in leaves]
+    lines = [_leaf_string(leaf, show_pos) for leaf in leaves]
     for i in range(limit):
         for j in range(i + 1, limit + 1):
             lines[i] += item[i][j]
@@ -99,15 +99,16 @@ def sprint_tree(leaves):
     return buf
 
 
-def _leaf_string(leaf):
+def _leaf_string(leaf, show_pos):
     string = ""
     for mrph in leaf.mrph_list():
         string += mrph.midasi
 
-        if re.search("^(?:固有名詞|人名|地名)$", mrph.bunrui):
-            string += POS_MARK[mrph.bunrui]
-        else:
-            string += POS_MARK[mrph.hinsi]
+        if show_pos:
+            if re.search("^(?:固有名詞|人名|地名)$", mrph.bunrui):
+                string += POS_MARK[mrph.bunrui]
+            else:
+                string += POS_MARK[mrph.hinsi]
 
     return string
 

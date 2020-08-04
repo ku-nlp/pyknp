@@ -45,12 +45,12 @@ class TList(object):
             tag.set_readonly()
         self._readonly = True
 
-    def draw_tree(self, fh=None):
-        self.draw_tag_tree(fh=fh)
+    def draw_tree(self, fh=None, show_pos=True):
+        self.draw_tag_tree(fh=fh, show_pos=show_pos)
 
-    def draw_tag_tree(self, fh=None):
+    def draw_tag_tree(self, fh=None, show_pos=True):
         """ タグ列の依存関係を木構造として表現して出力する． """
-        draw_tree(self._tag, fh=fh)
+        draw_tree(self._tag, fh=fh, show_pos=show_pos)
 
     def sprint_tree(self):
         return sprint_tree(self._tag)

@@ -214,22 +214,22 @@ class BList(object):
     def __len__(self):
         return len(self._bnst)
 
-    def draw_tree(self, fh=None):
-        self.draw_bnst_tree(fh=fh)
+    def draw_tree(self, fh=None, show_pos=True):
+        self.draw_bnst_tree(fh=fh, show_pos=show_pos)
 
-    def draw_bnst_tree(self, fh=None):
+    def draw_bnst_tree(self, fh=None, show_pos=True):
         """ 文節列の依存関係を木構造として表現して出力する． """
-        draw_tree(self._bnst, fh=fh)
+        draw_tree(self._bnst, fh=fh, show_pos=show_pos)
 
-    def draw_tag_tree(self, fh=None):
+    def draw_tag_tree(self, fh=None, show_pos=True):
         """ タグ列の依存関係を木構造として表現して出力する． """
         tlist = TList()
         for tag in self.tag_list():
             tlist.push_tag(tag)
-        tlist.draw_tree(fh=fh)
+        tlist.draw_tree(fh=fh, show_pos=show_pos)
 
-    def sprint_tree(self):
-        return sprint_tree(self._bnst)
+    def sprint_tree(self, show_pos=True):
+        return sprint_tree(self._bnst, show_pos=show_pos)
 
     def get_clause_starts(self, concat_clause_in_paren=False, discourse_clause=False):
         """ 節の冒頭句の位置情報を返す
