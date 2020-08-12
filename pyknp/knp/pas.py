@@ -57,7 +57,7 @@ class Pas(object):
                  keyは格を表す文字列, valueはArgumentオブジェクトのリスト。
                  リスト形式なのは、ガ格などは複数の項を取り得るため。
     """
-    def __init__(self, tid=None, result=None, knpstyle=True):
+    def __init__(self, tid=None, result=None):
         self.valid = True
         self.cfid = None 
         self.arguments = collections.defaultdict(list)

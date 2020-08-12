@@ -1,4 +1,4 @@
-#-*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 from pyknp import JUMAN_FORMAT
 from pyknp import Juman, KNP
 

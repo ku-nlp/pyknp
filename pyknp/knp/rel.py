@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 import re
 
-REL_PAT = "rel type=\"([^\s]+?)\"(?: mode=\"([^>]+?)\")? target=\"([^\s]+?)\"(?: sid=\"(.+?)\" id=\"(.+?)\")?/"
+REL_PAT = r'rel type="(\S+?)"(?: mode="([^>]+?)")? target="(\S+?)"(?: sid="(.+?)" id="(.+?)")?/'
 WRITER_READER_LIST = ["著者", "読者"]
 WRITER_READER_CONV_LIST = {"一人称": "著者", "二人称": "読者"}
 
@@ -20,7 +20,7 @@ class Rel(object):
         self.mode = None
         self.ignore = False
 
-        match = re.findall(r"%s" % REL_PAT, fstring)
+        match = re.findall(REL_PAT, fstring)
         if len(match) == 0:
             self.ignore = True
             return
