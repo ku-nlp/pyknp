@@ -5,6 +5,7 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 import re
 
+# language=RegExp
 REL_PAT = r'rel type="(\S+?)"(?: mode="([^>]+?)")? target="(\S+?)"(?: sid="(.+?)" id="(.+?)")?/'
 WRITER_READER_LIST = ["著者", "読者"]
 WRITER_READER_CONV_LIST = {"一人称": "著者", "二人称": "読者"}
@@ -12,7 +13,7 @@ WRITER_READER_CONV_LIST = {"一人称": "著者", "二人称": "読者"}
 
 class Rel(object):
 
-    def __init__(self, fstring, consider_writer_reader=True):
+    def __init__(self, fstring):
         self.atype = None
         self.target = None
         self.sid = None
@@ -25,9 +26,7 @@ class Rel(object):
             self.ignore = True
             return
         atype, mode, target, sid, id_ = match[0]
-        if mode == "？":
-            self.ignore = True
-        if target == "なし":
+        if mode == "？" and target == "なし":
             self.ignore = True
 
         if len(sid) == 0:
