@@ -171,23 +171,26 @@ class Pas(object):
             self.valid = False
             return
 
+        # language=RegExp
+        cfid_pat = r'(.+?):(.+?)'
         if case_info_format == CaseInfoFormat.CASE:
-            cf_pat = re.compile(r'(.+/.+):(.+):(.+?/[CNODEU]/.+?(?:/(?:-|\d+)){2}/[^;/]+)')
-            arg_pat = re.compile(r';(.+?/[CNODEU]/.+?(?:/(?:-|\d+)){2}/[^;/]+)')
+            # language=RegExp
+            arg_pat = r'(.+?/[CNODEU-]/.+?(?:/(?:-|\d+)){2}/[^;/]+)'
         elif case_info_format == CaseInfoFormat.PASv41:
-            cf_pat = re.compile(r'(.+/.+):(.+):(.+?/[CNODEU]/.+?/(?:-|\d+))')
-            arg_pat = re.compile(r';(.+?/[CNODEU]/.+?/(?:-|\d+))')
+            # language=RegExp
+            arg_pat = r'(.+?/[CNODEU-]/.+?/(?:-|\d+))'
         else:
             assert case_info_format == CaseInfoFormat.PASv42
-            cf_pat = re.compile(r'(.+/.+):(.+):(.+?/[CNODEU]/.+?(?:/(?:-?\d*)){3})')
-            arg_pat = re.compile(r';(.+?/[CNODEU]/.+?(?:/(?:-?\d*)){3})')
+            # language=RegExp
+            arg_pat = r'(.+?/[CNODEU-]/.+?(?:/(?:-?\d*)){3})'
+        match = re.match(cfid_pat + ':' + arg_pat, analysis_result)
 
-        match = cf_pat.match(analysis_result)
         self.cfid = match.group(1) + ':' + match.group(2)
+        arg_pat_compiled = re.compile(';' + arg_pat)
         cases = [match.group(3)]
         pos = match.end(3)
         while True:
-            match = arg_pat.match(analysis_result, pos=pos)
+            match = arg_pat_compiled.match(analysis_result, pos=pos)
             if match is None:
                 break
             cases.append(match.group(1))
