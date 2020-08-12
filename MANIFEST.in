@@ -2,6 +2,5 @@ include MANIFEST.in
 include AUTHORS
 include COPYING
 include README.md
-include VERSION
 include setup.py
 global-exclude *~

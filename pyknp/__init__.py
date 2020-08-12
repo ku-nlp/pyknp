@@ -1,5 +1,4 @@
-import os
-__version__ = open(os.path.join(os.path.dirname(__file__), '../VERSION')).read().rstrip()
+from pyknp.__version__ import __version__
 
 from pyknp.juman.process import Socket, Subprocess
 from pyknp.juman.morpheme import JUMAN_FORMAT, Morpheme
