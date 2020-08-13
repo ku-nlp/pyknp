@@ -30,7 +30,7 @@ class Argument(object):
         self.eid = eid
         self.midasi = midasi
         self.flag = flag
-        self.sdist = sdist 
+        self.sdist = sdist
 
 
 ArgRepname = collections.namedtuple("ArgRepname", "repname,tid_list")
@@ -87,7 +87,7 @@ class Pas(object):
                 self.tid2sdist[tid] = sdist
             self.__set_args(tag_predicate.features.get("項構造"), CaseInfoFormat.PASv41)
 
-        elif "述語項構造" in tag_predicate.features:  # KNP v4.2 (unpublished) で -anaphora
+        elif "述語項構造" in tag_predicate.features:  # KNP v4.2 で -anaphora
             self.__set_args(tag_predicate.features.get("述語項構造"), CaseInfoFormat.PASv42)
 
         elif "格解析結果" in tag_predicate.features: 
@@ -167,12 +167,8 @@ class Pas(object):
         """ 述語情報の設定・格情報の抽出 """
         assert isinstance(analysis_result, six.text_type)
 
-        if analysis_result.count(":") < 2:  # For copula
-            self.valid = False
-            return
-
         # language=RegExp
-        cfid_pat = r'(.+?):(.+?)'
+        cfid_pat = r'(.+?):([^:]+?)'
         if case_info_format == CaseInfoFormat.CASE:
             # language=RegExp
             arg_pat = r'(.+?/[CNODEU-]/.+?(?:/(?:-|\d+)){2}/[^;/]+)'
@@ -183,9 +179,11 @@ class Pas(object):
             assert case_info_format == CaseInfoFormat.PASv42
             # language=RegExp
             arg_pat = r'(.+?/[CNODEU-]/.+?(?:/(?:-?\d*)){3})'
-        match = re.match(cfid_pat + ':' + arg_pat, analysis_result)
+        match = re.match(r'{}(?::{}|$)'.format(cfid_pat, arg_pat), analysis_result)
 
         self.cfid = match.group(1) + ':' + match.group(2)
+        if match.group(3) is None:  # <述語項構造:束の間/つかのま:判0> など
+            return
         arg_pat_compiled = re.compile(';' + arg_pat)
         cases = [match.group(3)]
         pos = match.end(3)
