@@ -12,7 +12,7 @@ about = {}
 here = os.path.abspath(os.path.dirname(__file__))
 exec(open(os.path.join(here, 'pyknp', '__version__.py')).read(), about)
 
-with open("README.md") as f:
+with open('README.md', encoding='utf8') as f:
     long_description = f.read()
 
 setup(
