@@ -6,6 +6,7 @@ from __future__ import absolute_import
 import collections
 import six
 import re
+import sys
 
 
 class Argument(object):
@@ -168,7 +169,7 @@ class Pas(object):
         assert isinstance(analysis_result, six.text_type)
 
         # language=RegExp
-        cfid_pat = r'(.+?):([^:]+?)'
+        cfid_pat = r'(.*?):([^:/]+?)'
         if case_info_format == CaseInfoFormat.CASE:
             # language=RegExp
             arg_pat = r'(.+?/[CNODEU-]/.+?(?:/(?:-|\d+)){2}/[^;/]+)'
@@ -180,6 +181,10 @@ class Pas(object):
             # language=RegExp
             arg_pat = r'(.+?/[CNODEU-]/.+?(?:/(?:-?\d*)){3})'
         match = re.match(r'{}(?::{}|$)'.format(cfid_pat, arg_pat), analysis_result)
+
+        if match is None:
+            print("invalid tag format: '{}' is ignored".format(analysis_result), file=sys.stderr)
+            return
 
         self.cfid = match.group(1) + ':' + match.group(2)
         if match.group(3) is None:  # <述語項構造:束の間/つかのま:判0> など
