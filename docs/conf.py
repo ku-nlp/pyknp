@@ -161,6 +161,10 @@ latex_documents = [
      'Author', 'manual'),
 ]
 
+latex_docclass = {'mydocument': 'jsbook'}
+
+latex_engine = 'platex'
+
 
 # -- Options for manual page output ------------------------------------------
 
