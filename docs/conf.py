@@ -102,9 +102,8 @@ pygments_style = 'sphinx'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-import sphinx_theme_pd
-html_theme = 'sphinx_theme_pd'
-html_theme_path = [sphinx_theme_pd.get_html_theme_path()]
+#
+# html_theme = 'alabaster'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -126,7 +125,38 @@ html_static_path = ['_static']
 # 'searchbox.html']``.
 #
 # html_sidebars = {}
+# ---sphinx-themes-----
+html_theme = 'sphinx_material'
+# Set link name generated in the top bar.
+html_title = 'Python Module for JUMAN++/KNP'
+# Material theme options (see theme.conf for more information)
+html_theme_options = {
 
+    # Set the name of the project to appear in the navigation.
+    'nav_title': 'pyknp',
+
+    # # Set you GA account ID to enable tracking
+    # 'google_analytics_account': 'UA-XXXXX',
+
+    # # Specify a base_url used to generate sitemap.xml. If not
+    # # specified, then no sitemap will be built.
+    # 'base_url': 'https://project.github.io/project',
+
+    # Set the color and the accent color
+    # 'color_primary': 'blue',
+    # 'color_accent': 'light-blue',
+
+    # Set the repo location to get a badge with stats
+    'repo_url': 'https://github.com/ku-nlp/pyknp/',
+    'repo_name': 'pyknp',
+
+    # Visible levels of the global TOC; -1 means unlimited
+    'globaltoc_depth': 3,
+    # If False, expand all TOC entries
+    'globaltoc_collapse': True,
+    # If True, show hidden TOC entries
+    'globaltoc_includehidden': True,
+}
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
