@@ -12,6 +12,7 @@ sphinx-autobuild = "*"
 sphinx-autodoc-typehints = "*"
 recommonmark = "*"
 twine = "*"
+sphinx-rtd-theme = "*"
 
 [packages]
 
