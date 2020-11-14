@@ -72,13 +72,13 @@ class Subprocess(object):
         signal.alarm(self.process_timeout)
         result = ""
         try:
-            self.process.stdin.write(sentence.encode('utf-8') + six.b('\n'))
+            self.process.stdin.write(sentence.strip().encode('utf-8') + six.b('\n'))
             self.process.stdin.flush()
             while True:
                 line = self.process.stdout.readline().rstrip().decode('utf-8')
                 if re.search(pattern, line):
                     break
-                result = "%s%s\n" % (result, line)
+                result += line + '\n'
         finally:
             signal.alarm(0)
         return result
