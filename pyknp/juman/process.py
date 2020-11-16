@@ -27,7 +27,8 @@ class Socket(object):
 
     def query(self, sentence, pattern):
         assert(isinstance(sentence, six.text_type))
-        self.sock.sendall("%s\n" % sentence.encode('utf-8').strip())
+        sentence = sentence.strip() + '\n'  # ensure sentence ends with '\n'
+        self.sock.sendall(sentence.encode('utf-8'))
         data = self.sock.recv(1024)
         recv = data
         while not re.search(pattern, recv):
@@ -40,8 +41,7 @@ class Subprocess(object):
 
     def __init__(self, command, timeout=180):
         subproc_args = {'stdin': subprocess.PIPE, 'stdout': subprocess.PIPE,
-                        'stderr': subprocess.STDOUT, 'cwd': '.',
-                        'close_fds': sys.platform != "win32"}
+                        'cwd': '.', 'close_fds': sys.platform != "win32"}
         try:
             env = os.environ.copy()
             self.process = subprocess.Popen(command, env=env, **subproc_args)
@@ -65,20 +65,23 @@ class Subprocess(object):
 
     def query(self, sentence, pattern):
         assert(isinstance(sentence, six.text_type))
+        sentence = sentence.strip() + '\n'  # ensure sentence ends with '\n'
 
         def alarm_handler(signum, frame):
             raise subprocess.TimeoutExpired(self.process_command, self.process_timeout)
+
         signal.signal(signal.SIGALRM, alarm_handler)
         signal.alarm(self.process_timeout)
-        result = ""
+        result = ''
         try:
-            self.process.stdin.write(sentence.strip().encode('utf-8') + six.b('\n'))
+            self.process.stdin.write(sentence.encode('utf-8'))
             self.process.stdin.flush()
             while True:
-                line = self.process.stdout.readline().rstrip().decode('utf-8')
+                line = self.process.stdout.readline().decode('utf-8').rstrip()
+                result += line + '\n'
                 if re.search(pattern, line):
                     break
-                result += line + '\n'
         finally:
             signal.alarm(0)
+        self.process.stdout.flush()
         return result
