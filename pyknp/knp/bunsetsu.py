@@ -25,6 +25,8 @@ class Bunsetsu(object):
         parent (Bunsetsu): 親の文節オブジェクト
         parent_id (int): 親の文節ID
         children (list): 子の文節オブジェクトのリスト
+        prev (Bunsetsu): 前の文節オブジェクト
+        next (Bunsetsu): 次の文節オブジェクト
         repname (str): 正規化代表表記 (normalized_repnameに同じ)
         normalized_repname (str): 正規化代表表記
         head_repname (str): 主辞代表表記
@@ -39,6 +41,8 @@ class Bunsetsu(object):
         self.parent_id = -1
         self.parent = None
         self.children = []
+        self.prev = None
+        self.next = None
         self.dpndtype = ''
         self.fstring = ''
         self._pstring = ''
