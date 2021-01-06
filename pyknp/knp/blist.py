@@ -156,6 +156,16 @@ class BList(object):
 
     def _set_parent_child(self):
         for bnst in self._bnst:
+            if bnst.bnst_id == 0:
+                bnst.prev = None
+            else:
+                bnst.prev = self._bnst[bnst.bnst_id - 1]
+            
+            if bnst.bnst_id + 1 == len(self._bnst):
+                bnst.next = None
+            else:
+                bnst.next = self._bnst[bnst.bnst_id + 1]
+            
             if bnst.parent_id == -1:
                 bnst.parent = None
             else:
