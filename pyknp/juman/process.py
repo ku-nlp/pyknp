@@ -78,9 +78,9 @@ class Subprocess(object):
             self.process.stdin.flush()
             while True:
                 line = self.process.stdout.readline().decode('utf-8').rstrip()
-                result += line + '\n'
                 if re.search(pattern, line):
                     break
+                result += line + '\n'
         finally:
             signal.alarm(0)
         self.process.stdout.flush()
