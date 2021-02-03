@@ -2,9 +2,8 @@ import sys
 import os
 import six
 import re
-import signal
 import socket
-import subprocess
+from subprocess import PIPE, Popen, TimeoutExpired
 
 
 class Socket(object):
@@ -40,11 +39,10 @@ class Socket(object):
 class Subprocess(object):
 
     def __init__(self, command, timeout=180):
-        subproc_args = {'stdin': subprocess.PIPE, 'stdout': subprocess.PIPE,
-                        'cwd': '.', 'close_fds': sys.platform != "win32"}
+        subproc_args = {'cwd': '.', 'close_fds': sys.platform != "win32"}
         try:
             env = os.environ.copy()
-            self.process = subprocess.Popen(command, env=env, **subproc_args)
+            self.process = Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True, env=env, **subproc_args)
             self.process_command = command
             self.process_timeout = timeout
         except OSError:
@@ -65,23 +63,6 @@ class Subprocess(object):
 
     def query(self, sentence, pattern):
         assert(isinstance(sentence, six.text_type))
-        sentence = sentence.strip() + '\n'  # ensure sentence ends with '\n'
-
-        def alarm_handler(signum, frame):
-            raise subprocess.TimeoutExpired(self.process_command, self.process_timeout)
-
-        signal.signal(signal.SIGALRM, alarm_handler)
-        signal.alarm(self.process_timeout)
-        result = ''
-        try:
-            self.process.stdin.write(sentence.encode('utf-8'))
-            self.process.stdin.flush()
-            while True:
-                line = self.process.stdout.readline().decode('utf-8').rstrip()
-                if re.search(pattern, line):
-                    break
-                result += line + '\n'
-        finally:
-            signal.alarm(0)
-        self.process.stdout.flush()
-        return result
+        sentence = sentence.strip() + os.linesep  # ensure sentence ends with '\n'
+        stdout_data, stderr_data = self.process.communicate(input=sentence, timeout=self.process_timeout)
+        return os.linesep.join([line for line in stderr_data.split(os.linesep) if not re.search(pattern, line)])
