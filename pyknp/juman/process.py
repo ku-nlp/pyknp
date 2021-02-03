@@ -3,7 +3,7 @@ import os
 import six
 import re
 import socket
-from subprocess import PIPE, Popen, TimeoutExpired
+from subprocess import PIPE, Popen
 
 
 class Socket(object):
@@ -42,7 +42,7 @@ class Subprocess(object):
         subproc_args = {'cwd': '.', 'close_fds': sys.platform != "win32"}
         try:
             env = os.environ.copy()
-            self.process = Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, universal_newlines=True, env=env, **subproc_args)
+            self.process = Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, env=env, **subproc_args)
             self.process_command = command
             self.process_timeout = timeout
         except OSError:
@@ -63,6 +63,11 @@ class Subprocess(object):
 
     def query(self, sentence, pattern):
         assert(isinstance(sentence, six.text_type))
-        sentence = sentence.strip() + os.linesep  # ensure sentence ends with '\n'
-        stdout_data, stderr_data = self.process.communicate(input=sentence, timeout=self.process_timeout)
-        return os.linesep.join([line for line in stderr_data.split(os.linesep) if not re.search(pattern, line)])
+        stdout_data, stderr_data = self.process.communicate(
+            input=sentence.strip().encode(sys.getdefaultencoding()),
+            timeout=self.process_timeout)
+        return os.linesep.join(
+            [line
+             for line
+             in stderr_data.decode(sys.getdefaultencoding()).split(os.linesep)
+             if not re.search(pattern, line)])
