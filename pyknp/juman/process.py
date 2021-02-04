@@ -63,12 +63,14 @@ class Subprocess(object):
 
     def query(self, sentence, pattern):
         assert(isinstance(sentence, six.text_type))
-        self.process.stdin.write(sentence.strip().encode(sys.getdefaultencoding()))
-        self.process.stdout.flush()
+        sentence = sentence.rstrip() + os.linesep
+        self.process.stdin.write(sentence.encode(sys.getdefaultencoding()))
+        self.process.stdin.flush()
         result = ''
         while True:
-            line = self.process.stdout.readline().encode(sys.getdefaultencoding()).rstrip()
+            line = self.process.stdout.readline().decode(sys.getdefaultencoding()).rstrip()
             if re.search(pattern, line):
                 break
             result += line + os.linesep
+        self.process.stdout.flush()
         return result
