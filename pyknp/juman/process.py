@@ -63,11 +63,12 @@ class Subprocess(object):
 
     def query(self, sentence, pattern):
         assert(isinstance(sentence, six.text_type))
-        stdout_data, stderr_data = self.process.communicate(
-            input=sentence.strip().encode(sys.getdefaultencoding()),
-            timeout=self.process_timeout)
-        return os.linesep.join(
-            [line
-             for line
-             in stderr_data.decode(sys.getdefaultencoding()).split(os.linesep)
-             if not re.search(pattern, line)])
+        self.process.stdin.write(sentence.strip().encode(sys.getdefaultencoding()))
+        self.process.stdout.flush()
+        result = ''
+        while True:
+            line = self.process.stdout.readline().encode(sys.getdefaultencoding()).rstrip()
+            if re.search(pattern, line):
+                break
+            result += line + os.linesep
+        return result
