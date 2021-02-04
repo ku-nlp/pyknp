@@ -3,6 +3,7 @@ import os
 import six
 import re
 import socket
+import locale
 from subprocess import PIPE, Popen
 
 
@@ -64,11 +65,11 @@ class Subprocess(object):
     def query(self, sentence, pattern):
         assert(isinstance(sentence, six.text_type))
         sentence = sentence.rstrip() + os.linesep
-        self.process.stdin.write(sentence.encode(sys.getdefaultencoding()))
+        self.process.stdin.write(sentence.encode(locale.getpreferredencoding()))
         self.process.stdin.flush()
         result = ''
         while True:
-            line = self.process.stdout.readline().decode(sys.getdefaultencoding()).rstrip()
+            line = self.process.stdout.readline().decode(locale.getpreferredencoding()).rstrip()
             if re.search(pattern, line):
                 break
             result += line + os.linesep
