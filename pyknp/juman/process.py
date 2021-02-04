@@ -3,7 +3,8 @@ import os
 import six
 import re
 import socket
-import locale
+import platform
+import sys
 from subprocess import PIPE, Popen
 
 
@@ -46,6 +47,8 @@ class Subprocess(object):
             self.process = Popen(command, stdin=PIPE, stdout=PIPE, stderr=PIPE, env=env, **subproc_args)
             self.process_command = command
             self.process_timeout = timeout
+            self.encoding = "CP932" if platform.system() == "Windows" else sys.getdefaultencoding()
+
         except OSError:
             raise
 
@@ -65,11 +68,11 @@ class Subprocess(object):
     def query(self, sentence, pattern):
         assert(isinstance(sentence, six.text_type))
         sentence = sentence.rstrip() + os.linesep
-        self.process.stdin.write(sentence.encode(locale.getpreferredencoding()))
+        self.process.stdin.write(sentence.encode(self.encoding))
         self.process.stdin.flush()
         result = ''
         while True:
-            line = self.process.stdout.readline().decode(locale.getpreferredencoding()).rstrip()
+            line = self.process.stdout.readline().decode(self.encoding).rstrip()
             if re.search(pattern, line):
                 break
             result += line + os.linesep
