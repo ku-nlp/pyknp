@@ -2,6 +2,7 @@ import sys
 import os
 import six
 import re
+import signal
 import socket
 import subprocess
 
@@ -39,7 +40,7 @@ class Socket(object):
 class Subprocess(object):
 
     def __init__(self, command, timeout=180):
-        subproc_args = {'stdin': subprocess.PIPE, 'stdout': subprocess.PIPE, 'encoding': 'utf-8',
+        subproc_args = {'stdin': subprocess.PIPE, 'stdout': subprocess.PIPE,
                         'cwd': '.', 'close_fds': sys.platform != "win32"}
         try:
             env = os.environ.copy()
@@ -66,20 +67,21 @@ class Subprocess(object):
         assert(isinstance(sentence, six.text_type))
         sentence = sentence.strip() + '\n'  # ensure sentence ends with '\n'
 
-        try:
-            outs, errs = self.process.communicate(sentence, timeout=self.process_timeout)
-        except subprocess.TimeoutExpired:
-            self.process.kill()
-            print('killed subprocess: {} because the process did not end within {} sec.'
-                  .format(self.process_command, self.process_timeout), file=sys.stderr)
-            outs, errs = self.process.communicate()
+        def alarm_handler(signum, frame):
+            raise subprocess.TimeoutExpired(self.process_command, self.process_timeout)
 
-        if self.process.returncode != 0:
-            raise subprocess.CalledProcessError
-
+        signal.signal(signal.SIGALRM, alarm_handler)
+        signal.alarm(self.process_timeout)
         result = ''
-        for line in outs.split('\n'):
-            if re.search(pattern, line):
-                break
-            result += line + '\n'
+        try:
+            self.process.stdin.write(sentence.encode('utf-8'))
+            self.process.stdin.flush()
+            while True:
+                line = self.process.stdout.readline().decode('utf-8').rstrip()
+                if re.search(pattern, line):
+                    break
+                result += line + '\n'
+        finally:
+            signal.alarm(0)
+        self.process.stdout.flush()
         return result
