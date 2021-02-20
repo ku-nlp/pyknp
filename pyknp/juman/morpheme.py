@@ -107,24 +107,25 @@ class Morpheme(object):
             pass
 
     def _parse_spec(self, spec):
-        parts = []
-        part = ''
-        inside_quotes = False
+
         if spec.startswith(' '):
             spec = '\\%s' % spec
+        
+        parts = []
         if spec.startswith('\  \  \  特殊 1 空白 6 * 0 * 0'):
             parts = ['\ ', '\ ', '\ ', '特殊', '1', '空白', '6', '*', '0', '*', '0', 'NIL']
         else:
+            part = ''
+            inside_quotes = False
             for char in spec:
                 if char == '"':
-                    if not inside_quotes:
-                        inside_quotes = True
-                    else:
-                        inside_quotes = False
+                    inside_quotes = not inside_quotes
+
                 # If "\"" proceeds " ", it would be not inside_quotes, but "\"".
                 if inside_quotes and char == ' ' and part == '"':
                     inside_quotes = False
-                if part != "" and char == ' ' and not inside_quotes:
+
+                if part != "" and char == ' ' and not inside_quotes and part != "\\":
                     if part.startswith('"') and part.endswith('"') and len(part) > 1:
                         parts.append(part[1:-1])
                     else:
