@@ -5,14 +5,15 @@ from __future__ import unicode_literals
 from __future__ import absolute_import
 import re
 
-REL_PAT = "rel type=\"([^\s]+?)\"(?: mode=\"([^>]+?)\")? target=\"([^\s]+?)\"(?: sid=\"(.+?)\" id=\"(.+?)\")?/"
+# language=RegExp
+REL_PAT = r'rel type="(\S+?)"(?: mode="([^>]+?)")? target="(\S+?)"(?: sid="(.+?)" id="(.+?)")?/'
 WRITER_READER_LIST = ["著者", "読者"]
 WRITER_READER_CONV_LIST = {"一人称": "著者", "二人称": "読者"}
 
 
 class Rel(object):
 
-    def __init__(self, fstring, consider_writer_reader=True):
+    def __init__(self, fstring):
         self.atype = None
         self.target = None
         self.sid = None
@@ -20,27 +21,25 @@ class Rel(object):
         self.mode = None
         self.ignore = False
 
-        match = re.findall(r"%s" % REL_PAT, fstring)
+        match = re.findall(REL_PAT, fstring)
         if len(match) == 0:
             self.ignore = True
             return
-        atype, mode, target, sid, id = match[0]
-        if mode == "？":
-            self.ignore = True
-        if target == "なし":
+        atype, mode, target, sid, id_ = match[0]
+        if mode == "？" and target == "なし":
             self.ignore = True
 
         if len(sid) == 0:
             sid = None  # dummy
             if target in WRITER_READER_CONV_LIST:
                 target = WRITER_READER_CONV_LIST[target]
-        if len(id) == 0:
-            id = None  # dummy
-        if id is not None:
-            id = int(id)
+        if len(id_) == 0:
+            id_ = None  # dummy
+        if id_ is not None:
+            id_ = int(id_)
 
         self.atype = atype
         self.target = target
         self.sid = sid
-        self.tid = id
+        self.tid = id_
         self.mode = mode

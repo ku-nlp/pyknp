@@ -1,11 +1,9 @@
-#-*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
 import re
-import sys
 import unittest
-from six import u
 
 
 class SynNodes(object):
@@ -22,7 +20,7 @@ class SynNodes(object):
         tagid, dpnd, string = spec.split(' ')[1:4]
         self.tagids = [int(n) for n in tagid.split(',')]
 
-        match = re.match(r'([\-\,\/\d]+)([DPIA])', dpnd)
+        match = re.match(r'([\-,/\d]+)([DPIA])', dpnd)
         if match:
             parent = match.group(1)
             self.dpndtype = match.group(2)
@@ -109,6 +107,7 @@ class SynNodeTest(unittest.TestCase):
         self.assertEqual(synnode3.synid, 's1201:所在/しょざい')
         self.assertEqual(synnode3.score, 0.693)
         self.assertEqual(synnode3.feature, '<上位語><下位語数:323>')
+
 
 if __name__ == '__main__':
     unittest.main()

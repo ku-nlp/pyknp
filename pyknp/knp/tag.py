@@ -1,4 +1,4 @@
-#-*- encoding: utf-8 -*-
+# -*- encoding: utf-8 -*-
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
@@ -6,7 +6,6 @@ from pyknp import MList
 from pyknp import Morpheme, JUMAN_FORMAT
 from pyknp import Features
 import re
-import sys
 import unittest
 
 
@@ -135,7 +134,6 @@ class Tag(object):
         return ''.join(mrph.midasi for mrph in self.mrph_list())
 
 
-
 class TagTest(unittest.TestCase):
 
     def test(self):
@@ -156,6 +154,7 @@ class TagTest(unittest.TestCase):
         tag.push_mrph(mrph2)
         self.assertEqual(len(tag.mrph_list()), 2)
         self.assertEqual(tag.get_surface(), '構文解析')
+
 
 if __name__ == '__main__':
     unittest.main()

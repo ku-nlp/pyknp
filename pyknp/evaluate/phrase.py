@@ -21,13 +21,13 @@ def phrase(g, s, level=0):
     scorer = Scorer()
     for span in spans:
         try:
-            gold_pid = g_spans.index(span)
+            _ = g_spans.index(span)
         except ValueError:
             scorer.fp += 1
             continue
 
         try:
-            sys_pid = s_spans.index(span)
+            _ = s_spans.index(span)
         except ValueError:
             scorer.fn += 1
             continue

@@ -51,7 +51,7 @@ def draw_tree(bl, outf):
                 outf.write(u"%s:%s " % (rel.atype, rel.target))
         outf.write(u"\n")
 
-    outf.write(u"\n\n")
+    outf.write(u"\n")
 
 
 def draw_trees(inf, outf, lattice_format):

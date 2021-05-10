@@ -28,14 +28,12 @@ def morpheme(g, s, level):
 
     scorer = Scorer()
     for position in starts:
-        g_id = None
         try:
             g_id = g_starts.index(position)
         except:
             scorer.fp += 1
             continue
 
-        s_id = None
         try:
             s_id = s_starts.index(position)
         except:

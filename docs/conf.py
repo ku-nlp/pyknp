@@ -16,6 +16,7 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('../pyknp'))
 sys.path.insert(0, os.path.abspath('..'))
+import sphinx_rtd_theme
 
 
 # -- Project information -----------------------------------------------------
@@ -45,6 +46,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.todo',
     'sphinx.ext.napoleon',
+    'sphinx_rtd_theme',
 ]
 autosummary_generate = True
 autodoc_default_flags = [
@@ -103,7 +105,7 @@ pygments_style = 'sphinx'
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-html_theme = 'alabaster'
+# html_theme = 'alabaster'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -125,7 +127,8 @@ html_static_path = ['_static']
 # 'searchbox.html']``.
 #
 # html_sidebars = {}
-
+# ---sphinx-themes-----
+html_theme = 'sphinx_rtd_theme'
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
@@ -160,6 +163,10 @@ latex_documents = [
     (master_doc, 'pyknp.tex', 'pyknp Documentation',
      'Author', 'manual'),
 ]
+
+latex_docclass = {'mydocument': 'jsbook'}
+
+latex_engine = 'platex'
 
 
 # -- Options for manual page output ------------------------------------------

@@ -6,19 +6,18 @@ __copyright__ = ''
 __license__ = 'See COPYING'
 
 import os
-from setuptools import setup, find_packages, Extension
+from setuptools import setup, find_packages
 
-version_file = os.path.join(os.path.dirname(__file__), 'VERSION')
-with open(version_file) as fh:
-    pyknp_version = fh.read().strip()
-__version__ = pyknp_version
+about = {}
+here = os.path.abspath(os.path.dirname(__file__))
+exec(open(os.path.join(here, 'pyknp', '__version__.py')).read(), about)
 
-with open("README.md") as f:
+with open('README.md', encoding='utf8') as f:
     long_description = f.read()
 
 setup(
     name='pyknp',
-    version=pyknp_version,
+    version=about['__version__'],
     maintainer=__author__,
     maintainer_email=__email__,
     author=__author__,
