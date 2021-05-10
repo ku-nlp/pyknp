@@ -4,3 +4,4 @@ build/
 dist/
 pyknp.egg-info/
 docs/_build/
+.venv
