@@ -12,9 +12,9 @@ def test_knp(knp):
     _task(knp)
 
 
-def test_knp_multithread(knp):
+def test_knp_multithread(knp_multithread):
     with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor:
-        future = executor.submit(_task, knp)
+        future = executor.submit(_task, knp_multithread)
         while future.running():
             time.sleep(0.1)
         future.result()
