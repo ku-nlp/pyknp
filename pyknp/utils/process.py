@@ -1,5 +1,6 @@
 import os
 import re
+import signal
 import socket
 import subprocess
 import sys
@@ -26,7 +27,7 @@ class Socket(object):
             self.sock.close()
 
     def query(self, sentence, pattern):
-        assert (isinstance(sentence, six.text_type))
+        assert isinstance(sentence, six.text_type)
         sentence = sentence.strip() + '\n'  # ensure sentence ends with '\n'
         self.sock.sendall(sentence.encode('utf-8'))
         data = self.sock.recv(1024)
@@ -63,20 +64,25 @@ class Subprocess(object):
         except AttributeError:
             pass
 
-    # @timeout_decorator.timeout(5, use_signals=False)
     def query(self, sentence, pattern):
-        assert isinstance(sentence, six.text_type)
-        # env = os.environ.copy()
-        # proc = subprocess.run(self.command, input=(sentence + '\n').encode(), env=env, check=True, **self.subproc_args)
-        self.process.stdin.write(sentence.encode())
-        self.process.stdin.write('\n'.encode())
-        self.process.stdin.flush()
-        # print(self.p.stdout.readline().decode().strip())
+        assert (isinstance(sentence, six.text_type))
+        sentence = sentence.strip() + '\n'  # ensure sentence ends with '\n'
+
+        def alarm_handler(signum, frame):
+            raise subprocess.TimeoutExpired(self.process_command, self.process_timeout)
+
+        signal.signal(signal.SIGALRM, alarm_handler)
+        signal.alarm(self.process_timeout)
         result = ''
-        # for line in self.p.stdout.readlines():
-        while True:
-            line = self.process.stdout.readline().decode().strip()
-            if re.search(pattern, line):
-                break
-            result += line + '\n'
+        try:
+            self.process.stdin.write(sentence.encode('utf-8'))
+            self.process.stdin.flush()
+            while True:
+                line = self.process.stdout.readline().decode('utf-8').rstrip()
+                if re.search(pattern, line):
+                    break
+                result += line + '\n'
+        finally:
+            signal.alarm(0)
+        self.process.stdout.flush()
         return result
