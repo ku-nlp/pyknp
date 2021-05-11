@@ -52,12 +52,13 @@ class Juman(object):
         self.ignorepattern = ignorepattern
         self.pattern = pattern
         if server is not None:
-            self.analyzer = Analyzer(backend='socket', server=server, port=port, socket_option='RUN -e2\n')
+            self.analyzer = Analyzer(backend='socket', timeout=timeout, server=server, port=port,
+                                     socket_option='RUN -e2\n')
         else:
             cmds = [self.command] + self.options
             if self.rcfile:
                 cmds += ['-r', self.rcfile]
-            self.analyzer = Analyzer(backend='subprocess', multithreading=multithreading, command=cmds)
+            self.analyzer = Analyzer(backend='subprocess', multithreading=multithreading, timeout=timeout, command=cmds)
 
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
             raise Exception("Can't read rcfile (%s)!" % self.rcfile)
