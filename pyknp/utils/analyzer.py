@@ -1,4 +1,4 @@
-from .process import Socket, Subprocess
+from .process import Socket, Subprocess, SubprocessThreadSafe
 
 
 class Analyzer(object):
@@ -12,11 +12,13 @@ class Analyzer(object):
         command (list): サブプロセスに渡すコマンド
     """
 
-    def __init__(self, backend, server=None, port=None, socket_option=None, command=None):
+    def __init__(self, backend, multithreading=False, server=None, port=None, socket_option=None, command=None):
         self.backend = backend
+        self.multithreading = multithreading
+
+        self.socket = None
         self.server = server
         self.port = port
-        self.socket = None
         self.socket_option = socket_option
 
         self.subprocess = None
@@ -27,7 +29,10 @@ class Analyzer(object):
             if self.server is not None:
                 self.socket = Socket(self.server, self.port, self.socket_option)
             else:
-                self.subprocess = Subprocess(self.command)
+                if self.multithreading is True:
+                    self.subprocess = SubprocessThreadSafe(self.command)
+                else:
+                    self.subprocess = Subprocess(self.command)
 
         if self.socket:
             return self.socket.query(input_str, pattern=pattern)

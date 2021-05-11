@@ -86,3 +86,22 @@ class Subprocess(object):
             signal.alarm(0)
         self.process.stdout.flush()
         return result
+
+
+class SubprocessThreadSafe(object):
+
+    def __init__(self, command, timeout=180):
+        self.subproc_args = {'stdout': subprocess.PIPE, 'timeout': timeout, 'cwd': '.',
+                             'close_fds': sys.platform != "win32"}
+        self.command = command
+
+    def query(self, sentence, pattern):
+        assert isinstance(sentence, six.text_type)
+        env = os.environ.copy()
+        proc = subprocess.run(self.command, input=(sentence + "\n").encode(), env=env, check=True, **self.subproc_args)
+        result = ""
+        for line in proc.stdout.decode().split("\n"):
+            if re.search(pattern, line):
+                break
+            result += line + '\n'
+        return result

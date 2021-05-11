@@ -27,9 +27,18 @@ class Juman(object):
         jumanpp (bool): JUMAN++を用いるかJUMANを用いるか。commandを指定した場合は無視される。
     """
 
-    def __init__(self, command='jumanpp', server=None, port=32000, timeout=30,
-                 option='', rcfile='', ignorepattern='',
-                 pattern=r'^EOS$', jumanpp=True):
+    def __init__(self,
+                 command='jumanpp',
+                 server=None,
+                 port=32000,
+                 timeout=30,
+                 option='',
+                 rcfile='',
+                 ignorepattern='',
+                 pattern=r'^EOS$',
+                 jumanpp=True,
+                 multithreading=False,
+                 ):
         if jumanpp or command != 'jumanpp':
             self.command = command
             self.options = option.split()
@@ -48,7 +57,7 @@ class Juman(object):
             cmds = [self.command] + self.options
             if self.rcfile:
                 cmds += ['-r', self.rcfile]
-            self.analyzer = Analyzer(backend='subprocess', command=cmds)
+            self.analyzer = Analyzer(backend='subprocess', multithreading=multithreading, command=cmds)
 
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
             raise Exception("Can't read rcfile (%s)!" % self.rcfile)

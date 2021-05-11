@@ -1,14 +1,17 @@
 # -*- encoding: utf-8 -*-
 
-from __future__ import unicode_literals
 from __future__ import absolute_import
-from pyknp import Juman, JUMAN_FORMAT
-from pyknp.utils.analyzer import Analyzer
-from pyknp import BList
+from __future__ import unicode_literals
+
+import distutils.spawn
 import os
 import unittest
+
 import six
-import distutils.spawn
+
+from pyknp import BList
+from pyknp import Juman, JUMAN_FORMAT
+from pyknp.utils.analyzer import Analyzer
 
 
 class KNP(object):
@@ -24,12 +27,23 @@ class KNP(object):
         jumancommand (str): JUMANコマンド
         jumanrcfile (str): JUMAN設定ファイルへのパス
         jumanpp (bool): JUMAN++を用いるかJUMANを用いるか
+        multithreading (bool): 解析をメインスレッド以外から行う可能性があるか
     """
 
-    def __init__(self, command='knp', server=None, port=31000, timeout=60,
-                 option='-tab', rcfile='', pattern=r'EOS',
-                 jumancommand='jumanpp', jumanrcfile='',
-                 jumanoption='', jumanpp=True):
+    def __init__(self,
+                 command='knp',
+                 server=None,
+                 port=31000,
+                 timeout=60,
+                 option='-tab',
+                 rcfile='',
+                 pattern=r'EOS',
+                 jumancommand='jumanpp',
+                 jumanrcfile='',
+                 jumanoption='',
+                 jumanpp=True,
+                 multithreading=False,
+                 ):
         self.command = command
         self.server = server
         self.port = port
@@ -43,7 +57,7 @@ class KNP(object):
             cmds = [self.command] + self.options
             if self.rcfile:
                 cmds += ['-r', self.rcfile]
-            self.analyzer = Analyzer(backend='subprocess', command=cmds)
+            self.analyzer = Analyzer(backend='subprocess', multithreading=multithreading, command=cmds)
         self.jumanpp = jumanpp
 
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
@@ -51,8 +65,8 @@ class KNP(object):
         if distutils.spawn.find_executable(self.command) is None:
             raise Exception("Can't find KNP command: %s" % self.command)
 
-        self.juman = Juman(command=jumancommand, rcfile=jumanrcfile,
-                           option=jumanoption, jumanpp=self.jumanpp)
+        self.juman = Juman(command=jumancommand, rcfile=jumanrcfile, option=jumanoption, jumanpp=self.jumanpp,
+                           multithreading=multithreading)
 
     def knp(self, sentence):
         """ parse関数と同じ """
