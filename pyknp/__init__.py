@@ -1,4 +1,5 @@
-from pyknp.__version__ import __version__
+import pkg_resources
+__version__ = pkg_resources.get_distribution('pyknp').version
 
 from .utils.process import Socket, Subprocess
 from .juman.morpheme import JUMAN_FORMAT, Morpheme

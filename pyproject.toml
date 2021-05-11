@@ -1,0 +1,46 @@
+[tool.poetry]
+name = "pyknp"
+version = "0.4.6"
+description = "Python module for JUMAN/KNP"
+license = "See COPYING"
+authors = ["Kurohashi-Kawahara Lab, Kyoto Univ <contact@nlp.ist.i.kyoto-u.ac.jp>"]
+maintainers = ["Nobuhiro Ueda <ueda@nlp.ist.i.kyoto-u.ac.jp>"]
+readme = "README.md"
+repository = "https://github.com/ku-nlp/pyknp"
+documentation = "https://pyknp.readthedocs.io/en/latest/"
+keywords = [
+    "NLP",
+    "JUMAN",
+    "KNP"
+]
+classifiers = [
+#    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 2.7",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8"
+]
+packages = [
+    { include = "pyknp" }
+]
+include = ["AUTHORS", "COPYING"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+six = "*"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.3"
+parameterized = "^0.8.1"
+ipdb = "^0.13.7"
+sphinx-autobuild = "^2021.3.14"
+recommonmark = "^0.7.1"
+sphinx-rtd-theme = "^0.5.2"
+
+[tool.poetry.scripts]
+knp-drawtree = 'pyknp.scripts:main'
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
