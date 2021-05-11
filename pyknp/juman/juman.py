@@ -3,14 +3,17 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
-from .mlist import MList
-from .morpheme import JUMAN_FORMAT
-from ..utils.analyzer import Analyzer
+
+import distutils.spawn
 import os
 import sys
 import unittest
+
 import six
-import distutils.spawn
+
+from pyknp.utils.analyzer import Analyzer
+from .mlist import MList
+from .morpheme import JUMAN_FORMAT
 
 
 class Juman(object):
@@ -119,12 +122,12 @@ class JumanTest(unittest.TestCase):
         self.assertGreaterEqual(len(result.spec().split("\n")), 6)
         self.assertEqual(result[2].midasi, "響き")
         self.assertEqual(result[2].hinsi, "名詞")
-    
+
     def test_whitespace_jumanpp(self):
         test_str = "半角 スペース"
         result = self.jumanpp.analysis(test_str)
         self.assertEqual(len(result), 3)
-        self.assertEqual((result[1].bunrui == '空白'), True) 
+        self.assertEqual((result[1].bunrui == '空白'), True)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(" ", "\ "))
         self.assertGreaterEqual(len(result.spec().split("\n")), 3)
 
@@ -153,7 +156,7 @@ class JumanTest(unittest.TestCase):
         result = self.jumanpp.analysis(test_str)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str)
 
-    # JUMAN 
+    # JUMAN
     def test_normal_juman(self):
         test_str = "この文を解析してください。"
         result = self.juman.analysis(test_str)
@@ -165,7 +168,7 @@ class JumanTest(unittest.TestCase):
         test_str = "半角 スペース"
         result = self.juman.analysis(test_str)
         self.assertEqual(len(result), 4)  # 半|角|\ |スペース
-        self.assertEqual((result[2].bunrui == '空白'), True) 
+        self.assertEqual((result[2].bunrui == '空白'), True)
         self.assertEqual(''.join(mrph.midasi for mrph in result), test_str.replace(" ", "\ "))
         self.assertGreaterEqual(len(result.spec().split("\n")), 4)
 

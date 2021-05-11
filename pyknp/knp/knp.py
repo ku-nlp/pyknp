@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 from pyknp import Juman, JUMAN_FORMAT
-from ..utils.analyzer import Analyzer
+from pyknp.utils.analyzer import Analyzer
 from pyknp import BList
 import os
 import unittest
