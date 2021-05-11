@@ -3,7 +3,7 @@
 from __future__ import unicode_literals
 from __future__ import absolute_import
 from pyknp import Juman, JUMAN_FORMAT
-from pyknp import Socket, Subprocess  
+from ..utils.analyzer import Analyzer
 from pyknp import BList
 import os
 import unittest
@@ -37,8 +37,13 @@ class KNP(object):
         self.options = option.split()
         self.rcfile = rcfile
         self.pattern = pattern
-        self.socket = None
-        self.subprocess = None
+        if server is not None:
+            self.analyzer = Analyzer(backend='socket', server=server, port=port, socket_option='RUN -tab -normal\n')
+        else:
+            cmds = [self.command] + self.options
+            if self.rcfile:
+                cmds += ['-r', self.rcfile]
+            self.analyzer = Analyzer(backend='subprocess', command=cmds)
         self.jumanpp = jumanpp
 
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
@@ -64,7 +69,7 @@ class KNP(object):
         Returns:
             BList: 文節列オブジェクト
         """
-        assert(isinstance(sentence, six.text_type))
+        assert isinstance(sentence, six.text_type)
         juman_lines = self.juman.juman_lines(sentence)
         juman_str = "%s%s" % (juman_lines, self.pattern)
         return self.parse_juman_result(juman_str, juman_format)
@@ -80,20 +85,8 @@ class KNP(object):
         Returns:
             BList: 文節列オブジェクト
         """
-        if not self.socket and not self.subprocess:
-            if self.server is not None:
-                self.socket = Socket(
-                    self.server, self.port, "RUN -tab -normal\n")
-            else:
-                command = [self.command] + self.options
-                if self.rcfile:
-                    command.extend(['-r', self.rcfile])
-                self.subprocess = Subprocess(command)
 
-        if self.socket:
-            knp_lines = self.socket.query(juman_str, pattern=r'^%s$' % self.pattern)
-        else:
-            knp_lines = self.subprocess.query(juman_str, pattern=r'^%s$' % self.pattern)
+        knp_lines = self.analyzer.query(juman_str, pattern=r'^%s$' % self.pattern)
         return BList(knp_lines, self.pattern, juman_format)
 
     def reparse_knp_result(self, knp_str, juman_format=JUMAN_FORMAT.DEFAULT):

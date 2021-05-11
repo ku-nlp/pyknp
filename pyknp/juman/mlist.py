@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 from __future__ import unicode_literals
-from pyknp import Morpheme, JUMAN_FORMAT
+from .morpheme import Morpheme, JUMAN_FORMAT
 import unittest
 
 

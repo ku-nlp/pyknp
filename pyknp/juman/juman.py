@@ -3,9 +3,9 @@
 from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import unicode_literals
-from pyknp import MList
-from pyknp import JUMAN_FORMAT
-from pyknp import Socket, Subprocess
+from .mlist import MList
+from .morpheme import JUMAN_FORMAT
+from ..utils.analyzer import Analyzer
 import os
 import sys
 import unittest
@@ -39,8 +39,14 @@ class Juman(object):
         self.rcfile = rcfile
         self.ignorepattern = ignorepattern
         self.pattern = pattern
-        self.socket = None
-        self.subprocess = None
+        if server is not None:
+            self.analyzer = Analyzer(backend='socket', server=server, port=port, socket_option='RUN -e2\n')
+        else:
+            cmds = [self.command] + self.options
+            if self.rcfile:
+                cmds += ['-r', self.rcfile]
+            self.analyzer = Analyzer(backend='subprocess', command=cmds)
+
         if self.rcfile and not os.path.isfile(os.path.expanduser(self.rcfile)):
             raise Exception("Can't read rcfile (%s)!" % self.rcfile)
         if distutils.spawn.find_executable(self.command) is None:
@@ -58,21 +64,11 @@ class Juman(object):
         if '\n' in input_str:
             input_str = input_str.replace('\n', '')
             print('Analysis is done ignoring "\\n".', file=sys.stderr)
-        if not self.socket and not self.subprocess:
-            if self.server is not None:
-                self.socket = Socket(self.server, self.port, "RUN -e2\n")
-            else:
-                command = [self.command] + self.options
-                if 'jumanpp' not in self.command and self.rcfile:
-                    command.extend(['-r', self.rcfile])
-                self.subprocess = Subprocess(command)
-        if self.socket:
-            return self.socket.query(input_str, pattern=self.pattern)
-        return self.subprocess.query(input_str, pattern=self.pattern)
+        return self.analyzer.query(input_str, pattern=self.pattern)
 
     def juman(self, input_str, juman_format=JUMAN_FORMAT.DEFAULT):
         """ analysis関数と同じ """
-        assert(isinstance(input_str, six.text_type))
+        assert isinstance(input_str, six.text_type)
         result = MList(self.juman_lines(input_str), juman_format)
         return result
 

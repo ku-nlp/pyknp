@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
-from pyknp import JUMAN_FORMAT
-from pyknp import Juman, KNP
+from pyknp.juman.morpheme import JUMAN_FORMAT
+from pyknp.juman.juman import Juman
+from pyknp.knp.knp import KNP
 
 
 def load_juman_from_stream(f, juman_format=JUMAN_FORMAT.DEFAULT):
