@@ -15,12 +15,12 @@ About
 Requirements
 ========================
 
-- Python 
+- Python
     -  Verified Versions: 2.7.15,  3.5.6,  3.6.6.
 - 形態素解析器 `JUMAN++`_ (JUMAN_)
-    - JUMAN++はJUMANの後継となる形態素解析器  
+    - JUMAN++はJUMANの後継となる形態素解析器
     - English pages of JUMAN++ (Japanese Morphological Analyzer): `EN_JUMAN++`_ (EN_JUMAN_)
-- 構文解析器 KNP_ 
+- 構文解析器 KNP_
     - English page of KNP (Japanese Dependency and Case Structure Analyzer): EN_KNP_
 
 .. _JUMAN++: http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN++
@@ -89,7 +89,7 @@ JUMAN++の実行例
 
 .. code-block:: none
 
-    % echo "下鴨神社の参道は暗かった。" | jumanpp 
+    % echo "下鴨神社の参道は暗かった。" | jumanpp
     下鴨 しもがも 下鴨 名詞 6 地名 4 * 0 * 0 "自動獲得:Wikipedia Wikipedia地名"
     神社 じんじゃ 神社 名詞 6 普通名詞 1 * 0 * 0 "代表表記:神社/じんじゃ ドメイン:文化・芸術 カテゴリ:場所-施設 地名末尾"
     の の の 助詞 9 接続助詞 3 * 0 * 0 NIL
@@ -108,7 +108,7 @@ pyknpを用いた解析プログラム
     from __future__ import unicode_literals # It is not necessary when you use python3.
     from pyknp import Juman
     jumanpp = Juman()   # default is JUMAN++: Juman(jumanpp=True). if you use JUMAN, use Juman(jumanpp=False)
-    result = jumanpp.analysis("下鴨神社の参道は暗かった。")  
+    result = jumanpp.analysis("下鴨神社の参道は暗かった。")
     for mrph in result.mrph_list(): # 各形態素にアクセス
         print("見出し:%s, 読み:%s, 原形:%s, 品詞:%s, 品詞細分類:%s, 活用型:%s, 活用形:%s, 意味情報:%s, 代表表記:%s" \
                 % (mrph.midasi, mrph.yomi, mrph.genkei, mrph.hinsi, mrph.bunrui, mrph.katuyou1, mrph.katuyou2, mrph.imis, mrph.repname))

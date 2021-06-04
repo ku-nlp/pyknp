@@ -40,4 +40,3 @@ Feature module
     :members:
     :undoc-members:
     :show-inheritance:
-

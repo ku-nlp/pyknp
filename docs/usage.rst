@@ -32,7 +32,7 @@ JUMAN++
     % python3 read_juman_results.py
     下鴨,神社,の,参道,は,暗い,。
 
- 
+
 KNP
 
 .. code-block:: python
@@ -105,7 +105,7 @@ Pasオブジェクトは、該当述語の述語と項の情報を管理する�
 Pasオブジェクト中のargumentsオブジェクトは、{格: Argumentオブジェクトのリスト}
 という辞書である。Argumentオブジェクトは項の情報を管理する。
 格と項の情報が1対1対応でないのは、ガ格などが複数の項を取り得るためである。
-                 
+
 Pas, Argument クラスの詳細は下記ドキュメントの `Pas module` の項目を参照してほしい。
 :doc:`./tag`
 
@@ -128,7 +128,7 @@ Pas, Argument クラスの詳細は下記ドキュメントの `Pas module` の�
 
 .. code-block:: none
 
-    % python3 get_pas.py 
+    % python3 get_pas.py
     述語: 泳いでいる
         格: ガ,  項: 少女  (項の基本句ID: 3)
     述語: 見た。
