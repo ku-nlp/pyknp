@@ -19,7 +19,8 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8"
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9"
 ]
 packages = [
     { include = "pyknp" }
@@ -31,12 +32,12 @@ python = "^3.7"
 six = "*"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.3"
-parameterized = "^0.8.1"
-ipdb = "^0.13.7"
-sphinx-autobuild = "^2021.3.14"
-recommonmark = "^0.7.1"
-sphinx-rtd-theme = "^0.5.2"
+pytest = "^6.2"
+parameterized = "^0.8"
+ipdb = "^0.13"
+sphinx-autobuild = "^2021.3"
+recommonmark = "^0.7"
+sphinx-rtd-theme = "^0.5"
 
 [tool.poetry.scripts]
 knp-drawtree = 'pyknp.scripts:main'
