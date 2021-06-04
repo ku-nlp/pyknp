@@ -12,11 +12,12 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
+from recommonmark.transform import AutoStructify
+from recommonmark.parser import CommonMarkParser
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../pyknp'))
 sys.path.insert(0, os.path.abspath('..'))
-import sphinx_rtd_theme
 
 
 # -- Project information -----------------------------------------------------
@@ -48,38 +49,24 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx_rtd_theme',
 ]
-autosummary_generate = True
-autodoc_default_flags = [
-    'members',
-    'private-members',
-    'no-undoc-members',
-    'show-inheritance',
-]
 
+autosummary_generate = True
+
+autodoc_default_options = {
+    # 'members': 'base_phrase, constants',
+    'member-order': 'bysource',
+    'special-members': '__init__',
+    'undoc-members': False,
+    'show-inheritance': True,
+}
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
-# The suffix(es) of source filenames.
-# You can specify multiple suffix as a list of string:
-#
-from recommonmark.parser import CommonMarkParser
-from recommonmark.transform import AutoStructify
-
-source_suffix = ['.rst', '.md']
-source_parsers = {
-    '.md': CommonMarkParser,
+source_suffix = {
+    '.rst': 'restructuredtext',
+    '.md': 'markdown',
 }
 
-# recommonmark の拡張利用
-github_doc_root = 'https://github.com/rtfd/recommonmark/tree/master/doc/'
-def setup(app):
-    app.add_config_value('recommonmark_config', {
-            'url_resolver': lambda url: github_doc_root + url,
-            'auto_toc_tree_section': 'Contents',
-            }, True)
-    app.add_transform(AutoStructify)
-
-#source_suffix = '.rst'
 
 # The master toctree document.
 master_doc = 'index'
@@ -94,7 +81,7 @@ language = 'en'
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path .
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.envrc', '.venv']
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
@@ -116,7 +103,7 @@ pygments_style = 'sphinx'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+# html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
@@ -191,30 +178,17 @@ texinfo_documents = [
 ]
 
 
-# -- Options for Epub output -------------------------------------------------
+# At the bottom of conf.py
 
-# Bibliographic Dublin Core info.
-epub_title = project
-epub_author = author
-epub_publisher = author
-epub_copyright = copyright
-
-# The unique identifier of the text. This can be a ISBN number
-# or the project homepage.
-#
-# epub_identifier = ''
-
-# A unique identification for the text.
-#
-# epub_uid = ''
-
-# A list of files that should not be packed into the epub file.
-epub_exclude_files = ['search.html']
-
-
-# -- Extension configuration -------------------------------------------------
-
-# -- Options for todo extension ----------------------------------------------
-
-# If true, `todo` and `todoList` produce output, else they produce nothing.
-todo_include_todos = True
+def setup(app):
+    github_doc_root = 'https://github.com/rtfd/recommonmark/tree/master/doc/'
+    app.add_config_value('recommonmark_config', {
+        'url_resolver': lambda url: github_doc_root + url,
+        'auto_toc_tree_section': 'Contents',
+        # 'enable_math': False,
+        # 'enable_inline_math': False,
+        # 'enable_eval_rst': True,
+        # 'enable_auto_doc_ref': True,
+    }, True)
+    app.add_source_parser(CommonMarkParser, override=True)
+    app.add_transform(AutoStructify)
