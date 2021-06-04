@@ -37,15 +37,6 @@ Install pyknp
 
     % pip install pyknp
 
-or
-
-.. code-block:: none
-
-    % git clone https://github.com/ku-nlp/pyknp
-    % cd pyknp
-    % python setup.py install [--prefix=path]
-
-
 
 A Simple Explanation of JUMAN++/KNP
 ================================================
@@ -219,6 +210,7 @@ Documents
 
    pyknp.juman
    pyknp.knp
+   usage
 
 
 Author/Contact
