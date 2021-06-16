@@ -13,3 +13,6 @@ build:
 .PHONY: build-doc
 build-doc:
 	cd docs && make html
+
+.PHONY: test
+	python -m unittest discover -s pyknp -p '*.py'
