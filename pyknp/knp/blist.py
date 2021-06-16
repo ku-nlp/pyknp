@@ -118,7 +118,7 @@ class BList(object):
             elif string.startswith('!') and not string.startswith('! ! !'):
                 synnode = SynNode(string)
                 self._bnst[-1].tag_list().push_synnode(synnode)
-            elif string.startswith('EOS'):
+            elif string.strip() == 'EOS':
                 pass
             else:
                 mrph = Morpheme(string, len(self.mrph_list()), self.juman_format)
