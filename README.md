@@ -4,7 +4,7 @@
 
 ## Requirements
 - Python 
-    - Verified Versions: 2.7.15,  3.5.6,  3.6.6.
+    - Verified Versions: 2.7.15,  3.7.11
 - 形態素解析器 [JUMAN++](http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN++) [[EN](http://nlp.ist.i.kyoto-u.ac.jp/EN/index.php?JUMAN++)]
 (or [JUMAN](http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN)[[EN](http://nlp.ist.i.kyoto-u.ac.jp/EN/index.php?JUMAN)])
     - JUMAN++ はJUMANの後継にあたる形態素解析器
