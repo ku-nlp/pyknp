@@ -1,0 +1,13 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using these metadata."
+title: "pyknp: Python Module for JUMAN++/KNP"
+authors:
+  - family-names: Richardson
+    given-names: John
+  - family-names: Shibata
+    given-names: Tomohide
+  - family-names: Hayashibe
+    given-names: Yuta
+version: 0.5.0
+license: ""
+repository-code: "https://github.com/ku-nlp/pyknp"
