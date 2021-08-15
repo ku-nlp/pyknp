@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import codecs
 import argparse
+import codecs
+import sys
+
 import pyknp
 import six
-import sys
 
 if six.PY2:
     sys.stdin = codecs.getreader('UTF-8')(sys.stdin)
@@ -84,18 +85,18 @@ def main():
                          help="output destination")
     aparser.add_argument("-L", "--lattice_format", action="store_true",
                          help="output in lattice format")
-    (opts, args) = aparser.parse_args()
+    args = aparser.parse_args()
 
-    if opts.input == "-":
+    if args.input == "-":
         inf = sys.stdin
     else:
-        inf = codecs.open(opts.input, "r", "utf8")
+        inf = codecs.open(args.input, "r", "utf8")
 
-    if opts.output == "-":
+    if args.output == "-":
         outf = sys.stdout
     else:
-        outf = codecs.open(opts.output, "w", "utf8")
-    draw_trees(inf, outf, opts.lattice_format)
+        outf = codecs.open(args.output, "w", "utf8")
+    draw_trees(inf, outf, args.lattice_format)
 
 
 if __name__ == '__main__':
