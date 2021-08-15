@@ -3,7 +3,7 @@
 形態素解析器JUMAN++(JUMAN)と構文解析器KNPのPythonバインディング (Python2系と3系の両方に対応)。
 
 ## Requirements
-- Python 
+- Python
     - Verified Versions: 2.7.15,  3.7.11
 - 形態素解析器 [JUMAN++](http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN++) [[EN](http://nlp.ist.i.kyoto-u.ac.jp/EN/index.php?JUMAN++)]
 (or [JUMAN](http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN)[[EN](http://nlp.ist.i.kyoto-u.ac.jp/EN/index.php?JUMAN)])
