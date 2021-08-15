@@ -73,29 +73,29 @@ def main():
              `echo これはテストです。 | jumanpp |
              knp -tab -anaphora | knp-drawtree`
              '''
-    aparser = argparse.ArgumentParser(
+    parser = argparse.ArgumentParser(
         prog='knp-drawtree',
         description='draw a parse tree from output of knp command',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         epilog=epilog)
-    aparser.add_argument("-i", "--input", default="-",
+    parser.add_argument("-i", "--input", default="-",
                          help="input source")
-    aparser.add_argument("-o", "--output", default="-",
+    parser.add_argument("-o", "--output", default="-",
                          help="output destination")
-    aparser.add_argument("-L", "--lattice_format", action="store_true",
+    parser.add_argument("-L", "--lattice_format", action="store_true",
                          help="output in lattice format")
-    (opts, args) = aparser.parse_args()
+    args = parser.parse_args()
 
-    if opts.input == "-":
+    if args.input == "-":
         inf = sys.stdin
     else:
-        inf = codecs.open(opts.input, "r", "utf8")
+        inf = codecs.open(args.input, "r", "utf8")
 
-    if opts.output == "-":
+    if args.output == "-":
         outf = sys.stdout
     else:
-        outf = codecs.open(opts.output, "w", "utf8")
-    draw_trees(inf, outf, opts.lattice_format)
+        outf = codecs.open(args.output, "w", "utf8")
+    draw_trees(inf, outf, args.lattice_format)
 
 
 if __name__ == '__main__':
