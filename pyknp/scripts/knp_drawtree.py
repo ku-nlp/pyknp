@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import codecs
 import argparse
+import codecs
+import sys
+
 import pyknp
 import six
-import sys
 
 if six.PY2:
     sys.stdin = codecs.getreader('UTF-8')(sys.stdin)
@@ -84,6 +85,7 @@ def main():
                          help="output destination")
     parser.add_argument("-L", "--lattice_format", action="store_true",
                          help="output in lattice format")
+
     args = parser.parse_args()
 
     if args.input == "-":
