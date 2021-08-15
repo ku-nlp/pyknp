@@ -1,14 +1,14 @@
 .PHONY: deploy
 deploy: build
-	twine upload --skip-existing dist/*
+	poetry publish
 
 .PHONY: test-deploy
 test-deploy: build
-	twine upload --skip-existing -r pypitest dist/*
+	poetry publish -r testpypi
 
 .PHONY: build
 build:
-	python setup.py sdist --formats=zip
+	poetry build
 
 .PHONY: build-doc
 build-doc:
