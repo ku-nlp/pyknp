@@ -8,6 +8,6 @@ authors:
     given-names: Tomohide
   - family-names: Hayashibe
     given-names: Yuta
-version: 0.5.0
+version: 0.5.1
 license: ""
 repository-code: "https://github.com/ku-nlp/pyknp"
