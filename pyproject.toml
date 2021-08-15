@@ -40,7 +40,7 @@ recommonmark = "^0.7"
 sphinx-rtd-theme = "^0.5"
 
 [tool.poetry.scripts]
-knp-drawtree = 'pyknp.scripts:main'
+knp-drawtree = 'pyknp.scripts.knp_drawtree:main'
 
 [build-system]
 requires = ["poetry>=0.12"]

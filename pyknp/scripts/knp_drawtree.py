@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import codecs
-import optparse
+import argparse
 import pyknp
 import six
 import sys
@@ -68,12 +68,23 @@ def draw_trees(inf, outf, lattice_format):
 
 
 def main():
-    oparser = optparse.OptionParser()
-    oparser.add_option("-i", "--input", dest="input", default="-")
-    oparser.add_option("-o", "--output", dest="output", default="-")
-    oparser.add_option("--lattice_format", dest="lattice_format",
-                       action="store_true", default=False)
-    (opts, args) = oparser.parse_args()
+    epilog = '''
+             try:
+             `echo これはテストです。 | jumanpp |
+             knp -tab -anaphora | knp-drawtree`
+             '''
+    aparser = argparse.ArgumentParser(
+        prog='knp-drawtree',
+        description='draw a parse tree from output of knp command',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+        epilog=epilog)
+    aparser.add_argument("-i", "--input", default="-",
+                         help="input source")
+    aparser.add_argument("-o", "--output", default="-",
+                         help="output destination")
+    aparser.add_argument("-L", "--lattice_format", action="store_true",
+                         help="output in lattice format")
+    (opts, args) = aparser.parse_args()
 
     if opts.input == "-":
         inf = sys.stdin
