@@ -5,6 +5,8 @@ import re
 import unittest
 import six
 
+from pyknp.knp.features import Features
+
 
 class JUMAN_FORMAT(object):
     """ JUMANのラティスオプション
@@ -98,9 +100,10 @@ class Morpheme(object):
             self.katuyou2 = parts[15]
             self.katuyou2_id = int(parts[16])
             self.fstring = parts[17]
-            self.feature = self._parse_fstring(self.fstring)
+            self.features = self._parse_fstring(self.fstring)
+            self.feature = self.features  # backward-compatibility
             self.repname = parts[6]
-            ranks = self.feature.get('ランク', None)                 
+            ranks = self.features.get('ランク', None)
             if ranks is not None:
                 self.ranks = set(int(x) for x in ranks)
         except IndexError:
@@ -148,6 +151,8 @@ class Morpheme(object):
             self.katuyou2_id = int(parts[10])
             self.imis = parts[11].lstrip("\"").rstrip("\"")
             self.fstring = parts[12]
+            self.features = Features(self.fstring)
+            self.feature = self.features  # backward-compatibility
         except IndexError:
             pass
         # Extract 代表表記
