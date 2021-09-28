@@ -3,7 +3,7 @@
 
 from __future__ import unicode_literals
 from __future__ import absolute_import
-from pyknp import Rel
+from pyknp.knp.rel import Rel
 import unittest
 import six
 
