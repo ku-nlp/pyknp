@@ -18,10 +18,11 @@ def load_juman_from_stream(f, juman_format=JUMAN_FORMAT.DEFAULT):
     juman = Juman()
     buf = ""
     for line in f:
-        buf += line
         if line.startswith("EOS"):
             yield juman.result(buf, juman_format=juman_format)
             buf = ""
+            continue
+        buf += line
 
 
 def load_knp_from_stream(f, juman_format=JUMAN_FORMAT.DEFAULT):
