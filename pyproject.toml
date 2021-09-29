@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyknp"
-version = "0.6.0"
+version = "0.6.1"
 description = "Python module for JUMAN/KNP"
 license = "See COPYING"
 authors = ["Kurohashi-Kawahara Lab, Kyoto Univ <contact@nlp.ist.i.kyoto-u.ac.jp>"]
