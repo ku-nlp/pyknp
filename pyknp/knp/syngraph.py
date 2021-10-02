@@ -35,13 +35,25 @@ class SynNodes(object):
         else:
             self.feature = string
 
+    def spec(self):
+        return "!! %s %s%s %s%s" % (
+            ','.join(str(n) for n in self.tagids),
+            ','.join(str(n) for n in self.parentids),
+            self.dpndtype,
+            "<見出し:%s>" % self.midasi if self.midasi else "",
+            self.feature
+        )
+
+    def __repr__(self):
+        return "SynNodes(%s)" % repr(self.spec())
+
 
 class SynNode(object):
 
     def __init__(self, spec):
         self.synid = ''
-        self.tagids = []
-        self.score = ''
+        self.tagids = None
+        self.score = None
         self.feature = ''
 
         # ! 1 <SYNID:s1201:所在/しょざい><スコア:0.693><上位語><下位語数:323>
@@ -59,6 +71,22 @@ class SynNode(object):
             string = string[end + 1:]
 
         self.feature = string
+
+    def spec(self):
+        specs = []
+        if self.synid:
+            specs.append("<SYNID:%s>" % self.synid)
+        if self.score is not None:
+            specs.append("<スコア:%f>" % self.score)
+        specs.append(self.feature)
+
+        return "! %s %s" % (
+            ",".join(str(n) for n in self.tagids),
+            "".join(specs)
+        )
+
+    def __repr__(self):
+        return 'SynNode(%s)' % repr(self.spec())
 
 
 class SynNodesTest(unittest.TestCase):
@@ -82,6 +110,20 @@ class SynNodesTest(unittest.TestCase):
         self.assertEqual(synnodes2.dpndtype, 'D')
         self.assertEqual(synnodes2.midasi, '冷え込む')
         self.assertEqual(synnodes2.feature, '')
+
+    def test_spec(self):
+        for s in [self.str1, self.str2]:
+            synnodes = SynNodes(s)
+            self.assertEqual(synnodes.spec(), s)
+
+    def test_repr(self):
+        synnodes = SynNodes(self.str1)
+        new_s = eval(repr(synnodes))
+        self.assertEqual(synnodes.tagids, new_s.tagids)
+        self.assertEqual(synnodes.parentids, new_s.parentids)
+        self.assertEqual(synnodes.dpndtype, new_s.dpndtype)
+        self.assertEqual(synnodes.midasi, new_s.midasi)
+        self.assertEqual(synnodes.feature, new_s.feature)
 
 
 class SynNodeTest(unittest.TestCase):
@@ -107,6 +149,13 @@ class SynNodeTest(unittest.TestCase):
         self.assertEqual(synnode3.synid, 's1201:所在/しょざい')
         self.assertEqual(synnode3.score, 0.693)
         self.assertEqual(synnode3.feature, '<上位語><下位語数:323>')
+
+    def test_repr(self):
+        synnode = SynNode(self.str1)
+        new_s = eval(repr(synnode))
+        self.assertEqual(synnode.synid, new_s.synid)
+        self.assertEqual(synnode.score, new_s.score)
+        self.assertEqual(synnode.feature, new_s.feature)
 
 
 if __name__ == '__main__':

@@ -83,6 +83,9 @@ class MList(object):
     def __len__(self):
         return len(self._mrph)
 
+    def __repr__(self):
+        return 'MList(%s)' % repr(self.spec())
+
 
 class MListTest(unittest.TestCase):
 
@@ -115,6 +118,16 @@ class MListTest(unittest.TestCase):
         mlist = MList(spec)
         self.assertEqual(mlist.spec(), spec)
         self.assertEqual(mlist.new_spec(), new_spec)
+
+    def test_repr(self):
+        import pyknp
+        spec = """母 はは 母 名詞 6 普通名詞 1 * 0 * 0 "代表表記:母/はは 漢字読み:訓 カテゴリ:人 ドメイン:家庭・暮らし"
+@ 母 ぼ 母 名詞 6 普通名詞 1 * 0 * 0 "代表表記:母/ぼ 漢字読み:音 カテゴリ:人"
+です です だ 判定詞 4 * 0 判定詞 25 デス列基本形 27 NIL
+"""
+        mlist = MList(spec)
+        repr_mlist = eval(repr(mlist))
+        self.assertEqual(repr_mlist.spec(), mlist.spec())
 
 
 if __name__ == '__main__':

@@ -43,3 +43,15 @@ class Rel(object):
         self.sid = sid
         self.tid = id_
         self.mode = mode
+
+    def __repr__(self):
+        if self.ignore:
+            return 'Rel("")'
+        specs = []
+        specs.append('type="%s"' % self.atype)
+        if self.mode:
+            specs.append('mode="%s"' % self.mode)
+        specs.append('target="%s"' % self.targtet)
+        if self.sid:
+            specs.append('sid="%s" id="%s"' % (self.sid, self.id))
+        return 'Rel(%s)' % repr(' '.join(specs))
