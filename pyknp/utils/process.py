@@ -65,7 +65,7 @@ class Subprocess(object):
             pass
 
     def query(self, sentence, pattern):
-        assert (isinstance(sentence, six.text_type))
+        assert isinstance(sentence, six.text_type)
         sentence = sentence.strip() + '\n'  # ensure sentence ends with '\n'
 
         def alarm_handler(signum, frame):
