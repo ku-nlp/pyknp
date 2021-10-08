@@ -125,6 +125,9 @@ class Bunsetsu(object):
         else:
             return self._pstring
 
+    def __repr__(self):
+        return "Bunsetsu(%s)" % repr(self.spec())
+
 
 class BunsetsuTest(unittest.TestCase):
 
@@ -176,6 +179,11 @@ class BunsetsuTest(unittest.TestCase):
         tag2.push_mrph(mrph2)
         bnst.push_tag(tag2)
         self.assertEqual(bnst.spec(), self.spec)
+
+    def test_repr(self):
+        bnst = Bunsetsu(self.bunsetsu_str)
+        new_bnst = eval(repr(bnst))
+        self.assertEqual(bnst.spec(), new_bnst.spec())
 
 
 if __name__ == '__main__':

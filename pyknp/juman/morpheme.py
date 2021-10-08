@@ -255,6 +255,9 @@ class Morpheme(object):
             rvalue[key] = val.split(";")
         return rvalue
 
+    def __repr__(self):
+        return "Morpheme(%s)" % repr(self.spec())
+
 
 class MorphemeTest(unittest.TestCase):
 
@@ -310,6 +313,12 @@ class MorphemeTest(unittest.TestCase):
         self.assertEqual(mrph.imis, 'NIL')
         self.assertEqual(mrph.fstring, '<漢字><かな漢字><自立><←複合><名詞相当語>')
         self.assertEqual(mrph.spec(), spec)
+
+    def test_repr(self):
+        spec = "構文 こうぶん 構文 名詞 6 普通名詞 1 * 0 * 0 NIL <漢字><かな漢字><自立><←複合><名詞相当語>\n"
+        mrph = Morpheme(spec)
+        new_mrph = eval(repr(mrph))
+        self.assertEqual(mrph.spec(), new_mrph.spec())
 
 
 class MorphemeTest2(unittest.TestCase):
