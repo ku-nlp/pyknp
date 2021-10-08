@@ -78,6 +78,8 @@ class Subprocess(object):
             self.process.stdin.write(sentence.encode('utf-8'))
             self.process.stdin.flush()
             while True:
+                if self.process.poll() is not None:
+                    break
                 line = self.process.stdout.readline().decode('utf-8').rstrip()
                 if re.search(pattern, line):
                     break
