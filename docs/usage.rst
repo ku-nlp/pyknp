@@ -1,4 +1,4 @@
-Usage Deatails and Tips
+Usage Details and Tips
 ========================================
 
 予め準備したJUMAN/KNP解析結果ファイルを利用する方法
