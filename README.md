@@ -5,7 +5,7 @@
 ## Requirements
 - Python
     - Verified Versions: 2.7.15,  3.7.11
-- 形態素解析器 [JUMAN++](http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN++) [[EN](http://nlp.ist.i.kyoto-u.ac.jp/EN/index.php?JUMAN++)]
+- 形態素解析器 [JUMAN++](http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN%2B%2B) [[EN](http://nlp.ist.i.kyoto-u.ac.jp/EN/index.php?JUMAN%2B%2B)]
 (or [JUMAN](http://nlp.ist.i.kyoto-u.ac.jp/index.php?JUMAN)[[EN](http://nlp.ist.i.kyoto-u.ac.jp/EN/index.php?JUMAN)])
     - JUMAN++ はJUMANの後継にあたる形態素解析器
 - 構文解析器 [KNP](http://nlp.ist.i.kyoto-u.ac.jp/index.php?KNP) [[EN](http://nlp.ist.i.kyoto-u.ac.jp/EN/index.php?KNP)]
