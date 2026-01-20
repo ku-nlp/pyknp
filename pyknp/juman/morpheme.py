@@ -125,10 +125,10 @@ class Morpheme(object):
                     else:
                         inside_quotes = False
                 # If "\"" proceeds " ", it would be not inside_quotes, but "\"".
-                if inside_quotes and char == ' ' and part == '"':
+                if inside_quotes and char == ' ' and part[-1] == '"':
                     inside_quotes = False
                 if part != "" and char == ' ' and not inside_quotes:
-                    if part.startswith('"') and part.endswith('"') and len(part) > 1:
+                    if part.startswith('"') and part.endswith('"') and len(part) > 1 and len(parts) > 2:
                         parts.append(part[1:-1])
                     else:
                         parts.append(part)
